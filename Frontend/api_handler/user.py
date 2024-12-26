@@ -126,9 +126,3 @@ def get_user_img(user_id: str, jwt_token):
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
-
-# Get token
-jwt_token = login_token("test","test")
-
-# TODO: Upload user profile image
-# TODO: Update user profile image
