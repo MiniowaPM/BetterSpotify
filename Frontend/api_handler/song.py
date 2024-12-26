@@ -74,21 +74,3 @@ def get_songs(jwt_token):
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
-    
-
-    #FOR TESTING
-
-def login_token(login: str, password: str):
-    url = f"{server_url}/auth/token"
-    params = {
-        "grant_type": "password",
-        "username": login,
-        "password": password
-        }
-    try:
-        response = requests.post(url, data=params)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-        return None

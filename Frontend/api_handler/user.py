@@ -1,5 +1,5 @@
 import requests
-from settings import server_url
+from Frontend.config.server_settings import server_url
 
 def login_token(login: str, password: str):
     url = f"{server_url}/auth/token"
@@ -127,22 +127,8 @@ def get_user_img(user_id: str, jwt_token):
         print(f"Error: {e}")
         return None
 
-# Sign-up
-#sign_up = post_user("test_user", "test_firstname", "test_lastname", "test_email", 1, "test_password")
-# print("signed")
-
-# Sign-in
-jwt_token = sign_in = login_token("test","test")
-# Modification
-# patch_user("me", jwt_token, last_name="modified_lastname")
-
-# Check for modification
-# print(get_user("me", jwt_token))
-
-# Check every user in database
-# print(get_users(sign_in))
+# Get token
+jwt_token = login_token("test","test")
 
 # TODO: Upload user profile image
 # TODO: Update user profile image
-# Delete test user
-delete_user(2,jwt_token)
