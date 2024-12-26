@@ -33,7 +33,7 @@ async def update_user(song_id: int, song: UpdateSongBase, db: db_dependency, use
     db.commit()
     return {"detail": "Song successfully modified"}
 
-@router.post("/api/album/{album_id}/song", tags=["Song"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
+@router.post("/album/{album_id}/song", tags=["Song"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
 async def create_song(album_id: int, song: SongBase, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
