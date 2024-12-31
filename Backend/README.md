@@ -3,14 +3,14 @@
 > A backend REST API built with FastAPI for handling http requests to database. It is designed to be fast, efficient, and easy to integrate.
 
 ## Table of Contents ##
-- [About the Project](#about-the-project-📝)
-- [Features](#features-✨)
-- [Tech Stack](#tech-stack-🛠️)
-- [Getting Started](#getting-started-🚀)
-  - [Prerequisites](#prerequisites-🔧)
-  - [Installation](#installation-⚙️)
-- [API Endpoints](#api-endpoints-🌐)
-- [Contact](#contact-📞)
+- [About the Project](#about-the-project-)
+- [Features](#features-)
+- [Tech Stack](#tech-stack-)
+- [Getting Started](#getting-started-)
+  - [Prerequisites](#prerequisites-)
+  - [Installation](#installation-)
+- [API Endpoints](#api-endpoints-)
+- [Contact](#contact-)
 
 ## About the Project 📝
 
