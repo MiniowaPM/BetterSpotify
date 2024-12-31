@@ -52,16 +52,6 @@ async def create_album(album: AlbumBase, db: db_dependency, user_auth: user_depe
     db.commit()
     return {"detail": "Album successfully created"}
 
-@router.get("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK, response_model=AlbumBase)
-async def get_album(album_id: int, db: db_dependency, user_auth: user_dependency):
-    # JWT Token Validation
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    album = db.query(models.Album).filter(models.Album.id == album_id).first()
-    if album is None:
-        raise HTTPException(status_code=404, detail="Album not found")
-    return album
-
 @router.get("/all", tags=["Album"], status_code=status.HTTP_200_OK, response_model=List[AlbumBase])
 async def get_albums(db: db_dependency, user_auth: user_dependency):
     # JWT Token Validation
@@ -71,6 +61,16 @@ async def get_albums(db: db_dependency, user_auth: user_dependency):
     if albums is None:
         raise HTTPException(status_code=404, detail="Albums not found")
     return albums
+
+@router.get("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK, response_model=AlbumBase)
+async def get_album(album_id: int, db: db_dependency, user_auth: user_dependency):
+    # JWT Token Validation
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    album = db.query(models.Album).filter(models.Album.id == album_id).first()
+    if album is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    return album
 
 @router.post("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
 async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency, file: UploadFile):

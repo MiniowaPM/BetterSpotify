@@ -33,6 +33,15 @@ async def update_user(song_id: int, song: UpdateSongBase, db: db_dependency, use
     db.commit()
     return {"detail": "Song successfully modified"}
 
+@router.get("/all", tags=["Song"], status_code=status.HTTP_200_OK, response_model=List[SongBase])
+async def get_song(db: db_dependency, user_auth: user_dependency):
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    songs = db.query(models.Song).all()
+    if songs is None:
+        raise HTTPException(status_code=404, detail="Songs not found")
+    return songs
+
 @router.post("/album/{album_id}/song", tags=["Song"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
 async def create_song(album_id: int, song: SongBase, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
@@ -57,12 +66,3 @@ async def get_song(song_id: int, db: db_dependency, user_auth: user_dependency):
     if song is None:
         raise HTTPException(status_code=404, detail="Song not found")
     return song
-
-@router.get("/all", tags=["Song"], status_code=status.HTTP_200_OK, response_model=List[SongBase])
-async def get_song(db: db_dependency, user_auth: user_dependency):
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    songs = db.query(models.Song).all()
-    if songs is None:
-        raise HTTPException(status_code=404, detail="Songs not found")
-    return songs
