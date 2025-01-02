@@ -1,12 +1,11 @@
 import axios from 'axios';
-import { serverUrl } from '../config/server_settings.js';
+import { serverUrl } from './server_settings.js';
 
-export async function deleteSong(songId, jwtToken) {
-    const url = `${serverUrl}/song/${songId}`;
+export async function deleteAlbum(albumId, jwtToken) {
+    const url = `${serverUrl}/album/${albumId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
-  
     try {
       const response = await axios.delete(url, { headers });
       return response.data;
@@ -16,8 +15,8 @@ export async function deleteSong(songId, jwtToken) {
     }
   }
 
-export async function patchSong(songId, jwtToken, title = null, description = null, genre = null) {
-    const url = `${serverUrl}/song/${songId}`;
+  export async function patchAlbum(albumId, jwtToken, title = null, description = null, genre = null) {
+    const url = `${serverUrl}/album/${albumId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
@@ -36,8 +35,8 @@ export async function patchSong(songId, jwtToken, title = null, description = nu
     }
 }
 
-export async function getSong(songId, jwtToken) {
-    const url = `${serverUrl}/song/${songId}`;
+export async function getAlbum(albumId, jwtToken) {
+    const url = `${serverUrl}/album/${albumId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
@@ -51,8 +50,8 @@ export async function getSong(songId, jwtToken) {
     }
 }
 
-export async function postSong(albumId, jwtToken, title, description, genre) {
-    const url = `${serverUrl}/song/album/${albumId}/song`;
+export async function postAlbum(jwtToken, title, description, genre) {
+    const url = `${serverUrl}/album/`;
     const headers = {
         Authorization: `Bearer ${jwtToken.access_token}`,
       };
@@ -70,8 +69,40 @@ export async function postSong(albumId, jwtToken, title, description, genre) {
     }
 }
 
-export async function getSongs(jwtToken) {
-    const url = `${serverUrl}/song/all`;
+export async function getAlbums(jwtToken) {
+    const url = `${serverUrl}/album/all`;
+    const headers = {
+      Authorization: `Bearer ${jwtToken.access_token}`,
+    };
+    try {
+        const response = await axios.get(url, { headers });
+        return response.data;
+    } catch(error){
+        console.error(`Error: ${error.message}`);
+        return null;
+    }
+}
+
+export async function postAlbumImg(albumId, jwtToken, imgData) {
+    const url = `${serverUrl}/user/${albumId}/album-image`;
+    const headers = {
+      Authorization: `Bearer ${jwtToken.access_token}`,
+    };
+    const params = {
+        "img_data": imgData
+    };
+    try {
+        const response = await axios.post(url, params, { headers });
+        return response.data;
+
+    } catch(error){
+        console.error(`Error: ${error.message}`);
+        return null;
+    }
+}
+
+export async function getAlbumImg(albumId, jwtToken) {
+    const url = `${serverUrl}/user/${albumId}/album-image`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };

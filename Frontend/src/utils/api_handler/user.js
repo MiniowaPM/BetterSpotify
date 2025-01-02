@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { serverUrl } from '../config/server_settings.js';
+import { serverUrl } from './server_settings.js';
 
 export async function loginToken(login, password) {
   const url = `${serverUrl}/auth/token`;
