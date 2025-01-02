@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.sql import func
-from ..db import Base
+from db import Base
 
 class Songs_owned(Base):
     __tablename__ = 'songs_owned'

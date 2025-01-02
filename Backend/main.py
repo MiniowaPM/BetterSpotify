@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from Backend.api.routes import auth_router, user_router, album_router, song_router
-from Backend.db import engine, Base
+from api.routes import auth_router, user_router, album_router, song_router
+from db import engine, Base
 
 # Create instance of an FastApi app
 app = FastAPI()

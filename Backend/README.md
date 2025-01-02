@@ -46,7 +46,7 @@ Follow these instructions to set up the project locally.
 
 ```git clone https://github.com/MiniowaPM/BetterSpotyfy.git```
 
-```cd BetterSpotify```
+```cd BetterSpotify/Backend```
 
 2. Create and activate a virtual environment:
 
@@ -88,7 +88,7 @@ Open database menagment system (eg. XAMPP):
 
 7. Start the development server:
 
-```uvicorn app.main:app --reload```
+```uvicorn main:app --reload```
 
 ## API Endpoints 🌐 ##
 

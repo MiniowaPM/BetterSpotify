@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from ...models import User
-from ...core.config import settings
+from models import User
+from core.config import settings
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from .db import get_db

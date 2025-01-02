@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from datetime import timedelta
-from ..api.dependencies.auth import create_access_token, authenticate_user
+from api.dependencies.auth import create_access_token, authenticate_user
 from fastapi import HTTPException, status
 from .config import settings
 

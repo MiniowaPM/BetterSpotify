@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from ..db import Base
+from db import Base
 
 class Album(Base):
     __tablename__ = 'albums'

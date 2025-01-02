@@ -3,8 +3,8 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import List
 from sqlalchemy.orm import Session
-from ... import models, schemas, db
-from ...schemas import AlbumBase, UpdateAlbumBase, SuccessResponse
+import models, schemas, db
+from schemas import AlbumBase, UpdateAlbumBase, SuccessResponse
 from .. import db_dependency, user_dependency
 
 router = APIRouter(prefix="/album")

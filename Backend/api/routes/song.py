@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from sqlalchemy.orm import Session
-from ... import models, schemas, db
+import models, schemas, db
 from .. import db_dependency, user_dependency
-from ...schemas import SongBase, UpdateSongBase, SuccessResponse
+from schemas import SongBase, UpdateSongBase, SuccessResponse
 
 router = APIRouter(prefix="/song")
 

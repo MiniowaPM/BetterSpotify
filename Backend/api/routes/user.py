@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import List
-from ... import models, schemas, db
-from ...api.dependencies.auth import user_dependency
-from ... api.dependencies.db import db_dependency
-from ...schemas.user import UpdateUserBase, CreateUserBase
-from ...schemas.response import SuccessResponse
-from ...core.security import bcrypt_context
+import models, schemas, db
+from api.dependencies.auth import user_dependency
+from api.dependencies.db import db_dependency
+from schemas.user import UpdateUserBase, CreateUserBase
+from schemas.response import SuccessResponse
+from core.security import bcrypt_context
 
 router = APIRouter(prefix="/user")
 

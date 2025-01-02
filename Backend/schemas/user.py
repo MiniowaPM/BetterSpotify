@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from ..models.user import Gender
+from models.user import Gender
 
 class UserBase(BaseModel):
     username: str

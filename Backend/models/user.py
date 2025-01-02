@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Enum, Boolean
-from ..db import Base
+from db import Base
 import enum
 
 class Gender(enum.Enum):
