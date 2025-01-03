@@ -1,18 +1,24 @@
-TO RUN APP:
-1. Clone the repo:
+# vue-electron
 
-``` git clone https://github.com/your-username/your-repository-name.git ```
+## Project setup
+```
+npm install
+```
 
-``` cd BetterSpotify/frontend ```
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-2. Install dependencies:
+### Compiles and minifies for production
+```
+npm run build
+```
 
-``` npm install ```
+### Lints and fixes files
+```
+npm run lint
+```
 
-3. Run vue.js server:
-
-``` npm run serve ```
-
-4. Run Electron app:
-
-``` npm run electron:serve ```
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
