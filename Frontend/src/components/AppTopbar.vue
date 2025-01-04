@@ -2,22 +2,22 @@
   <header class="top-bar">
     <div class="back-forward-buttons">
       <button id="backButton" class="back-btn" @click="goBack" aria-label="Go Back">
-        <img src="../assets/back-arrow.png" alt="Back" width="15" height="15" />
+        <i class="fa-regular fa-chevron-left" alt="Back"></i>
       </button>
       <button id="forwardButton" class="forward-btn" @click="goForward" aria-label="Go Forward">
-        <img src="../assets/forward-arrow.png" alt="Forward" width="15" height="15" />
+        <i class="fa-regular fa-chevron-right" alt="Forward"></i>
       </button>
     </div>
     <input type="text" class="search-box" placeholder="Search..." aria-label="Search" />
     <div class="control-buttons">
-      <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
-        <img src="../assets/maximize.png" alt="Maximize" width="15" height="15" />
-      </button>
       <button id="minimizeButton" class="minimize-btn" @click="minimize" aria-label="Minimize">
-        <img src="../assets/minimize.png" alt="Minimize" width="15" height="15" />
+        <i class="fa-regular fa-window-minimize" alt="Minimize"></i>
+      </button>
+      <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
+        <i class="fa-regular fa-expand" alt="Maximize"></i>
       </button>
       <button id="closeButton" class="close-btn" @click="closeApp" aria-label="Close">
-        <img src="../assets/close.png" alt="Close" width="15" height="15" />
+        <i class="fa-regular fa-xmark" alt="Close"></i>
       </button>
     </div>
   </header>
@@ -48,12 +48,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .top-bar {
   display: flex;
   justify-content: space-between;
   background-color: #171719;
-  padding: 10px 20px;
+  padding: 18px 18px;
   app-region: drag;
 }
 
@@ -67,11 +67,9 @@ export default {
 .control-buttons {
   display: flex;
   align-items: center;
-  gap: 15px;
-  border: none;
-  border-radius: 50px;
-  padding: 10px;
   background-color: #202022;
+  border-radius: 50px;
+  padding: 0 5px;
 }
 
 .search-box {
@@ -80,10 +78,10 @@ export default {
   border-radius: 50px;
   padding: 10px 15px;
   color: #fffafa;
+  font-size: 15px;
   outline: none;
   width: 30%;
   max-width: 350px;
-  font-size: 14px;
 }
 
 .back-btn,
@@ -91,9 +89,14 @@ export default {
 .control-buttons button {
   background: none;
   border: none;
-  padding: 0;
   display: flex;
   align-items: center;
   cursor: pointer;
+  font-size: 15px;
+  color: #fffafa;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
 }
 </style>
