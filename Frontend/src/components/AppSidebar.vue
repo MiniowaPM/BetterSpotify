@@ -6,9 +6,9 @@
     </div>
     <nav>
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">My Collection</a></li>
-        <li><a href="#">New Releases</a></li>
+        <li><router-link to="/">Home</router-link></li>
+        <li><router-link to="/my-collection">My Collection</router-link></li>
+        <li><router-link to="/new-releases">New Releases</router-link></li>
       </ul>
     </nav>
     <div class="footer">
@@ -27,12 +27,17 @@ export default {
 
 <style scoped>
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
   width: 200px;
   background-color: #202022;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 0;
+  z-index: 1000;
 }
 
 .profile {
