@@ -69,7 +69,6 @@ export default {
   align-items: center;
   background-color: #202022;
   border-radius: 50px;
-  padding: 0 5px;
 }
 
 .search-box {
@@ -98,5 +97,14 @@ export default {
   height: 40px;
   justify-content: center;
   align-items: center;
+}
+
+.back-btn:hover,
+.forward-btn:hover,
+.minimize-btn:hover,
+.maximize-btn:hover,
+.close-btn:hover {
+  background-color: #2a2a2d;
+  border-radius: 25px;
 }
 </style>

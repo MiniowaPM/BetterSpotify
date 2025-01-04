@@ -13,7 +13,7 @@
     </nav>
     <div class="footer">
       <button class="settings-button">
-        <i class="fa-regular fa-gear"></i>
+        <i class="fa-solid fa-gear" alt="Settings"></i>
       </button>
     </div>
   </aside>
@@ -86,10 +86,14 @@ nav a:hover {
   color: #fffafa;
   background: none;
   border: none;
-  padding: 5px;
+  padding: 6px;
   margin-bottom: 15px;
   display: flex;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
+}
+.settings-button:hover {
+  background-color: #2a2a2d;
+  border-radius: 25px;
 }
 </style>

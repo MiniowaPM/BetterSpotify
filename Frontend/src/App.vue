@@ -38,6 +38,7 @@ export default {
 @import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css');
 
 * {
+  font-family: "Hanken Grotesk", serif;
   user-select: none;
   margin: 0;
   padding: 0;
@@ -49,7 +50,6 @@ export default {
 }
 
 body {
-  font-family: "Hanken Grotesk", serif;
   background-color: #202022;
   color: #fffafa;
   height: 100vh;
