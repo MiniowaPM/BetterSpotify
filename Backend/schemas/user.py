@@ -12,11 +12,15 @@ class CreateInitUserBase(BaseModel):
     password_hash: str
     studio_name: str
 
+class CreateUserBase(BaseModel):
+    username: str
+    password_hash: str
+
 class UpdateUserBase(BaseModel):
     username: str | None = None
     password_hash: str | None = None
     is_admin: bool = Optional[False]
-    studio: int
+    studio: int | None = None
 
 class Config:
     orm_mode = True
