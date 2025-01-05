@@ -37,11 +37,10 @@ export default {
 @import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css');
 
 * {
-  font-family: "Hanken Grotesk", serif;
-  user-select: none;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 
 html,body {
@@ -50,13 +49,26 @@ html,body {
 }
 
 #app {
+  height: 100%;
   width: 100%;
 }
 
 body {
+  font-family: "Hanken Grotesk", sans-serif;
   background-color: #202022;
   color: #fffafa;
-  display: flex;
+  margin: 0;
+}
+
+main {
+  position: absolute;
+  top: 72px;
+  left: 200px;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: 20px;
+  background-color: #121212;
 }
 
 .container {
@@ -66,13 +78,7 @@ body {
 }
 
 .main-content {
-  margin-left: 200px;
-  flex: 1;
   background-color: #171719;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow-y: auto;
 }
 
 .content {

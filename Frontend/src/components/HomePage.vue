@@ -1,12 +1,15 @@
 <template>
     <div class="homepage">
+      <img src="../assets/profilepicture.jpg" alt="User Avatar" class="avatarhome" />
       <h1 class="welcome">Welcome, nickname!</h1>
       <p class="msg">What do you want to do now?</p>
       <div class="features">
         <div class="feature">
-          <i class="fa-solid fa-book"></i>
-          <h2>My Collection</h2>
-          <p class="description">Access and manage your personal collection effortlessly.</p>
+          <router-link to="/my-collection">
+            <i class="fa-solid fa-book"></i>
+            <h2>My Collection</h2>
+            <p class="description">Access and manage your personal collection effortlessly.</p>
+          </router-link>
         </div>
         <div class="feature">
           <i class="fa-solid fa-music"></i>
@@ -39,6 +42,12 @@
   </script>
   
   <style scoped>
+  .avatarhome {
+    border-radius: 50%;
+    width: 75px;
+    height: auto;
+  }
+
   .homepage {
     padding: 20px;
     text-align: center;
@@ -47,11 +56,19 @@
   
   .welcome {
     font-size: 2.5rem;
+    margin-top: 15px;
     margin-bottom: 20px;
   }
   
   .msg, .description {
     font-size: 1.2rem;
+  }
+
+  .msg {
+    margin-bottom: 24px;
+  }
+
+  .description {
     margin-bottom: 20px;
   }
   
@@ -98,6 +115,11 @@
   .feature p {
     font-size: 1rem;
     color: #d3d3d3;
+  }
+
+  .feature a {
+    text-decoration: none;
+    color: #fffafa;
   }
   </style>
   

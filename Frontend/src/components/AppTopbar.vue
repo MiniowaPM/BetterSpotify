@@ -1,24 +1,28 @@
 <template>
   <header class="top-bar">
-    <div class="back-forward-buttons">
-      <button id="backButton" class="back-btn" @click="goBack" aria-label="Go Back">
-        <i class="fa-regular fa-chevron-left" alt="Back"></i>
-      </button>
-      <button id="forwardButton" class="forward-btn" @click="goForward" aria-label="Go Forward">
-        <i class="fa-regular fa-chevron-right" alt="Forward"></i>
-      </button>
+    <div class="side-controls left-controls">
+      <div class="back-forward-buttons">
+        <button id="backButton" class="back-btn" @click="goBack" aria-label="Go Back">
+          <i class="fa-regular fa-chevron-left" alt="Back"></i>
+        </button>
+        <button id="forwardButton" class="forward-btn" @click="goForward" aria-label="Go Forward">
+          <i class="fa-regular fa-chevron-right" alt="Forward"></i>
+        </button>
+      </div>
     </div>
     <input type="text" class="search-box" placeholder="Search..." aria-label="Search" />
-    <div class="control-buttons">
-      <button id="minimizeButton" class="minimize-btn" @click="minimize" aria-label="Minimize">
-        <i class="fa-regular fa-window-minimize" alt="Minimize"></i>
-      </button>
-      <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
-        <i class="fa-regular fa-expand" alt="Maximize"></i>
-      </button>
-      <button id="closeButton" class="close-btn" @click="closeApp" aria-label="Close">
-        <i class="fa-regular fa-xmark" alt="Close"></i>
-      </button>
+    <div class="side-controls right-controls">
+      <div class="control-buttons">
+        <button id="minimizeButton" class="minimize-btn" @click="minimize" aria-label="Minimize">
+          <i class="fa-thin fa-window-minimize" alt="Minimize"></i>
+        </button>
+        <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
+          <i class="fa-light fa-expand" alt="Maximize"></i>
+        </button>
+        <button id="closeButton" class="close-btn" @click="closeApp" aria-label="Close">
+          <i class="fa-light fa-xmark" alt="Close"></i>
+        </button>
+      </div>
     </div>
   </header>
 </template>
@@ -51,15 +55,22 @@ export default {
 <style>
 .top-bar {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   background-color: #171719;
-  padding: 18px 18px;
+  padding: 18px;
+  position: fixed;
+  top: 0;
+  left: 200px;
+  width: calc(100% - 200px);
+  z-index: 1000;
   app-region: drag;
 }
 
-.back-forward-buttons,
-.control-buttons,
-.search-box {
+.left-controls,
+.right-controls {
+  display: flex;
+  align-items: center;
   app-region: no-drag;
 }
 
@@ -72,6 +83,10 @@ export default {
 }
 
 .search-box {
+  font-family: "Hanken Grotesk", serif;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #202022;
   border: none;
   border-radius: 50px;
@@ -81,6 +96,7 @@ export default {
   outline: none;
   width: 30%;
   max-width: 350px;
+  app-region: no-drag;
 }
 
 .back-btn,
