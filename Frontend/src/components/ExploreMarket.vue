@@ -1,6 +1,6 @@
 <template>
     <div class="explore-market">
-      <h1>Explore Studios</h1>
+        <h1>Explore Studios</h1>
       <p>Select a studio to browse its albums.</p>
       <div class="studios">
         <div v-for="(studio, idx) in studios" :key="idx" class="studio" @click="selectStudio(studio)">
@@ -10,9 +10,9 @@
         </div>
       </div>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import musicStudioLogo from "../assets/music_studios.png";
   
   export default {
@@ -50,13 +50,20 @@
     },
     methods: {
       selectStudio(studio) {
-        console.log("Selected studio:", studio.name);
+        this.$router.push({
+            name: "ExploreAlbums",
+            params: { studioName: studio.name },
+        });
       }
     }
   };
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
+  [data-theme="light"] .studio-logo {
+  filter: invert(100%);
+    }
+
   .explore-market {
     padding: 20px;
     text-align: center;
@@ -71,6 +78,11 @@
   p {
     font-size: 1.2rem;
     margin-bottom: 20px;
+  }
+
+  .user-balance {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
   }
   
   .studios {
@@ -112,5 +124,5 @@
   .studio:hover {
     background-color: var(--background-hover-color);
   }
-  </style>
+</style>
   

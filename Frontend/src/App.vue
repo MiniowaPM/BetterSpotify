@@ -3,7 +3,7 @@
     <AppSidebar />
     <main class="main-content">
       <AppTopbar />
-      <router-view/>
+      <router-view :cart="cart" @add-to-cart="addToCart" />
     </main>
   </div>
 </template>
@@ -11,12 +11,24 @@
 <script>
 import AppSidebar from "./components/AppSidebar.vue";
 import AppTopbar from "./components/AppTopbar.vue";
+import { ref } from "vue";
 
 export default {
   name: "App",
   components: {
     AppSidebar,
     AppTopbar,
+  },
+  setup() {
+    const cart = ref([]);
+
+    const addToCart = (album) => {
+      const albumExists = cart.value.some(item => item.title === album.title);
+      if (!albumExists) {
+        cart.value.push(album);
+      }
+    };
+  return { cart, addToCart };
   },
 };
 </script>

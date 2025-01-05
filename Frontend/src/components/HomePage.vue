@@ -19,9 +19,11 @@
           </router-link>
         </div>
         <div class="feature">
-          <i class="fa-solid fa-cart-shopping-fast"></i>
-          <h2>Cart</h2>
-          <p class="description">Make your shopping experience quick and effortless.</p>
+          <router-link to="/cart">
+            <i class="fa-solid fa-cart-shopping-fast"></i>
+            <h2>Cart</h2>
+            <p class="description">Make your shopping experience quick and effortless.</p>
+          </router-link>
         </div>
         <div class="feature">
           <i class="fa-solid fa-star"></i>
