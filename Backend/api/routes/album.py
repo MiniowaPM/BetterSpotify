@@ -9,6 +9,11 @@ from .. import db_dependency, user_dependency
 
 router = APIRouter(prefix="/album")
 
+
+######################################################################################################################################################
+#                                                                                                                                                    #
+######################################################################################################################################################
+
 @router.delete("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK)
 async def delete_album(album_id: int, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions

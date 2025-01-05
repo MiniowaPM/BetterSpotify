@@ -18,6 +18,6 @@ async def login_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Dep
     # Validation failed. Wrong password or username
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unable to validate user")
-    # Creates JWT token (stores: username, is_admin, user_id)
-    token = create_access_token(user.username, user.id, user.is_admin, timedelta(minutes=30))
+    # Creates JWT token (stores: studio_fk, is_admin, user_id, expire_time)
+    token = create_access_token(user.id, user.is_admin, user.studio_fk, timedelta(minutes=30))
     return {'access_token': token, 'token_type':'bearer'}

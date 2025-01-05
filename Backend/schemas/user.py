@@ -7,10 +7,10 @@ class UserBase(BaseModel):
     is_admin: bool
     studio: int
 
-class CreateUserBase(BaseModel):
+class CreateInitUserBase(BaseModel):
     username: str
     password_hash: str
-    studio: int
+    studio_name: str
 
 class UpdateUserBase(BaseModel):
     username: str | None = None

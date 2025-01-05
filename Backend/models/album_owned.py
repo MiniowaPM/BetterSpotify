@@ -3,9 +3,8 @@ from sqlalchemy.sql import func
 from db import Base
 
 class Songs_owned(Base):
-    __tablename__ = 'songs_owned'
+    __tablename__ = 'albums_owned'
       
     id = Column(Integer, primary_key=True, index=True)
     song_fk = Column(Integer, ForeignKey('albums.id'))
     user_fk = Column(Integer, ForeignKey('studios.id'))
-    create_date = Column(DateTime(timezone=True), server_default=func.now())

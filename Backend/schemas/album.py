@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 from models.album import Genre
+from datetime import date
 
 class CreateAlbumBase(BaseModel):
     title: str
     description: str
     artist: str
-    price: float
+    release_date: date
+    price: float | None = None
     genre: Genre
 
 class UpdateAlbumBase(BaseModel):

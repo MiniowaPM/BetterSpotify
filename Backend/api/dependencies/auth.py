@@ -22,12 +22,12 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get('sub')
         user_id: int = payload.get('id')
         is_admin: bool = payload.get('is_admin')
-        if username is None or user_id is None:
+        studio_fk: int = payload.get('studio_fk')
+        if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
-        return {'username': username, 'id': user_id, 'is_admin': is_admin}
+        return {'id': user_id, 'is_admin': is_admin, 'studio_fk': studio_fk}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
 
@@ -41,9 +41,9 @@ def authenticate_user(username: str, password: str, db: Session):
     return user
 
 # Create JWT access token function
-def create_access_token(username: str, user_id: int, is_admin: bool, expires_delta: timedelta):
+def create_access_token(user_id: int, is_admin: bool, studio_fk: int, expires_delta: timedelta):
     expires = datetime.now(timezone.utc) + expires_delta
-    encode = {'sub': username, 'id': user_id, 'is_admin': is_admin, 'exp': expires}
+    encode = {'id': user_id, 'is_admin': is_admin, 'studio_fk': studio_fk , 'exp': expires}
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 user_dependency = Annotated[dict, Depends(get_current_user)]

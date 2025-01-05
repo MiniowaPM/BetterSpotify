@@ -5,11 +5,65 @@ from typing import List
 import models, schemas, db
 from api.dependencies.auth import user_dependency
 from api.dependencies.db import db_dependency
-from schemas.user import UpdateUserBase, CreateUserBase
+from schemas.user import UpdateUserBase, CreateInitUserBase
 from schemas.response import SuccessResponse
 from core.security import bcrypt_context
 
 router = APIRouter(prefix="/user")
+
+# Signup form request
+@router.post("/", tags=["User"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
+async def create_init_user(user: CreateInitUserBase, db: db_dependency):
+    if not db.query(models.Studio).filter(models.Studio.studio_name == user.studio_name).first():
+        new_studio = models.Studio(studio_name = user.studio_name)
+        db.add(new_studio)
+        db.commit()
+        db.refresh(new_studio)
+        studio_id = new_studio.id
+    else: 
+        raise HTTPException(status_code=409, detail="Studio name already taken")
+
+    password_bcrypt_hash = bcrypt_context.hash(user.password_hash)
+    db_user = models.User(
+        username = user.username,
+        password_hash = password_bcrypt_hash,
+        studio_fk = studio_id,
+        is_admin = True
+    )
+    # Check if exists in database
+    if db.query(models.User).filter(models.User.username == db_user.username).first() is not None:
+        raise HTTPException(status_code=409, detail="Username already exists")
+    db.add(db_user)
+    db.commit()
+    return {"detail": "User successfully created"}
+
+@router.get("/me", tags=["User"], status_code=status.HTTP_200_OK)
+async def get_current_user(db: db_dependency, user_auth: user_dependency):
+    user_id = user_auth["id"]
+    # Check for JWT token whether user logged
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    user_with_studio = (
+        db.query(models.User, models.Studio.studio_name)
+        .join(models.Studio, models.User.studio_fk == models.Studio.id)
+        .filter(models.User.id == user_id)
+        .first()
+    )
+
+    user_data = {
+        "id": user_with_studio.User.id,
+        "username": user_with_studio.User.username,
+        "studio_name": user_with_studio.studio_name,
+        "is_admin": user_with_studio.User.is_admin,
+    }
+
+    return user_data
+
+######################################################################################################################################################
+#                                                                                                                                                    #
+######################################################################################################################################################
+
+
 
 @router.delete("/{user_id}", tags=["User"], status_code=status.HTTP_200_OK)
 async def delete_user(user_id: int, db: db_dependency, user_auth: user_dependency):
@@ -48,20 +102,6 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
     db.commit()
     return {"detail": "User successfully modified"}
 
-@router.post("/", tags=["User"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
-async def create_user(user: CreateUserBase, db: db_dependency):
-    password_bcrypt_hash = bcrypt_context.hash(user.password_hash)
-    db_user =  models.User(**{**user.model_dump(), "password_hash": password_bcrypt_hash})
-    check_username = db.query(models.User).filter(models.User.username == db_user.username).first()
-    check_email = db.query(models.User).filter(models.User.email == db_user.email).first()
-    if check_username is not None:
-        raise HTTPException(status_code=409, detail="Username already exists")
-    if check_email is not None:
-        raise HTTPException(status_code=409, detail="Email already exists")
-    db.add(db_user)
-    db.commit()
-    return {"detail": "User successfully created"}
-
 @router.get("/all", tags=["User"], status_code=status.HTTP_200_OK, response_model=List[UpdateUserBase])
 async def get_users(db: db_dependency, user_auth: user_dependency):
     users = db.query(models.User).all()
@@ -76,25 +116,6 @@ async def get_users(db: db_dependency, user_auth: user_dependency):
             user.wallet = None
     return users
 
-@router.get("/{user_id}", tags=["User"], status_code=status.HTTP_200_OK, response_model=UpdateUserBase)
-async def get_user(user_id: str, db: db_dependency, user_auth: user_dependency):
-    # check the {user_id} variable for str == me or int
-    if user_id == "me":
-        user_id = user_auth["id"]
-    else:
-        user_id = int(user_id)
-    # Check for JWT token whether user logged
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    # Clear extra info if user does not have admin permisions | TODO: zmiana z usuwania wartości do usunięcia argumentów ze słownika
-    if not user_auth.get("is_admin", False) and user_id != user_auth["id"]:
-        user.password_hash = None
-        user.is_admin = False
-        user.wallet = None
-    return user
 
 @router.post("/me/profile-image/",  tags=["User"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
 async def upload_user_profile_image(user_auth: user_dependency, file: UploadFile):

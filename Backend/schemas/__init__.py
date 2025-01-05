@@ -1,4 +1,4 @@
-from .user import UpdateUserBase, UserBase, CreateUserBase, Config
+from .user import UpdateUserBase, UserBase, CreateInitUserBase, Config
 from .album import CreateAlbumBase, UpdateAlbumBase, Config
 from .response import SuccessResponse
 from .song import CreateSongBase, UpdateSongBase, Config

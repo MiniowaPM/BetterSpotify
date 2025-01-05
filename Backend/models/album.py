@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Float, DateTime
 import enum
 from sqlalchemy.orm import relationship
 
@@ -113,5 +113,6 @@ class Album(Base):
     title = Column(String(50), unique=True)
     description = Column(String(500), unique=False)
     artist = Column(String(50), unique=False)
+    release_date = Column(DateTime)
     price = Column(Float, unique=False)
     genre = Column(Enum(Genre), nullable=False)
