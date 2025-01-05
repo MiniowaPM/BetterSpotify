@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomePage from "../components/HomePage.vue"; // Adjust path if needed
-import MyCollection from "../components/MyCollection.vue"; // Example additional page
+import MyCollection from "../components/MyCollection.vue"; 
+import ExploreMarket from "../components/ExploreMarket.vue";// Example additional page
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: "/my-collection",
     name: "MyCollection",
     component: MyCollection,
+  },
+  {
+    path: "/explore",
+    name: "ExploreMarket",
+    component: ExploreMarket,
   }
 ];
 

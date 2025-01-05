@@ -12,9 +12,11 @@
           </router-link>
         </div>
         <div class="feature">
-          <i class="fa-solid fa-music"></i>
-          <h2>New Releases</h2>
-          <p class="description">Stay updated with the latest and trending items.</p>
+          <router-link to="/explore">
+            <i class="fa-solid fa-music"></i>
+            <h2>Explore</h2>
+            <p class="description">Stay updated with the latest and trending items.</p>
+          </router-link>
         </div>
         <div class="feature">
           <i class="fa-solid fa-cart-shopping-fast"></i>

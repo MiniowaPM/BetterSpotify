@@ -6,13 +6,19 @@
       <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
         <img :src="album.cover" alt="Album cover" class="album-cover" />
         <h3>{{ album.title }}</h3>
-        <p>{{ album.artist }}</p>
+        <p class="artist-text">{{ album.artist }}</p>
         <div class="album-footer">
           <span class="release-date">{{ album.releaseDate }}</span>
           <span class="separator">•</span>
           <span>
-            <i class="fa-light fa-star"></i>
+            <i class="fa-light fa-star star-icon"></i>
           </span>
+        </div>
+      </div>
+      <div class="album add-album" @click="addAlbum">
+        <div class="add-album-content">
+          <i class="fa-duotone fa-light fa-plus add-icon"></i>
+          <p class="add-text">Add Album</p>
         </div>
       </div>
     </div>
@@ -25,7 +31,7 @@ export default {
   data() {
     return {
       studio: {
-        name: "Studio A",
+        name: "studio_name",
         description: "Browse through your amazing albums.",
         albums: [
           {
@@ -79,6 +85,11 @@ export default {
         ]
       }
     };
+  },
+  methods: {
+    addAlbum() {
+      console.log("Add album func");
+    }
   }
 };
 </script>
@@ -113,8 +124,10 @@ p {
   padding: 10px;
   border-radius: 10px;
   width: 150px;
+  height: 255px;
   text-align: center;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .album-cover {
@@ -129,7 +142,7 @@ p {
   margin-bottom: 8px;
 }
 
-.album p {
+.artist-text {
   font-size: 1rem;
   color: var(--second-text-color);
 }
@@ -151,12 +164,41 @@ p {
   font-size: 0.9rem;
 }
 
+.star-icon {
+  cursor: pointer;
+}
+
 .separator {
   margin: 0 8px;
 }
 
-.star-icon {
-  font-size: 1.2rem;
+.add-album {
+  background-color: var(--background-second-color);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-album:hover {
+  background-color: var(--background-hover-color);
+}
+
+.add-album-content {
+  text-align: center;
+}
+
+.add-icon {
+  font-size: 2rem;
+  color: var(--text-color);
+}
+
+.add-text {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-top: 8px;
 }
 </style>

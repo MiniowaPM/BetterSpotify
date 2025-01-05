@@ -47,13 +47,13 @@ export default {
 }
 
 [data-theme="light"] {
-  --background-color: #f8f9fa;
-  --background-second-color: #e9ecef;
-  --background-hover-color: #dee2e6;
-  --text-color: #212529;
-  --second-text-color: #495057;
-  --contrast-color: #ff7f50;
-  --contrast-hover-color: #ff5722;
+  --background-color: #f2f2f2;
+  --background-second-color: #e6e6e6;
+  --background-hover-color: #dcdcdc;
+  --text-color: #3a3a3a;
+  --second-text-color: #6a6a6a;
+  --contrast-color: #ff6f61;
+  --contrast-hover-color: #e65a50;
 }
 
 * {
