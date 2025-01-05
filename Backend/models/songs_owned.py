@@ -6,6 +6,6 @@ class Songs_owned(Base):
     __tablename__ = 'songs_owned'
       
     id = Column(Integer, primary_key=True, index=True)
-    song_fk = Column(Integer, ForeignKey('songs.id'))
-    user_fk = Column(Integer, ForeignKey('users.id'))
+    song_fk = Column(Integer, ForeignKey('albums.id'))
+    user_fk = Column(Integer, ForeignKey('studios.id'))
     create_date = Column(DateTime(timezone=True), server_default=func.now())

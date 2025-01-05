@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import models, schemas, db
 from .. import db_dependency, user_dependency
-from schemas import SongBase, UpdateSongBase, SuccessResponse
+from schemas import CreateSongBase, UpdateSongBase, SuccessResponse
 
 router = APIRouter(prefix="/song")
 
@@ -33,7 +33,7 @@ async def update_user(song_id: int, song: UpdateSongBase, db: db_dependency, use
     db.commit()
     return {"detail": "Song successfully modified"}
 
-@router.get("/all", tags=["Song"], status_code=status.HTTP_200_OK, response_model=List[SongBase])
+@router.get("/all", tags=["Song"], status_code=status.HTTP_200_OK, response_model=List[CreateSongBase])
 async def get_song(db: db_dependency, user_auth: user_dependency):
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
@@ -43,7 +43,7 @@ async def get_song(db: db_dependency, user_auth: user_dependency):
     return songs
 
 @router.post("/album/{album_id}/song", tags=["Song"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
-async def create_song(album_id: int, song: SongBase, db: db_dependency, user_auth: user_dependency):
+async def create_song(album_id: int, song: CreateSongBase, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')

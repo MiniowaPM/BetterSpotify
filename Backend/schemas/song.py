@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 
-class SongBase(BaseModel):
+class CreateSongBase(BaseModel):
     title: str
-    description: str
-    genre: int
+    lenght: float
+    album: int
 
 class UpdateSongBase(BaseModel):
     title: str | None = None
-    description: str | None = None
-    genre: int | None = None
+    lenght: float | None = None
+    album: int | None = None
 
 class Config:
     orm_mode = True

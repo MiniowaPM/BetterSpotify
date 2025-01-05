@@ -1,5 +1,5 @@
 from .user import User
 from .song import Song
 from .album import Album
-from .genre import Genre
+from .studio import Studio
 from .songs_owned import Songs_owned

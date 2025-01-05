@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 from sqlalchemy.orm import Session
 import models, schemas, db
-from schemas import AlbumBase, UpdateAlbumBase, SuccessResponse
+from schemas import CreateAlbumBase, UpdateAlbumBase, SuccessResponse
 from .. import db_dependency, user_dependency
 
 router = APIRouter(prefix="/album")
@@ -37,7 +37,7 @@ async def update_user(album_id: int, album: UpdateAlbumBase, db: db_dependency, 
     return {"detail": "Album successfully modified"}
 
 @router.post("/", tags=["Album"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
-async def create_album(album: AlbumBase, db: db_dependency, user_auth: user_dependency):
+async def create_album(album: CreateAlbumBase, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
@@ -52,7 +52,7 @@ async def create_album(album: AlbumBase, db: db_dependency, user_auth: user_depe
     db.commit()
     return {"detail": "Album successfully created"}
 
-@router.get("/all", tags=["Album"], status_code=status.HTTP_200_OK, response_model=List[AlbumBase])
+@router.get("/all", tags=["Album"], status_code=status.HTTP_200_OK, response_model=List[CreateAlbumBase])
 async def get_albums(db: db_dependency, user_auth: user_dependency):
     # JWT Token Validation
     if user_auth is None:
@@ -62,7 +62,7 @@ async def get_albums(db: db_dependency, user_auth: user_dependency):
         raise HTTPException(status_code=404, detail="Albums not found")
     return albums
 
-@router.get("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK, response_model=AlbumBase)
+@router.get("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK, response_model=CreateAlbumBase)
 async def get_album(album_id: int, db: db_dependency, user_auth: user_dependency):
     # JWT Token Validation
     if user_auth is None:
