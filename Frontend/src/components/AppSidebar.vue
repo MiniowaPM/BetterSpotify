@@ -6,9 +6,15 @@
     </div>
     <nav>
       <ul>
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/my-collection">My Collection</router-link></li>
-        <li><router-link to="/new-releases">New Releases</router-link></li>
+        <li><router-link to="/">
+          <div class="sidebar-content">Home</div>
+        </router-link></li>
+        <li><router-link to="/my-collection">
+          <div class="sidebar-content">My Collection</div>
+        </router-link></li>
+        <li><router-link to="/new-releases">
+          <div class="sidebar-content">New Releases</div>
+        </router-link></li>
       </ul>
     </nav>
     <div class="footer">
@@ -67,22 +73,26 @@ nav ul {
 }
 
 nav li {
-  margin: 20px 0;
   text-align: left;
 }
 
 nav a {
   text-decoration: none;
-  color: #fffafa;
-  font-size: 20px;
-  font-weight: 400;
   display: block;
-  padding: 5px 10px;
+  padding: 20px 30px;
+  display: flex;
 }
 
 nav a:hover {
   background-color: #2a2a2d;
   border-radius: 5px;
+}
+
+.sidebar-content{
+  color: #fffafa;
+  font-size: 20px;
+  font-weight: 400;
+  flex: auto;
 }
 
 .footer {
