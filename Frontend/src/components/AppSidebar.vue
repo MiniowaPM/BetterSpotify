@@ -12,8 +12,17 @@
         <li><router-link to="/my-collection">
           <div class="sidebar-content">My Collection</div>
         </router-link></li>
-        <li><router-link to="/new-releases">
-          <div class="sidebar-content">New Releases</div>
+        <li><router-link to="/explore">
+          <div class="sidebar-content">Explore</div>
+        </router-link></li>
+        <li><router-link to="/currently-sold">
+          <div class="sidebar-content">Selling</div>
+        </router-link></li>
+        <li><router-link to="/cart">
+          <div class="sidebar-content">Cart</div>
+        </router-link></li>
+        <li><router-link to="/admin-panel">
+          <div class="sidebar-content">Admin Panel</div>
         </router-link></li>
       </ul>
     </nav>
@@ -21,7 +30,7 @@
       <button class="settings-button">
         <i class="fa-solid fa-gear" alt="Settings"></i>
       </button>
-      <button class="lightswitch-button">
+      <button class="lightswitch-button" @click="toggleTheme">
         <i class="fa-solid fa-lightbulb" alt="Lightswitch"></i>
       </button>
     </div>
@@ -31,6 +40,13 @@
 <script>
 export default {
   name: "AppSidebar",
+  methods: {
+    toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+    },
+  },
 };
 </script>
 
@@ -41,7 +57,7 @@ export default {
   left: 0;
   height: 100%;
   width: 200px;
-  background-color: #202022;
+  background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,6 +71,10 @@ export default {
   width: 100%;
   padding: 22px 22px;
   margin-bottom: 20px;
+}
+
+[data-theme="light"] .logo {
+  filter: invert(85%);
 }
 
 .logo, .avatar {
@@ -81,15 +101,16 @@ nav a {
   display: block;
   padding: 20px 30px;
   display: flex;
-}
-
-nav a:hover {
-  background-color: #2a2a2d;
+  transition: background-color 0.3s ease;
   border-radius: 5px;
 }
 
+nav a:hover {
+  background-color: var(--background-hover-color);
+}
+
 .sidebar-content{
-  color: #fffafa;
+  color: var(--text-color);
   font-size: 20px;
   font-weight: 400;
   flex: auto;
@@ -104,7 +125,7 @@ nav a:hover {
 }
 
 .settings-button, .lightswitch-button {
-  color: #fffafa;
+  color: var(--text-color);
   width: 32px;
   height: 32px;
   background: none;
@@ -116,10 +137,11 @@ nav a:hover {
   font-size: 20px;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease;
+  border-radius: 25px;
 }
 
 .settings-button:hover, .lightswitch-button:hover {
-  background-color: #2a2a2d;
-  border-radius: 25px;
+  background-color: var(--background-hover-color);
 }
 </style>

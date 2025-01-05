@@ -2,7 +2,7 @@
     <div class="homepage">
       <img src="../assets/profilepicture.jpg" alt="User Avatar" class="avatarhome" />
       <h1 class="welcome">Welcome, nickname!</h1>
-      <p class="msg">What do you want to do now?</p>
+      <p class="msg">This is studio_name studio</p>
       <div class="features">
         <div class="feature">
           <router-link to="/my-collection">
@@ -51,7 +51,7 @@
   .homepage {
     padding: 20px;
     text-align: center;
-    color: #fffafa;
+    color: var(--text-color);
   }
   
   .welcome {
@@ -82,7 +82,7 @@
   }
   
   .feature {
-    background-color: #202022;
+    background-color: var(--background-color);
     border-radius: 10px;
     padding: 20px;
     text-align: center;
@@ -103,7 +103,7 @@
   .feature i {
     margin-top: 10px;
     font-size: 2rem;
-    color: #ff7f50;
+    color: var(--contrast-color);
     margin-bottom: 10px;
   }
   
@@ -114,12 +114,12 @@
   
   .feature p {
     font-size: 1rem;
-    color: #d3d3d3;
+    color: var(--second-text-color);
   }
 
   .feature a {
     text-decoration: none;
-    color: #fffafa;
+    color: var(--text-color);
   }
   </style>
   

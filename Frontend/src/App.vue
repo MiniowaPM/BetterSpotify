@@ -36,16 +36,31 @@ export default {
 @import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css');
 @import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css');
 
+:root {
+  --background-color: #202022;
+  --background-second-color: #171719;
+  --background-hover-color: #2a2a2d;
+  --text-color: #fffafa;
+  --second-text-color: #d3d3d3;
+  --contrast-color: #ff7f50;
+  --contrast-hover-color: #ff5722;
+}
+
+[data-theme="light"] {
+  --background-color: #f8f9fa;
+  --background-second-color: #e9ecef;
+  --background-hover-color: #dee2e6;
+  --text-color: #212529;
+  --second-text-color: #495057;
+  --contrast-color: #ff7f50;
+  --contrast-hover-color: #ff5722;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   user-select: none;
-}
-
-html,body {
-  height: 100%;
-  margin: 0;
 }
 
 #app {
@@ -55,8 +70,8 @@ html,body {
 
 body {
   font-family: "Hanken Grotesk", sans-serif;
-  background-color: #202022;
-  color: #fffafa;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -68,7 +83,6 @@ main {
   bottom: 0;
   overflow: auto;
   padding: 20px;
-  background-color: #121212;
 }
 
 .container {
@@ -78,12 +92,12 @@ main {
 }
 
 .main-content {
-  background-color: #171719;
+  background-color: var(--background-second-color);
 }
 
 .content {
   padding: 20px;
-  color: #fffafa;
+  color: var(--text-color);
   flex: 1;
 }
 
@@ -93,17 +107,17 @@ main {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #202022;
+  background-color: var(--background-color);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ff7f50;
+  background-color: var(--contrast-color);
   border-radius: 5px;
-  border: 2px solid #202022;
+  border: 2px solid var(--background-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #ff5722;
+  background-color: var(--contrast-hover-color);
 }
 </style>

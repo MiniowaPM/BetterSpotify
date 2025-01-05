@@ -57,7 +57,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #171719;
+  background-color: var(--background-second-color);
   padding: 18px;
   position: fixed;
   top: 0;
@@ -78,7 +78,7 @@ export default {
 .control-buttons {
   display: flex;
   align-items: center;
-  background-color: #202022;
+  background-color: var(--background-color);
   border-radius: 50px;
 }
 
@@ -87,11 +87,11 @@ export default {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #202022;
+  background-color: var(--background-color);
   border: none;
   border-radius: 50px;
   padding: 10px 15px;
-  color: #fffafa;
+  color: var(--text-color);
   font-size: 15px;
   outline: none;
   width: 30%;
@@ -108,11 +108,20 @@ export default {
   align-items: center;
   cursor: pointer;
   font-size: 15px;
-  color: #fffafa;
+  color: var(--text-color);
   width: 40px;
   height: 40px;
   justify-content: center;
   align-items: center;
+}
+
+.back-btn,
+.forward-btn,
+.minimize-btn,
+.maximize-btn,
+.close-btn {
+  transition: background-color 0.3s ease;
+  border-radius: 25px;
 }
 
 .back-btn:hover,
@@ -120,7 +129,6 @@ export default {
 .minimize-btn:hover,
 .maximize-btn:hover,
 .close-btn:hover {
-  background-color: #2a2a2d;
-  border-radius: 25px;
+  background-color: var(--background-hover-color);
 }
 </style>
