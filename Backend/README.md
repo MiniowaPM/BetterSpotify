@@ -21,7 +21,7 @@
 - JWT-based authentication and authorization.
 - Validation of request data using Pydantic.
 - OpenAPI documentation available at /docs.
-- Integration-ready with databases (MySQL, SQLite, PostgreSQL).
+- Integration-ready with databases (MySQL, SQLite, PostgreSQL, Oracle, MicrosoftSQL).
 
 ## Tech Stack 🛠️ ##
 
@@ -52,9 +52,9 @@ Follow these instructions to set up the project locally.
 
 ```python -m venv .env```
 
-```- source venv/bin/activate```  # For Linux/Mac
+```source venv/bin/activate```  # For Linux/Mac
 
-```- venv\Scripts\activate```     # For Windows
+```.env\Scripts\activate```     # For Windows
 
 3. Install dependencies:
 
