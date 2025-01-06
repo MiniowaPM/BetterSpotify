@@ -11,7 +11,7 @@
 <script>
 import AppSidebar from "./components/AppSidebar.vue";
 import AppTopbar from "./components/AppTopbar.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 export default {
   name: "App",
@@ -20,22 +20,33 @@ export default {
     AppTopbar,
   },
   setup() {
-    const cart = ref([]);
+    const cart = ref(JSON.parse(localStorage.getItem("cart")) || []);
+
+    const saveCartToLocalStorage = () => {
+      localStorage.setItem("cart", JSON.stringify(cart.value));
+    };
 
     const addToCart = (album) => {
       const albumExists = cart.value.some(item => item.title === album.title);
       if (!albumExists) {
         cart.value.push(album);
+        saveCartToLocalStorage();
       }
     };
 
     const removeFromCart = (index) => {
       cart.value.splice(index, 1);
+      saveCartToLocalStorage();
     };
 
     const clearCart = () => {
       cart.value = [];
+      saveCartToLocalStorage();
     };
+
+    onMounted(() => {
+      saveCartToLocalStorage();
+    });
     
     return { cart, addToCart, removeFromCart, clearCart };
   },

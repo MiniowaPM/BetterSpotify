@@ -39,7 +39,7 @@
             {
               title: "Album One",
               artist: "Artist A",
-              cover: "https://upload.wikimedia.org/wikipedia/en/4/4b/My_Bloody_Valentine_-_Loveless.png",
+              cover: "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
               price: 14.99,
             },
             {

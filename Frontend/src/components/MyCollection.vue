@@ -175,14 +175,12 @@ p {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-button:hover {
-  background-color: var(--background-hover-color);
+  background-color: var(--background-color);
   border-color: var(--contrast-color);
   color: var(--contrast-color);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
 .toggle-button:active {
@@ -263,7 +261,7 @@ p {
 }
 
 .add-album:hover {
-  background-color: var(--background-hover-color);
+  background-color: var(--background-color);
 }
 
 .add-album-content {

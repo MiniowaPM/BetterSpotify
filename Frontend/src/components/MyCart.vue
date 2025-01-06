@@ -173,36 +173,42 @@ h1 {
 
 .clear-button,
 .checkout-button {
+  font-family: "Hanken Grotesk", sans-serif;
   padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
+  background-color: var(--background-second-color);
+  color: var(--text-color);
+  border: 1px solid var(--background-hover-color);
   border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.clear-button {
-  background-color: var(--background-hover-color);
-  color: var(--text-color);
+.clear-button:hover,
+.checkout-button:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
 .clear-button:hover {
-  background-color: var(--contrast-color);
-  color: #fff;
+  background-color: var(--background-color);
+  border-color: var(--contrast-color);
+  color: var(--contrast-color);
 }
 
-.checkout-button {
-  background-color: var(--contrast-color);
-  color: #fff;
+.checkout-button:hover {
+  background-color: var(--background-color);
+  border-color: #4caf50;
+  color: #4caf50;
 }
+
 
 .checkout-button:disabled {
-  background-color: var(--background-hover-color);
   cursor: not-allowed;
 }
 
-.checkout-button:hover:enabled {
-  background-color: var(--contrast-color-dark);
-  transform: scale(1.05);
+.checkout-button:disabled:hover {
+  border-color: var(--contrast-color);
+  color: var(--contrast-color);
 }
 </style>
