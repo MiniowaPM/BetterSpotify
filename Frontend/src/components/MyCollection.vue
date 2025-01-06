@@ -14,7 +14,7 @@
           <span class="release-date">{{ album.releaseDate }}</span>
           <span class="separator">•</span>
           <span>
-            <i :class="isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'" class="star-icon" @click="toggleFavorite(album)" :title="isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'"></i>
+            <i :class="isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'" class="star-icon" :title="isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'" @click.stop="toggleFavorite(album)"></i>
           </span>
         </div>
       </div>
