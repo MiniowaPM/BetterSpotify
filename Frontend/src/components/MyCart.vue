@@ -1,66 +1,208 @@
 <template>
-    <div class="my-cart">
-      <h1>Your Cart</h1>
-      <div v-if="cart.length === 0">
-        <p>Your cart is empty.</p>
-      </div>
-      <div v-else>
-        <div v-for="(album, idx) in cart" :key="idx" class="cart-item">
-          <img :src="album.cover" alt="Album cover" class="cart-cover" />
-          <div class="cart-details">
-            <h3>{{ album.title }}</h3>
-            <p>{{ album.artist }}</p>
-            <span>{{ album.price }}zł</span>
+  <div class="my-cart">
+    <h1>My Cart</h1>
+    <p v-if="cart.length === 0" class="empty-cart-text">Your cart is empty. Add some albums to proceed!</p>
+    <div v-else>
+      <div class="cart-items">
+        <div v-for="(item, index) in cart" :key="index" class="cart-item" @click="viewAlbumDetail(item)">
+          <img :src="item.cover" alt="Album cover" class="album-cover" />
+          <div class="item-info">
+            <h3>{{ item.title }}</h3>
+            <p class="artist">{{ item.artist }}</p>
+            <span class="price">{{ item.price }}zł</span>
           </div>
+          <button class="remove-button" @click.stop="removeFromCart(index)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="cart-summary">
+        <p class="balance">Balance: {{ userBalance.toFixed(2) }}zł</p>
+        <p class="total">Total: {{ cartTotal.toFixed(2) }}zł</p>
+
+        <div class="actions">
+          <button class="clear-button" @click="clearCart">Clear Cart</button>
+          <button class="checkout-button" :disabled="cartTotal > userBalance" @click="checkout">
+            {{ cartTotal > userBalance ? "Insufficient Balance" : "Checkout" }}
+          </button>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "MyCart",
-    props: ["cart"],
-  };
-  </script>
-  
-  <style scoped>
-    .my-cart {
-      padding: 20px;
-      text-align: center;
-      color: var(--text-color);
-    }
-  
-    .cart-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-  
-    .cart-cover {
-      width: 50px;
-      height: auto;
-      margin-right: 20px;
-    }
-  
-    .cart-details {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .cart-item h3 {
-      margin: 0;
-    }
-  
-    .cart-item p {
-      font-size: 1rem;
-      color: var(--second-text-color);
-    }
-  
-    .cart-item span {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--primary-color);
-    }
-  </style>  
+  </div>
+</template>
+
+<script>
+export default {
+  name: "MyCart",
+  props: {
+    cart: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      userBalance: 38.0,
+    };
+  },
+  computed: {
+    cartTotal() {
+      return this.cart.reduce((sum, item) => sum + item.price, 0);
+    },
+  },
+  methods: {
+    removeFromCart(index) {
+      this.$emit('remove-from-cart', index);
+    },
+    clearCart() {
+      this.$emit('clear-cart');
+    },
+    checkout() {
+      alert("ayo 🤨");
+    },
+    viewAlbumDetail(album) {
+      this.$router.push({
+        name: "AlbumDetail",
+        params: { albumId: album.title },
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.my-cart {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--text-color);
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.empty-cart-text {
+  font-size: 1.2rem;
+  color: var(--second-text-color);
+}
+
+.cart-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  background-color: var(--background-second-color);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--background-hover-color);
+  transition: border 0.3s ease, transform 0.3s ease;
+}
+
+.cart-item:hover {
+  background-color: var(--background-color);
+}
+
+.album-cover {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+.item-info {
+  flex: 1;
+  text-align: left;
+}
+
+.item-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.item-info .artist {
+  font-size: 1rem;
+  color: var(--second-text-color);
+}
+
+.item-info .price {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--contrast-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.remove-button:hover {
+  color: var(--second-text-color);
+}
+
+.cart-summary {
+  text-align: left;
+  background-color: var(--background-second-color);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--background-hover-color); /* subtle border */
+}
+
+.cart-summary p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.clear-button,
+.checkout-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.clear-button {
+  background-color: var(--background-hover-color);
+  color: var(--text-color);
+}
+
+.clear-button:hover {
+  background-color: var(--contrast-color);
+  color: #fff;
+}
+
+.checkout-button {
+  background-color: var(--contrast-color);
+  color: #fff;
+}
+
+.checkout-button:disabled {
+  background-color: var(--background-hover-color);
+  cursor: not-allowed;
+}
+
+.checkout-button:hover:enabled {
+  background-color: var(--contrast-color-dark);
+  transform: scale(1.05);
+}
+</style>

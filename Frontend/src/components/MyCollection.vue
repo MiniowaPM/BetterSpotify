@@ -167,7 +167,7 @@ p {
 .toggle-button {
   font-family: "Hanken Grotesk", sans-serif;
   padding: 10px 20px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   background-color: var(--background-second-color);
   color: var(--second-text-color);
   border: 1px solid var(--background-hover-color);
@@ -206,6 +206,7 @@ p {
   text-align: center;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  border: 1px solid var(--background-hover-color);
 }
 
 .album-cover {
@@ -226,7 +227,7 @@ p {
 }
 
 .album:hover {
-  background-color: var(--background-hover-color);
+  background-color: var(--background-color);
 }
 
 .album-footer {

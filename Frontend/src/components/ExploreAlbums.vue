@@ -103,6 +103,7 @@
     text-align: center;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    border: 1px solid var(--background-hover-color);
   }
   
   .album-cover {
@@ -123,7 +124,7 @@
   }
   
   .album:hover {
-    background-color: var(--background-hover-color);
+    background-color: var(--background-color);
   }
   
   .album-footer {

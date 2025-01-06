@@ -102,6 +102,7 @@
     text-align: center;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    border: 1px solid var(--background-hover-color);
   }
   
   .studio-logo {
@@ -122,7 +123,7 @@
   }
   
   .studio:hover {
-    background-color: var(--background-hover-color);
+    background-color: var(--background-color);
   }
 </style>
   

@@ -3,7 +3,7 @@
     <AppSidebar />
     <main class="main-content">
       <AppTopbar />
-      <router-view :cart="cart" @add-to-cart="addToCart" />
+      <router-view :cart="cart" @add-to-cart="addToCart" @remove-from-cart="removeFromCart" @clear-cart="clearCart" />
     </main>
   </div>
 </template>
@@ -28,7 +28,16 @@ export default {
         cart.value.push(album);
       }
     };
-  return { cart, addToCart };
+
+    const removeFromCart = (index) => {
+      cart.value.splice(index, 1);
+    };
+
+    const clearCart = () => {
+      cart.value = [];
+    };
+    
+    return { cart, addToCart, removeFromCart, clearCart };
   },
 };
 </script>
