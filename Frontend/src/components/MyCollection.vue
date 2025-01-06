@@ -92,9 +92,7 @@ export default {
   },
   computed: {
     displayedAlbums() {
-      return this.showFavoritesOnly
-        ? this.favorites
-        : this.studio.albums;
+      return this.showFavoritesOnly ? this.favorites : this.studio.albums;
     },
   },
   methods: {
@@ -108,19 +106,43 @@ export default {
       } else {
         this.favorites.splice(index, 1);
       }
+      this.saveFavoritesToLocalStorage();
     },
     isFavorite(album) {
       return this.favorites.some(fav => fav.title === album.title);
     },
     toggleFavoritesView() {
       this.showFavoritesOnly = !this.showFavoritesOnly;
+      this.saveToggleStateToLocalStorage();
     },
     viewAlbumDetail(album) {
       this.$router.push({
         name: "AlbumDetail",
-        params: { albumId: album.title }, // Pass the album title (or any unique identifier)
+        params: { albumId: album.title },
       });
     },
+    saveFavoritesToLocalStorage() {
+      localStorage.setItem("favorites", JSON.stringify(this.favorites));
+    },
+    loadFavoritesFromLocalStorage() {
+      const storedFavorites = localStorage.getItem("favorites");
+      if (storedFavorites) {
+        this.favorites = JSON.parse(storedFavorites);
+      }
+    },
+    saveToggleStateToLocalStorage() {
+      localStorage.setItem("showFavoritesOnly", JSON.stringify(this.showFavoritesOnly));
+    },
+    loadToggleStateFromLocalStorage() {
+      const storedToggleState = localStorage.getItem("showFavoritesOnly");
+      if (storedToggleState !== null) {
+        this.showFavoritesOnly = JSON.parse(storedToggleState);
+      }
+    },
+  },
+  mounted() {
+    this.loadFavoritesFromLocalStorage();
+    this.loadToggleStateFromLocalStorage();
   },
 };
 </script>
