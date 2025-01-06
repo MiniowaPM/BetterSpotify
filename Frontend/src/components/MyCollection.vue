@@ -1,9 +1,12 @@
 <template>
   <div class="my-collection">
     <h1>{{ studio.name }}'s Albums</h1>
-    <p>{{ studio.description }}</p>
+    <p>Browse through your amazing albums.</p>
+    <button class="toggle-button" @click="toggleFavoritesView">
+      {{ showFavoritesOnly ? "Show All Albums" : "Show Favorites" }}
+    </button>
     <div class="albums">
-      <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
+      <div v-for="(album, idx) in displayedAlbums" :key="idx" class="album" @click="viewAlbumDetail(album)">
         <img :src="album.cover" alt="Album cover" class="album-cover" />
         <h3>{{ album.title }}</h3>
         <p class="artist-text">{{ album.artist }}</p>
@@ -11,7 +14,7 @@
           <span class="release-date">{{ album.releaseDate }}</span>
           <span class="separator">•</span>
           <span>
-            <i class="fa-light fa-star star-icon"></i>
+            <i :class="isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'" class="star-icon" @click="toggleFavorite(album)" :title="isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'"></i>
           </span>
         </div>
       </div>
@@ -32,7 +35,6 @@ export default {
     return {
       studio: {
         name: "studio_name",
-        description: "Browse through your amazing albums.",
         albums: [
           {
             title: "Album One",
@@ -81,16 +83,45 @@ export default {
             artist: "Artist Eight",
             cover: "https://cdn.prod.website-files.com/6646ddea6f7841c79d11cbc6/6646ddea6f7841c79d11cc04_polygondwanaland-small2.jpg",
             releaseDate: "2020",
-          }
-        ]
-      }
+          },
+        ],
+      },
+      favorites: [],
+      showFavoritesOnly: false,
     };
+  },
+  computed: {
+    displayedAlbums() {
+      return this.showFavoritesOnly
+        ? this.favorites
+        : this.studio.albums;
+    },
   },
   methods: {
     addAlbum() {
       console.log("Add album func");
-    }
-  }
+    },
+    toggleFavorite(album) {
+      const index = this.favorites.findIndex(fav => fav.title === album.title);
+      if (index === -1) {
+        this.favorites.push(album);
+      } else {
+        this.favorites.splice(index, 1);
+      }
+    },
+    isFavorite(album) {
+      return this.favorites.some(fav => fav.title === album.title);
+    },
+    toggleFavoritesView() {
+      this.showFavoritesOnly = !this.showFavoritesOnly;
+    },
+    viewAlbumDetail(album) {
+      this.$router.push({
+        name: "AlbumDetail",
+        params: { albumId: album.title }, // Pass the album title (or any unique identifier)
+      });
+    },
+  },
 };
 </script>
 
@@ -109,6 +140,31 @@ h1 {
 p {
   font-size: 1.2rem;
   margin-bottom: 20px;
+}
+
+.toggle-button {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  background-color: var(--background-second-color);
+  color: var(--second-text-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-button:hover {
+  background-color: var(--background-hover-color);
+  border-color: var(--contrast-color);
+  color: var(--contrast-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-button:active {
+  transform: scale(0.98);
 }
 
 .albums {

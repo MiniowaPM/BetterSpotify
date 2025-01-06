@@ -4,6 +4,7 @@ import MyCollection from "../components/MyCollection.vue";
 import ExploreMarket from "../components/ExploreMarket.vue";
 import ExploreAlbums from "../components/ExploreAlbums.vue";
 import MyCart from "../components/MyCart.vue";
+import AlbumDetail from "../components/AlbumDetail.vue";
 
 const routes = [
   {
@@ -15,6 +16,12 @@ const routes = [
     path: "/my-collection",
     name: "MyCollection",
     component: MyCollection,
+  },
+  {
+    path: "/album/:albumId",
+    name: "AlbumDetail",
+    component: AlbumDetail,
+    props: true,
   },
   {
     path: "/explore",
