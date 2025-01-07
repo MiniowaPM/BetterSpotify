@@ -2,28 +2,44 @@
   <aside class="sidebar">
     <div class="profile">
       <img src="../assets/icon_onsite.png" alt="Logo" class="logo" />
-      <img src="../assets/profilepicture.jpg" alt="User Avatar" class="avatar" />
+      <img
+        src="../assets/profilepicture.jpg"
+        alt="User Avatar"
+        class="avatar"
+      />
     </div>
     <nav>
       <ul>
-        <li><router-link to="/">
-          <div class="sidebar-content">Home</div>
-        </router-link></li>
-        <li><router-link to="/my-collection">
-          <div class="sidebar-content">My Collection</div>
-        </router-link></li>
-        <li><router-link to="/explore">
-          <div class="sidebar-content">Explore</div>
-        </router-link></li>
-        <li><router-link to="/currently-sold">
-          <div class="sidebar-content">Selling</div>
-        </router-link></li>
-        <li><router-link to="/cart">
-          <div class="sidebar-content">Cart</div>
-        </router-link></li>
-        <li><router-link to="/admin-panel">
-          <div class="sidebar-content">Admin Panel</div>
-        </router-link></li>
+        <li>
+          <router-link to="/">
+            <div class="sidebar-content">Home</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/my-collection">
+            <div class="sidebar-content">My Collection</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/explore">
+            <div class="sidebar-content">Explore</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/currently-sold">
+            <div class="sidebar-content">Selling</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/cart">
+            <div class="sidebar-content">Cart</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/admin-panel">
+            <div class="sidebar-content">Admin Panel</div>
+          </router-link>
+        </li>
       </ul>
     </nav>
     <div class="footer">
@@ -42,7 +58,8 @@ export default {
   name: "AppSidebar",
   methods: {
     toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme") || "dark";
       const newTheme = currentTheme === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", newTheme);
       localStorage.setItem("theme", newTheme);
@@ -82,7 +99,8 @@ export default {
   filter: invert(85%);
 }
 
-.logo, .avatar {
+.logo,
+.avatar {
   width: 35px;
   height: auto;
 }
@@ -114,7 +132,7 @@ nav a:hover {
   background-color: var(--background-hover-color);
 }
 
-.sidebar-content{
+.sidebar-content {
   color: var(--text-color);
   font-size: 20px;
   font-weight: 400;
@@ -129,7 +147,8 @@ nav a:hover {
   width: 100%;
 }
 
-.settings-button, .lightswitch-button {
+.settings-button,
+.lightswitch-button {
   color: var(--text-color);
   width: 32px;
   height: 32px;
@@ -146,7 +165,8 @@ nav a:hover {
   border-radius: 25px;
 }
 
-.settings-button:hover, .lightswitch-button:hover {
+.settings-button:hover,
+.lightswitch-button:hover {
   background-color: var(--background-hover-color);
 }
 </style>

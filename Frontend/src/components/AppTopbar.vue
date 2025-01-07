@@ -2,24 +2,54 @@
   <header class="top-bar">
     <div class="side-controls left-controls">
       <div class="back-forward-buttons">
-        <button id="backButton" class="back-btn" @click="goBack" aria-label="Go Back">
+        <button
+          id="backButton"
+          class="back-btn"
+          @click="goBack"
+          aria-label="Go Back"
+        >
           <i class="fa-regular fa-chevron-left" alt="Back"></i>
         </button>
-        <button id="forwardButton" class="forward-btn" @click="goForward" aria-label="Go Forward">
+        <button
+          id="forwardButton"
+          class="forward-btn"
+          @click="goForward"
+          aria-label="Go Forward"
+        >
           <i class="fa-regular fa-chevron-right" alt="Forward"></i>
         </button>
       </div>
     </div>
-    <input type="text" class="search-box" placeholder="Search..." aria-label="Search" />
+    <input
+      type="text"
+      class="search-box"
+      placeholder="Search..."
+      aria-label="Search"
+    />
     <div class="side-controls right-controls">
       <div class="control-buttons">
-        <button id="minimizeButton" class="minimize-btn" @click="minimize" aria-label="Minimize">
+        <button
+          id="minimizeButton"
+          class="minimize-btn"
+          @click="minimize"
+          aria-label="Minimize"
+        >
           <i class="fa-thin fa-window-minimize" alt="Minimize"></i>
         </button>
-        <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
+        <button
+          id="maximizeButton"
+          class="maximize-btn"
+          @click="toggleMaximize"
+          aria-label="Maximize"
+        >
           <i class="fa-light fa-expand" alt="Maximize"></i>
         </button>
-        <button id="closeButton" class="close-btn" @click="closeApp" aria-label="Close">
+        <button
+          id="closeButton"
+          class="close-btn"
+          @click="closeApp"
+          aria-label="Close"
+        >
           <i class="fa-light fa-xmark" alt="Close"></i>
         </button>
       </div>

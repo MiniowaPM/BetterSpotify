@@ -3,7 +3,12 @@
     <AppSidebar />
     <main class="main-content">
       <AppTopbar />
-      <router-view :cart="cart" @add-to-cart="addToCart" @remove-from-cart="removeFromCart" @clear-cart="clearCart" />
+      <router-view
+        :cart="cart"
+        @add-to-cart="addToCart"
+        @remove-from-cart="removeFromCart"
+        @clear-cart="clearCart"
+      />
     </main>
   </div>
 </template>
@@ -27,7 +32,7 @@ export default {
     };
 
     const addToCart = (album) => {
-      const albumExists = cart.value.some(item => item.title === album.title);
+      const albumExists = cart.value.some((item) => item.title === album.title);
       if (!albumExists) {
         cart.value.push(album);
         saveCartToLocalStorage();
@@ -47,26 +52,26 @@ export default {
     onMounted(() => {
       saveCartToLocalStorage();
     });
-    
+
     return { cart, addToCart, removeFromCart, clearCart };
   },
 };
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css');
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css");
 
 :root {
   --background-color: #202022;

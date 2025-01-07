@@ -6,7 +6,12 @@
       {{ showFavoritesOnly ? "Show All Albums" : "Show Favorites" }}
     </button>
     <div class="albums">
-      <div v-for="(album, idx) in displayedAlbums" :key="idx" class="album" @click="viewAlbumDetail(album)">
+      <div
+        v-for="(album, idx) in displayedAlbums"
+        :key="idx"
+        class="album"
+        @click="viewAlbumDetail(album)"
+      >
         <img :src="album.cover" alt="Album cover" class="album-cover" />
         <h3>{{ album.title }}</h3>
         <p class="artist-text">{{ album.artist }}</p>
@@ -14,7 +19,16 @@
           <span class="release-date">{{ album.releaseDate }}</span>
           <span class="separator">•</span>
           <span>
-            <i :class="isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'" class="star-icon" :title="isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'" @click.stop="toggleFavorite(album)"></i>
+            <i
+              :class="
+                isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'
+              "
+              class="star-icon"
+              :title="
+                isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'
+              "
+              @click.stop="toggleFavorite(album)"
+            ></i>
           </span>
         </div>
       </div>
@@ -39,49 +53,57 @@ export default {
           {
             title: "Album One",
             artist: "Artist One",
-            cover: "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
+            cover:
+              "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
             releaseDate: "2020",
           },
           {
             title: "Album Two",
             artist: "Artist Two",
-            cover: "https://cdn-images.dzcdn.net/images/cover/6c6b734cfccf2c1974d2499e0b7f3bd7/500x500-000000-80-0-0.jpg",
+            cover:
+              "https://cdn-images.dzcdn.net/images/cover/6c6b734cfccf2c1974d2499e0b7f3bd7/500x500-000000-80-0-0.jpg",
             releaseDate: "2020",
           },
           {
             title: "Album Three",
             artist: "Artist Three",
-            cover: "https://ecsmedia.pl/cdn-cgi/image/format=webp,width=544,height=544,/c/deathcore-b-iext146494804.jpg",
+            cover:
+              "https://ecsmedia.pl/cdn-cgi/image/format=webp,width=544,height=544,/c/deathcore-b-iext146494804.jpg",
             releaseDate: "2020",
           },
           {
             title: "Album Four",
             artist: "Artist Four",
-            cover: "https://cdn-images.dzcdn.net/images/cover/e1b2f02261e3b0c398d7efa866530967/500x500-000000-80-0-0.jpg",
+            cover:
+              "https://cdn-images.dzcdn.net/images/cover/e1b2f02261e3b0c398d7efa866530967/500x500-000000-80-0-0.jpg",
             releaseDate: "2020",
           },
           {
             title: "Album Five",
             artist: "Artist Five",
-            cover: "https://upload.wikimedia.org/wikipedia/en/f/f8/The_Strokes_-_The_New_Abnormal.png",
+            cover:
+              "https://upload.wikimedia.org/wikipedia/en/f/f8/The_Strokes_-_The_New_Abnormal.png",
             releaseDate: "2020",
           },
           {
             title: "Album Six",
             artist: "Artist Six",
-            cover: "https://i.ebayimg.com/images/g/EyQAAOSwEK9TvDlv/s-l1600.webp",
+            cover:
+              "https://i.ebayimg.com/images/g/EyQAAOSwEK9TvDlv/s-l1600.webp",
             releaseDate: "2020",
           },
           {
             title: "Album Seven",
             artist: "Artist Seven",
-            cover: "https://fiu-original.b-cdn.net/fontsinuse.com/use-images/107/107559/107559.jpeg?filename=I%27m%20In%20Your%20Mind%20Fuzz.jpg",
+            cover:
+              "https://fiu-original.b-cdn.net/fontsinuse.com/use-images/107/107559/107559.jpeg?filename=I%27m%20In%20Your%20Mind%20Fuzz.jpg",
             releaseDate: "2020",
           },
           {
             title: "Album Eight",
             artist: "Artist Eight",
-            cover: "https://cdn.prod.website-files.com/6646ddea6f7841c79d11cbc6/6646ddea6f7841c79d11cc04_polygondwanaland-small2.jpg",
+            cover:
+              "https://cdn.prod.website-files.com/6646ddea6f7841c79d11cbc6/6646ddea6f7841c79d11cc04_polygondwanaland-small2.jpg",
             releaseDate: "2020",
           },
         ],
@@ -100,7 +122,9 @@ export default {
       console.log("Add album func");
     },
     toggleFavorite(album) {
-      const index = this.favorites.findIndex(fav => fav.title === album.title);
+      const index = this.favorites.findIndex(
+        (fav) => fav.title === album.title
+      );
       if (index === -1) {
         this.favorites.push(album);
       } else {
@@ -109,7 +133,7 @@ export default {
       this.saveFavoritesToLocalStorage();
     },
     isFavorite(album) {
-      return this.favorites.some(fav => fav.title === album.title);
+      return this.favorites.some((fav) => fav.title === album.title);
     },
     toggleFavoritesView() {
       this.showFavoritesOnly = !this.showFavoritesOnly;
@@ -131,7 +155,10 @@ export default {
       }
     },
     saveToggleStateToLocalStorage() {
-      localStorage.setItem("showFavoritesOnly", JSON.stringify(this.showFavoritesOnly));
+      localStorage.setItem(
+        "showFavoritesOnly",
+        JSON.stringify(this.showFavoritesOnly)
+      );
     },
     loadToggleStateFromLocalStorage() {
       const storedToggleState = localStorage.getItem("showFavoritesOnly");
@@ -189,7 +216,7 @@ p {
 
 .albums {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 15px;
   flex-wrap: wrap;
   justify-items: center;

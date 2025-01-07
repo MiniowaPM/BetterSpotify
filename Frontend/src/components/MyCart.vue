@@ -1,10 +1,17 @@
 <template>
   <div class="my-cart">
     <h1>My Cart</h1>
-    <p v-if="cart.length === 0" class="empty-cart-text">Your cart is empty. Add some albums to proceed!</p>
+    <p v-if="cart.length === 0" class="empty-cart-text">
+      Your cart is empty. Add some albums to proceed!
+    </p>
     <div v-else>
       <div class="cart-items">
-        <div v-for="(item, index) in cart" :key="index" class="cart-item" @click="viewAlbumDetail(item)">
+        <div
+          v-for="(item, index) in cart"
+          :key="index"
+          class="cart-item"
+          @click="viewAlbumDetail(item)"
+        >
           <img :src="item.cover" alt="Album cover" class="album-cover" />
           <div class="item-info">
             <h3>{{ item.title }}</h3>
@@ -22,7 +29,11 @@
 
         <div class="actions">
           <button class="clear-button" @click="clearCart">Clear Cart</button>
-          <button class="checkout-button" :disabled="cartTotal > userBalance" @click="checkout">
+          <button
+            class="checkout-button"
+            :disabled="cartTotal > userBalance"
+            @click="checkout"
+          >
             {{ cartTotal > userBalance ? "Insufficient Balance" : "Checkout" }}
           </button>
         </div>
@@ -52,10 +63,10 @@ export default {
   },
   methods: {
     removeFromCart(index) {
-      this.$emit('remove-from-cart', index);
+      this.$emit("remove-from-cart", index);
     },
     clearCart() {
-      this.$emit('clear-cart');
+      this.$emit("clear-cart");
     },
     checkout() {
       alert("ayo 🤨");
@@ -201,7 +212,6 @@ h1 {
   border-color: #4caf50;
   color: #4caf50;
 }
-
 
 .checkout-button:disabled {
   cursor: not-allowed;
