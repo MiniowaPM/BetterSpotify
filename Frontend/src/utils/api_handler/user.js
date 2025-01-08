@@ -38,10 +38,6 @@ export async function patchUser(userId, jwtToken, username = null, firstName = n
     };
     const params = {};
     if (username !== null) params.username = username;
-    if (firstName !== null) params.first_name = firstName;
-    if (lastName !== null) params.last_name = lastName;
-    if (email !== null) params.email = email;
-    if (gender !== null) params.gender = gender;
     if (passwordHash !== null) params.password_hash = passwordHash;
     if (isAdmin !== null) params.is_admin = isAdmin;
     
@@ -54,8 +50,8 @@ export async function patchUser(userId, jwtToken, username = null, firstName = n
     }
 }
 
-export async function getUser(userId, jwtToken) {
-    const url = `${serverUrl}/user/${userId}`;
+export async function getLoggedUser(jwtToken) {
+    const url = `${serverUrl}/user/me`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
@@ -69,19 +65,31 @@ export async function getUser(userId, jwtToken) {
     }
 }
 
-export async function postUser(username, firstName, lastName, email, gender, passwordHash) {
-    const url = `${serverUrl}/user/`;
+export async function getUsersInStudio(jwtToken) {
+  const url = `${serverUrl}/user/studio`;
+  const headers = {
+    Authorization: `Bearer ${jwtToken.access_token}`,
+  };
+  try {
+      const response = await axios.get(url, {headers});
+      return response.data;
+
+  } catch(error){
+      console.error(`Error: ${error.message}`);
+      return null;
+  }
+}
+
+export async function postInitUser(username, passwordHash, studioName) {
+    const url = `${serverUrl}/user/signup`;
     const headers = {
       "accept": "application/json",
       "Content-Type": "application/json"
     };
     const params = {
         "username": username,
-        "first_name": firstName,
-        "last_name": lastName,
-        "email": email,
-        "gender": gender,
-        "password_hash": passwordHash
+        "password_hash": passwordHash,
+        "studio_name": studioName
     }
     try {
         const response = await axios.post(url, params, {headers});
@@ -92,19 +100,24 @@ export async function postUser(username, firstName, lastName, email, gender, pas
     }
 }
 
-export async function getUsers(jwtToken) {
-    const url = `${serverUrl}/user/all`;
-    const headers = {
-      Authorization: `Bearer ${jwtToken.access_token}`,
-    };
-    try {
-        const response = await axios.get(url, { headers });
-        return response.data;
-
-    } catch(error){
-        console.error(`Error: ${error.message}`);
-        return null;
-    }
+export async function postUser(username, passwordHash, jwtToken) {
+  const url = `${serverUrl}/user/`;
+  const headers = {
+    "accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${jwtToken.access_token}`,
+  };
+  const params = {
+      "username": username,
+      "password_hash": passwordHash,
+  }
+  try {
+      const response = await axios.post(url, params, {headers});
+      return response.data;
+  } catch(error){
+      console.error(`Error: ${error.message}`);
+      return null;
+  }
 }
 
 export async function postUserImg(jwtToken, imgData) {

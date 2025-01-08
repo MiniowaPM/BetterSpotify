@@ -6,7 +6,6 @@ export async function deleteSong(songId, jwtToken) {
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
-  
     try {
       const response = await axios.delete(url, { headers });
       return response.data;
@@ -16,16 +15,14 @@ export async function deleteSong(songId, jwtToken) {
     }
   }
 
-export async function patchSong(songId, jwtToken, title = null, description = null, genre = null) {
+export async function patchSong(songId, jwtToken, title = null, length = null) {
     const url = `${serverUrl}/song/${songId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
     const params = {};
     if (title !== null) params.title = title;
-    if (description !== null) params.description = description;
-    if (genre !== null) params.genre = genre;
-
+    if (length !== null) params.length = length;
     try {
         const response = await axios.patch(url, params, { headers });
         return response.data;
@@ -36,7 +33,7 @@ export async function patchSong(songId, jwtToken, title = null, description = nu
     }
 }
 
-export async function getSong(songId, jwtToken) {
+export async function getSongInAlbum(songId, jwtToken) {
     const url = `${serverUrl}/song/${songId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
@@ -63,20 +60,6 @@ export async function postSong(albumId, jwtToken, title, description, genre) {
     }
     try {
         const response = await axios.post(url, params, { headers });
-        return response.data;
-    } catch(error){
-        console.error(`Error: ${error.message}`);
-        return null;
-    }
-}
-
-export async function getSongs(jwtToken) {
-    const url = `${serverUrl}/song/all`;
-    const headers = {
-      Authorization: `Bearer ${jwtToken.access_token}`,
-    };
-    try {
-        const response = await axios.get(url, { headers });
         return response.data;
     } catch(error){
         console.error(`Error: ${error.message}`);
