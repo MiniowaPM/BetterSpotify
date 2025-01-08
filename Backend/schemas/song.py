@@ -3,7 +3,7 @@ from pydantic import BaseModel
 class CreateSongBase(BaseModel):
     title: str
     lenght: float
-    album: int
+    # album: int
 
 class UpdateSongBase(BaseModel):
     title: str | None = None

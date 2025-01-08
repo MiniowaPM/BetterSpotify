@@ -16,7 +16,7 @@ async def create_album(album: CreateAlbumBase, user_auth: user_dependency, db: d
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
     # Create album table
-    album = models.Album(**album.model_dump())
+    album = models.Album(**album.model_dump(), price = None)
     db.add(album)
     db.commit()
     db.refresh(album)
@@ -50,12 +50,13 @@ async def update_album(album_id: int, album: UpdateAlbumBase, db: db_dependency,
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    album = db.query(models.Album).filter(models.Album.id == album_id).first()
-    if album is None: 
+    album_query = db.query(models.Album).filter(models.Album.id == album_id).first()
+    if album_query is None: 
         raise HTTPException(status_code=404, detail="Album not found")
-    # For each patched (inserted) element set an attribute of selected record
-    for key, value in album.model_dump(exclude_unset=True).items():
-        setattr(album, key, value)
+    # Insert only provided data
+    update_data = album.dict(exclude_unset=True)
+    for key, value in update_data.items():
+            setattr(album_query, key, value)
     db.commit()
     return {"detail": "Album successfully modified"}
 
@@ -98,7 +99,8 @@ async def get_selling(db: db_dependency, user_auth: user_dependency):
     album = (
     db.query(models.Album)
     .join(models.Albums_owned, models.Album.id == models.Albums_owned.album_fk)
-    .filter(models.Albums_owned.studio_fk == studio_id and models.Album.price != None)
+    .filter(models.Albums_owned.studio_fk == studio_id)
+    .filter(models.Album.price != None)
     .all()
     )
     if album is None:
@@ -106,7 +108,7 @@ async def get_selling(db: db_dependency, user_auth: user_dependency):
     return album
 
 # Cart # Get wallet
-@router.get("/selling", tags=["Album"], status_code=status.HTTP_200_OK)
+@router.get("/cart", tags=["Album"], status_code=status.HTTP_200_OK)
 async def get_wallet(db: db_dependency, user_auth: user_dependency):
     studio_id = user_auth.get("studio_fk")
     if user_auth is None:
@@ -114,11 +116,11 @@ async def get_wallet(db: db_dependency, user_auth: user_dependency):
     wallet = (
     db.query(models.Studio.wallet)
     .filter(models.Studio.id == studio_id)
-    .all()
+    .first()
     )
     if wallet is None:
-        raise HTTPException(status_code=404, detail="Album not found")
-    return wallet
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    return {"wallet": wallet[0]}
 
 # Get album thumbnali image #
 @router.get("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)

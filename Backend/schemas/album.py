@@ -7,7 +7,7 @@ class CreateAlbumBase(BaseModel):
     description: str
     artist: str
     release_date: date
-    price: float | None = None
+    # price: float | None = None
     genre: Genre
 
 class UpdateAlbumBase(BaseModel):
