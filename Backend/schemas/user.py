@@ -20,7 +20,7 @@ class UpdateUserBase(BaseModel):
     username: str | None = None
     password_hash: str | None = None
     is_admin: bool = Optional[False]
-    studio: int | None = None
+    # studio: int | None = None
 
 class Config:
     orm_mode = True

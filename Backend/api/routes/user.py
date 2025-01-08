@@ -139,17 +139,19 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
         user_id = int(user_id)
     if user_id is not user_auth["id"] and not user_auth.get("is_admin", False):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+    user_query = db.query(models.User).filter(models.User.id == user_id).first()
     # User does not exists in database
-    if user is None: 
+    if user_query is None: 
         raise HTTPException(status_code=404, detail="User not found")
     # For each patched (inserted) element set an attribute of selected record
-    for key, value in user.model_dump(exclude_unset=True).items():
+    update_data = user.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user, key, value)
         if key == "password_hash":
             value = bcrypt_context.hash(user.password_hash)
         if key == "is_admin" and user_auth.get("is_admin", False) is False:
             value = False
-        setattr(user, key, value)
+        setattr(user_query, key, value)
     if user_auth.get("is_admin", False):
             admin_users_in_studio = db.query(func.count(models.User.id)).filter(models.User.is_admin == True, models.User.studio_fk == user_auth.get('studio_fk')).scalar()
             print(admin_users_in_studio)

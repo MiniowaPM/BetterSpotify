@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import List
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 import models, schemas, db
 from schemas import CreateAlbumBase, UpdateAlbumBase, SuccessResponse
@@ -76,16 +77,31 @@ async def get_myCollection(db: db_dependency, user_auth: user_dependency):
         raise HTTPException(status_code=404, detail="Album not found")
     return album
 
-# My Collection # Get album data with defined price
-@router.get("/explore/", tags=["Album"], status_code=status.HTTP_200_OK)
-async def get_explore(db: db_dependency, user_auth: user_dependency):
+# Explore # Get studios + album count
+@router.get("/studio/", tags=["Studio"], status_code=status.HTTP_200_OK)
+async def get_studios(db: db_dependency, user_auth: user_dependency):
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    studio_id = user_auth.get("studio_fk")
+    studio = (
+        db.query(models.Studio, func.count(models.Albums_owned.id))
+        .outerjoin(models.Albums_owned, models.Albums_owned.studio_fk == models.Studio.id)
+        .filter(models.Albums_owned.studio_fk != studio_id)
+        .group_by(models.Studio.id))
+    db.commit()
+    return studio
+
+# Explore # Get album by id
+@router.get("/explore/studio/{studio_id}/albums", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_explore(db: db_dependency, user_auth: user_dependency, studio_id: int):
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
     album = (
-    db.query(models.Album)
-    .filter(models.Album.price != None)
-    .all()
-    )
+        db.query(models.Album)
+        .filter(models.Album.price != None)
+        .filter(models.Album.id == studio_id)
+        .all()
+        )
     if album is None:
         raise HTTPException(status_code=404, detail="Album not found")
     return album
