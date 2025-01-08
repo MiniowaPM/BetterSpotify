@@ -25,16 +25,16 @@ async def create_init_user(user: CreateInitUserBase, db: db_dependency):
         raise HTTPException(status_code=409, detail="Studio name already taken")
 
     password_bcrypt_hash = bcrypt_context.hash(user.password_hash)
-    db_user = models.User(
+    user = models.User(
         username = user.username,
         password_hash = password_bcrypt_hash,
         studio_fk = studio_id,
         is_admin = True
     )
     # Check if exists in database
-    if db.query(models.User).filter(models.User.username == db_user.username).first() is not None:
+    if db.query(models.User).filter(models.User.username == user.username).first() is not None:
         raise HTTPException(status_code=409, detail="Username already exists")
-    db.add(db_user)
+    db.add(user)
     db.commit()
     return {"detail": "User successfully created"}
 
@@ -67,14 +67,14 @@ async def create_user(user: CreateUserBase, user_auth: user_dependency, db: db_d
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
     password_bcrypt_hash = bcrypt_context.hash(user.password_hash)
     studio_id = user_auth.get('studio_fk')
-    db_user = models.User(
+    user = models.User(
         username = user.username,
         password_hash = password_bcrypt_hash,
         studio_fk = studio_id,
     )
-    if db.query(models.User).filter(models.User.username == db_user.username).first() is not None:
+    if db.query(models.User).filter(models.User.username == user.username).first() is not None:
         raise HTTPException(status_code=409, detail="Username already exists")
-    db.add(db_user)
+    db.add(user)
     db.commit()
     return {"detail": "User successfully created"}
 
@@ -84,15 +84,15 @@ async def delete_user(user_id: int, db: db_dependency, user_auth: user_dependenc
     # Check for JWT token and user permissions (is_admin == 1)
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    user = db.query(models.User).filter(models.User.id == user_id).first()
     # User does not exists in database
-    if db_user is None:
+    if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    if user_auth.get('studio_fk') != db_user.studio_fk:
+    if user_auth.get('studio_fk') != user.studio_fk:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unable to delete users from diffrent groups")
-    if db_user.is_admin == 1:
+    if user.is_admin == 1:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unable to delete admin user")
-    db.delete(db_user)
+    db.delete(user)
     db.commit()
     return {"detail": "User successfully deleted"}
 
@@ -139,9 +139,9 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
         user_id = int(user_id)
     if user_id is not user_auth["id"] and not user_auth.get("is_admin", False):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    user = db.query(models.User).filter(models.User.id == user_id).first()
     # User does not exists in database
-    if db_user is None: 
+    if user is None: 
         raise HTTPException(status_code=404, detail="User not found")
     # For each patched (inserted) element set an attribute of selected record
     for key, value in user.model_dump(exclude_unset=True).items():
@@ -149,7 +149,7 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
             value = bcrypt_context.hash(user.password_hash)
         if key == "is_admin" and user_auth.get("is_admin", False) is False:
             value = False
-        setattr(db_user, key, value)
+        setattr(user, key, value)
     if user_auth.get("is_admin", False):
             admin_users_in_studio = db.query(func.count(models.User.id)).filter(models.User.is_admin == True, models.User.studio_fk == user_auth.get('studio_fk')).scalar()
             print(admin_users_in_studio)
@@ -159,32 +159,14 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
     return {"detail": "User successfully modified"}
 
 # AdminPanel # Get user in studio
-
-
-######################################################################################################################################################
-#                                                                                                                                                    #
-######################################################################################################################################################
-
-# @router.patch("/{user_id}", tags=["User"], status_code=status.HTTP_200_OK)
-# async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, user_auth: user_dependency):
-#     # check the {user_id} variable for str == me or int
-#     if user_id == "me":
-#         user_id = user_auth["id"]
-#     else:
-#         user_id = int(user_id)
-#     # Check for JWT token stored user_id or user permissions (is_admin == 1)
-#     if user_id is not user_auth["id"] and not user_auth.get("is_admin", False):
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-#     db_user = db.query(models.User).filter(models.User.id == user_id).first()
-#     # User does not exists in database
-#     if db_user is None: 
-#         raise HTTPException(status_code=404, detail="User not found")
-#     # For each patched (inserted) element set an attribute of selected record
-#     for key, value in user.model_dump(exclude_unset=True).items():
-#         if key == "password_hash":
-#             value = bcrypt_context.hash(user.password_hash)
-#         if key == "is_admin" and user_auth.get("is_admin", False) is False:
-#             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You must be an admin to change the is_admin field")
-#         setattr(db_user, key, value)
-#     db.commit()
-#     return {"detail": "User successfully modified"}
+@router.get("/studio/", tags=["User"], status_code=status.HTTP_200_OK)
+async def get_users_in_group(db: db_dependency, user_auth: user_dependency):
+    if user_auth is None or not user_auth.get('is_admin', False):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
+    studio_id = user_auth["studio_fk"]
+    users_with_studios = (
+        db.query(models.User)
+        .where(models.User.studio_fk == studio_id)
+        .all()
+    )
+    return users_with_studios

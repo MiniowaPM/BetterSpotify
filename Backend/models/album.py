@@ -114,5 +114,5 @@ class Album(Base):
     description = Column(String(500), unique=False)
     artist = Column(String(50), unique=False)
     release_date = Column(DateTime)
-    price = Column(Float, unique=False)
+    price = Column(Float, unique=False, nullable=True)
     genre = Column(Enum(Genre), nullable=False)

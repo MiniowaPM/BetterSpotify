@@ -2,9 +2,9 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from db import Base
 
-class Songs_owned(Base):
+class Albums_owned(Base):
     __tablename__ = 'albums_owned'
       
     id = Column(Integer, primary_key=True, index=True)
-    song_fk = Column(Integer, ForeignKey('albums.id'))
-    user_fk = Column(Integer, ForeignKey('studios.id'))
+    album_fk = Column(Integer, ForeignKey('albums.id'))
+    studio_fk = Column(Integer, ForeignKey('studios.id'))

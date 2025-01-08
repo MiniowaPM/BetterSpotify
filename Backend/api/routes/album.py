@@ -9,74 +9,129 @@ from .. import db_dependency, user_dependency
 
 router = APIRouter(prefix="/album")
 
+# My Collection # Create album and creates album_owned (album_id, studio_fk)
+@router.post("/", tags=["Album"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
+async def create_album(album: CreateAlbumBase, user_auth: user_dependency, db: db_dependency):
+    # Check if logged
+    if user_auth is None or not user_auth.get('is_admin', False):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
+    # Create album table
+    album = models.Album(**album.model_dump())
+    db.add(album)
+    db.commit()
+    db.refresh(album)
+    # Create album_owned table
+    studio_id = user_auth.get("studio_fk")
+    album_owned = models.Albums_owned(
+        album_fk = album.id,
+        studio_fk = studio_id,
+    )
+    db.add(album_owned)
+    db.commit()
+    return {"detail": "User successfully created"}
 
-######################################################################################################################################################
-#                                                                                                                                                    #
-######################################################################################################################################################
-
+# My Collection # Deletes album and songs assigned to album # By album_id
 @router.delete("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK)
 async def delete_album(album_id: int, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    db_album = db.query(models.Album).filter(models.Album.id == album_id).first()
-    if db_album is None:
+    album = db.query(models.Album).filter(models.Album.id == album_id).first()
+    if album is None:
         raise HTTPException(status_code=404, detail="Album not found")
-    db.query(models.Song).filter(models.Song.album_fk == album_id).update({models.Song.album_fk: None})
-    db.delete(db_album)
+    db.query(models.Song).filter(models.Song.album_fk == album_id).delete()
+    db.delete(album)
     db.commit()
-    return {"detail": "Album and associated foreign keys successfully cleared"}
+    return {"detail": "Album and associated songs data successfully cleared"}
 
+# Album Profile # Updates album data
 @router.patch("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK)
-async def update_user(album_id: int, album: UpdateAlbumBase, db: db_dependency, user_auth: user_dependency):
+async def update_album(album_id: int, album: UpdateAlbumBase, db: db_dependency, user_auth: user_dependency):
     # Logged JWT Token validation and user permisions
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    db_album = db.query(models.Album).filter(models.Album.id == album_id).first()
-    if db_album is None: 
+    album = db.query(models.Album).filter(models.Album.id == album_id).first()
+    if album is None: 
         raise HTTPException(status_code=404, detail="Album not found")
     # For each patched (inserted) element set an attribute of selected record
     for key, value in album.model_dump(exclude_unset=True).items():
-        setattr(db_album, key, value)
+        setattr(album, key, value)
     db.commit()
     return {"detail": "Album successfully modified"}
 
-@router.post("/", tags=["Album"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
-async def create_album(album: CreateAlbumBase, db: db_dependency, user_auth: user_dependency):
-    # Logged JWT Token validation and user permisions
-    if user_auth is None or not user_auth.get('is_admin', False):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    db_album = models.Album(**album.model_dump())
-    check_genre = db.query(models.Genre).filter(models.Genre.id == db_album.genre).first()
-    check_title = db.query(models.Album).filter(models.Album.title == db_album.title).first()
-    if check_title is not None:
-        raise HTTPException(status_code=409, detail="Title already exists")
-    if check_genre is None:
-        raise HTTPException(status_code=409, detail="Invalid genre type")
-    db.add(db_album)
-    db.commit()
-    return {"detail": "Album successfully created"}
-
-@router.get("/all", tags=["Album"], status_code=status.HTTP_200_OK, response_model=List[CreateAlbumBase])
-async def get_albums(db: db_dependency, user_auth: user_dependency):
-    # JWT Token Validation
+# My Collection # Get album data owned by logged studio
+@router.get("/myCollection", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_myCollection(db: db_dependency, user_auth: user_dependency):
+    studio_id = user_auth.get("studio_fk")
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    albums = db.query(models.Album).all()
-    if albums is None:
-        raise HTTPException(status_code=404, detail="Albums not found")
-    return albums
-
-@router.get("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK, response_model=CreateAlbumBase)
-async def get_album(album_id: int, db: db_dependency, user_auth: user_dependency):
-    # JWT Token Validation
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    album = db.query(models.Album).filter(models.Album.id == album_id).first()
+    album = (
+    db.query(models.Album)
+    .join(models.Albums_owned, models.Album.id == models.Albums_owned.album_fk)
+    .filter(models.Albums_owned.studio_fk == studio_id)
+    .all()
+    )
     if album is None:
         raise HTTPException(status_code=404, detail="Album not found")
     return album
 
+# My Collection # Get album data with defined price
+@router.get("/explore/", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_explore(db: db_dependency, user_auth: user_dependency):
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    album = (
+    db.query(models.Album)
+    .filter(models.Album.price != None)
+    .all()
+    )
+    if album is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    return album
+
+# Selling # Get album data with price and owned by logged studio
+@router.get("/selling", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_selling(db: db_dependency, user_auth: user_dependency):
+    studio_id = user_auth.get("studio_fk")
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    album = (
+    db.query(models.Album)
+    .join(models.Albums_owned, models.Album.id == models.Albums_owned.album_fk)
+    .filter(models.Albums_owned.studio_fk == studio_id and models.Album.price != None)
+    .all()
+    )
+    if album is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    return album
+
+# Cart # Get wallet
+@router.get("/selling", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_wallet(db: db_dependency, user_auth: user_dependency):
+    studio_id = user_auth.get("studio_fk")
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    wallet = (
+    db.query(models.Studio.wallet)
+    .filter(models.Studio.id == studio_id)
+    .all()
+    )
+    if wallet is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    return wallet
+
+# Get album thumbnali image #
+@router.get("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
+async def get_album_thumbnail_image(album_id: int, user_auth: user_dependency):
+    if user_auth is None or not user_auth.get('is_admin', False):
+        HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    image_path = base_dir/"images"/"albums"/f"{album_id}.jpg"
+    if not image_path.is_file():
+        image_path = base_dir/"images"/"albums"/"default.jpg"
+    return FileResponse(image_path)
+
+# Post album thumbnail image #
 @router.post("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
 async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency, file: UploadFile):
     base_dir = Path(__file__).resolve().parent.parent.parent
@@ -92,13 +147,3 @@ async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="File failed to create")
     return {"detail": "User profile image succesfuly created"}
-
-@router.get("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
-async def get_album_thumbnail_image(album_id: int, user_auth: user_dependency):
-    if user_auth is None or not user_auth.get('is_admin', False):
-        HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
-    base_dir = Path(__file__).resolve().parent.parent.parent
-    image_path = base_dir/"images"/"albums"/f"{album_id}.jpg"
-    if not image_path.is_file():
-        image_path = base_dir/"images"/"albums"/"default.jpg"
-    return FileResponse(image_path)
