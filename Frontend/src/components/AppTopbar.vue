@@ -2,24 +2,54 @@
   <header class="top-bar">
     <div class="side-controls left-controls">
       <div class="back-forward-buttons">
-        <button id="backButton" class="back-btn" @click="goBack" aria-label="Go Back">
+        <button
+          id="backButton"
+          class="back-btn"
+          @click="goBack"
+          aria-label="Go Back"
+        >
           <i class="fa-regular fa-chevron-left" alt="Back"></i>
         </button>
-        <button id="forwardButton" class="forward-btn" @click="goForward" aria-label="Go Forward">
+        <button
+          id="forwardButton"
+          class="forward-btn"
+          @click="goForward"
+          aria-label="Go Forward"
+        >
           <i class="fa-regular fa-chevron-right" alt="Forward"></i>
         </button>
       </div>
     </div>
-    <input type="text" class="search-box" placeholder="Search..." aria-label="Search" />
+    <input
+      type="text"
+      class="search-box"
+      placeholder="Search..."
+      aria-label="Search"
+    />
     <div class="side-controls right-controls">
       <div class="control-buttons">
-        <button id="minimizeButton" class="minimize-btn" @click="minimize" aria-label="Minimize">
+        <button
+          id="minimizeButton"
+          class="minimize-btn"
+          @click="minimize"
+          aria-label="Minimize"
+        >
           <i class="fa-thin fa-window-minimize" alt="Minimize"></i>
         </button>
-        <button id="maximizeButton" class="maximize-btn" @click="toggleMaximize" aria-label="Maximize">
+        <button
+          id="maximizeButton"
+          class="maximize-btn"
+          @click="toggleMaximize"
+          aria-label="Maximize"
+        >
           <i class="fa-light fa-expand" alt="Maximize"></i>
         </button>
-        <button id="closeButton" class="close-btn" @click="closeApp" aria-label="Close">
+        <button
+          id="closeButton"
+          class="close-btn"
+          @click="closeApp"
+          aria-label="Close"
+        >
           <i class="fa-light fa-xmark" alt="Close"></i>
         </button>
       </div>
@@ -57,7 +87,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #171719;
+  background-color: var(--background-second-color);
   padding: 18px;
   position: fixed;
   top: 0;
@@ -78,7 +108,7 @@ export default {
 .control-buttons {
   display: flex;
   align-items: center;
-  background-color: #202022;
+  background-color: var(--background-color);
   border-radius: 50px;
 }
 
@@ -87,11 +117,11 @@ export default {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #202022;
+  background-color: var(--background-color);
   border: none;
   border-radius: 50px;
   padding: 10px 15px;
-  color: #fffafa;
+  color: var(--text-color);
   font-size: 15px;
   outline: none;
   width: 30%;
@@ -108,11 +138,20 @@ export default {
   align-items: center;
   cursor: pointer;
   font-size: 15px;
-  color: #fffafa;
+  color: var(--text-color);
   width: 40px;
   height: 40px;
   justify-content: center;
   align-items: center;
+}
+
+.back-btn,
+.forward-btn,
+.minimize-btn,
+.maximize-btn,
+.close-btn {
+  transition: background-color 0.3s ease;
+  border-radius: 25px;
 }
 
 .back-btn:hover,
@@ -120,7 +159,6 @@ export default {
 .minimize-btn:hover,
 .maximize-btn:hover,
 .close-btn:hover {
-  background-color: #2a2a2d;
-  border-radius: 25px;
+  background-color: var(--background-hover-color);
 }
 </style>

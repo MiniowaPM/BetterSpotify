@@ -2,26 +2,51 @@
   <aside class="sidebar">
     <div class="profile">
       <img src="../assets/icon_onsite.png" alt="Logo" class="logo" />
-      <img src="../assets/profilepicture.jpg" alt="User Avatar" class="avatar" />
+      <img
+        src="../assets/profilepicture.jpg"
+        alt="User Avatar"
+        class="avatar"
+      />
     </div>
     <nav>
       <ul>
-        <li><router-link to="/">
-          <div class="sidebar-content">Home</div>
-        </router-link></li>
-        <li><router-link to="/my-collection">
-          <div class="sidebar-content">My Collection</div>
-        </router-link></li>
-        <li><router-link to="/new-releases">
-          <div class="sidebar-content">New Releases</div>
-        </router-link></li>
+        <li>
+          <router-link to="/">
+            <div class="sidebar-content">Home</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/my-collection">
+            <div class="sidebar-content">My Collection</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/explore">
+            <div class="sidebar-content">Explore</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/currently-sold">
+            <div class="sidebar-content">Selling</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/cart">
+            <div class="sidebar-content">Cart</div>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/admin-panel">
+            <div class="sidebar-content">Admin Panel</div>
+          </router-link>
+        </li>
       </ul>
     </nav>
     <div class="footer">
       <button class="settings-button">
         <i class="fa-solid fa-gear" alt="Settings"></i>
       </button>
-      <button class="lightswitch-button">
+      <button class="lightswitch-button" @click="toggleTheme">
         <i class="fa-solid fa-lightbulb" alt="Lightswitch"></i>
       </button>
     </div>
@@ -31,6 +56,19 @@
 <script>
 export default {
   name: "AppSidebar",
+  methods: {
+    toggleTheme() {
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+    },
+  },
+  mounted() {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  },
 };
 </script>
 
@@ -41,7 +79,7 @@ export default {
   left: 0;
   height: 100%;
   width: 200px;
-  background-color: #202022;
+  background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,7 +95,12 @@ export default {
   margin-bottom: 20px;
 }
 
-.logo, .avatar {
+[data-theme="light"] .logo {
+  filter: invert(85%);
+}
+
+.logo,
+.avatar {
   width: 35px;
   height: auto;
 }
@@ -81,15 +124,16 @@ nav a {
   display: block;
   padding: 20px 30px;
   display: flex;
-}
-
-nav a:hover {
-  background-color: #2a2a2d;
+  transition: background-color 0.3s ease;
   border-radius: 5px;
 }
 
-.sidebar-content{
-  color: #fffafa;
+nav a:hover {
+  background-color: var(--background-hover-color);
+}
+
+.sidebar-content {
+  color: var(--text-color);
   font-size: 20px;
   font-weight: 400;
   flex: auto;
@@ -103,8 +147,9 @@ nav a:hover {
   width: 100%;
 }
 
-.settings-button, .lightswitch-button {
-  color: #fffafa;
+.settings-button,
+.lightswitch-button {
+  color: var(--text-color);
   width: 32px;
   height: 32px;
   background: none;
@@ -116,10 +161,12 @@ nav a:hover {
   font-size: 20px;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease;
+  border-radius: 25px;
 }
 
-.settings-button:hover, .lightswitch-button:hover {
-  background-color: #2a2a2d;
-  border-radius: 25px;
+.settings-button:hover,
+.lightswitch-button:hover {
+  background-color: var(--background-hover-color);
 }
 </style>

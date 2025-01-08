@@ -3,7 +3,12 @@
     <AppSidebar />
     <main class="main-content">
       <AppTopbar />
-      <router-view/>
+      <router-view
+        :cart="cart"
+        @add-to-cart="addToCart"
+        @remove-from-cart="removeFromCart"
+        @clear-cart="clearCart"
+      />
     </main>
   </div>
 </template>
@@ -11,6 +16,7 @@
 <script>
 import AppSidebar from "./components/AppSidebar.vue";
 import AppTopbar from "./components/AppTopbar.vue";
+import { ref, onMounted } from "vue";
 
 export default {
   name: "App",
@@ -18,34 +24,80 @@ export default {
     AppSidebar,
     AppTopbar,
   },
+  setup() {
+    const cart = ref(JSON.parse(localStorage.getItem("cart")) || []);
+
+    const saveCartToLocalStorage = () => {
+      localStorage.setItem("cart", JSON.stringify(cart.value));
+    };
+
+    const addToCart = (album) => {
+      const albumExists = cart.value.some((item) => item.title === album.title);
+      if (!albumExists) {
+        cart.value.push(album);
+        saveCartToLocalStorage();
+      }
+    };
+
+    const removeFromCart = (index) => {
+      cart.value.splice(index, 1);
+      saveCartToLocalStorage();
+    };
+
+    const clearCart = () => {
+      cart.value = [];
+      saveCartToLocalStorage();
+    };
+
+    onMounted(() => {
+      saveCartToLocalStorage();
+    });
+
+    return { cart, addToCart, removeFromCart, clearCart };
+  },
 };
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css');
-@import url('https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css');
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css");
+@import url("https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css");
+
+:root {
+  --background-color: #202022;
+  --background-second-color: #171719;
+  --background-hover-color: #2a2a2d;
+  --text-color: #fffafa;
+  --second-text-color: #d3d3d3;
+  --contrast-color: #ff7f50;
+  --contrast-hover-color: #ff5722;
+}
+
+[data-theme="light"] {
+  --background-color: #f2f2f2;
+  --background-second-color: #e6e6e6;
+  --background-hover-color: #dcdcdc;
+  --text-color: #3a3a3a;
+  --second-text-color: #6a6a6a;
+  --contrast-color: #ff6f61;
+  --contrast-hover-color: #e65a50;
+}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   user-select: none;
-}
-
-html,body {
-  height: 100%;
-  margin: 0;
 }
 
 #app {
@@ -55,8 +107,8 @@ html,body {
 
 body {
   font-family: "Hanken Grotesk", sans-serif;
-  background-color: #202022;
-  color: #fffafa;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -68,7 +120,6 @@ main {
   bottom: 0;
   overflow: auto;
   padding: 20px;
-  background-color: #121212;
 }
 
 .container {
@@ -78,12 +129,12 @@ main {
 }
 
 .main-content {
-  background-color: #171719;
+  background-color: var(--background-second-color);
 }
 
 .content {
   padding: 20px;
-  color: #fffafa;
+  color: var(--text-color);
   flex: 1;
 }
 
@@ -93,17 +144,17 @@ main {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #202022;
+  background-color: var(--background-color);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ff7f50;
+  background-color: var(--contrast-color);
   border-radius: 5px;
-  border: 2px solid #202022;
+  border: 2px solid var(--background-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #ff5722;
+  background-color: var(--contrast-hover-color);
 }
 </style>
