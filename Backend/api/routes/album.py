@@ -29,7 +29,7 @@ async def create_album(album: CreateAlbumBase, user_auth: user_dependency, db: d
     )
     db.add(album_owned)
     db.commit()
-    return {"detail": "User successfully created"}
+    return {"detail": "Album successfully created"}
 
 # My Collection # Deletes album and songs assigned to album # By album_id
 @router.delete("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK)

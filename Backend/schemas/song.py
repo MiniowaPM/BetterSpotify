@@ -2,12 +2,11 @@ from pydantic import BaseModel
 
 class CreateSongBase(BaseModel):
     title: str
-    lenght: float
-    # album: int
+    lenght: int
 
 class UpdateSongBase(BaseModel):
     title: str | None = None
-    lenght: float | None = None
+    lenght: int | None = None
     album: int | None = None
 
 class Config:

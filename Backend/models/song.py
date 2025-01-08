@@ -6,5 +6,5 @@ class Song(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(50), unique=True)
-    lenght = Column(Float, unique=False)
+    length = Column(Integer, unique=False)
     album_fk = Column(Integer, ForeignKey('albums.id'))
