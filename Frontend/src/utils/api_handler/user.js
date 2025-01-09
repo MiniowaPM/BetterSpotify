@@ -3,16 +3,16 @@ import { serverUrl } from './server_settings.js';
 
 export async function loginToken(login, password) {
   const url = `${serverUrl}/auth/token`;
-  const params = new URLSearchParams();
+    const params = new URLSearchParams();
     params.append('grant_type', 'password');
     params.append('username', login);
     params.append('password', password);
   try {
-    const response = await axios.post(url, params);
+    const response = await axios.post(url, params)
     return response.data;
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    return null;
+    return 'failed to login';
   }
 }
 
@@ -31,7 +31,7 @@ export async function deleteUser(userId, jwtToken) {
     }
   }
 
-export async function patchUser(userId, jwtToken, username = null, firstName = null, lastName = null, email = null, gender = null, passwordHash = null, isAdmin = null) {
+export async function patchUser(userId, jwtToken, username = null, passwordHash = null, isAdmin = null) {
     const url = `${serverUrl}/user/${userId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,

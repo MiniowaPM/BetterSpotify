@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
 from typing import List
 from sqlalchemy import func
@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 import models, schemas, db
 from schemas import CreateAlbumBase, UpdateAlbumBase, SuccessResponse
 from .. import db_dependency, user_dependency
+import base64
 
 router = APIRouter(prefix="/album")
 
@@ -147,7 +148,13 @@ async def get_album_thumbnail_image(album_id: int, user_auth: user_dependency):
     image_path = base_dir/"images"/"albums"/f"{album_id}.jpg"
     if not image_path.is_file():
         image_path = base_dir/"images"/"albums"/"default.jpg"
-    return FileResponse(image_path)
+    try:
+        with open(image_path,"rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        mime_type = "image/jpg"
+        return JSONResponse(content={"mime_type": mime_type, "base64_data": encoded_image})
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 # Post album thumbnail image #
 @router.post("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)

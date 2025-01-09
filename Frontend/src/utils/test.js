@@ -1,162 +1,197 @@
 import {
-    loginToken,
-    deleteUser,
-    getUser,
-    postUser,
-    getUsers,
-    postUserImg,
-    getUserImg,
-    patchUser
-  } from './api_handler/user.js';
+  loginToken,
+  deleteUser,
+  patchUser,
+  getLoggedUser,
+  getUsersInStudio,
+  postUserImg,
+  getUserImg,
+  postInitUser,
+  postUser,
+} from './api_handler/user.js';
 
-  import {
-    deleteAlbum,
-    patchAlbum,
-    getAlbum,
-    postAlbum,
-    getAlbums,
-    postAlbumImg,
-    getAlbumImg,
-  } from './api_handler/album.js';
-  
-  import {
-    deleteSong,
-    patchSong,
-    getSong,
-    postSong,
-    getSongs,
-  } from './api_handler/song.js';
-  
+import {
+  deleteAlbum,
+  patchAlbum,
+  getAlbum,
+  postAlbum,
+  postAlbumImg,
+  getAlbumImg,
+} from './api_handler/album.js';
 
-  async function runUserTests() {
-    const login = 'test';
-    const password = 'test';
-  
-    // 1. Test Login
-    const token = await loginToken(login, password);
-    if (!token) {
-      console.error('Failed to log in.');
-      return;
-    }
-  
-    // 2. Test Create User
-    const createUser = await postUser('test1','Mikołaj','Mol','mikisteam123@o2.pl', 1,'test1');
-    if (!createUser) {
-      console.error('Failed to create user');
-    }
+import {
+  deleteSong,
+  patchSong,
+  postSong,
+} from './api_handler/song.js';
 
-    // 3. Test Patch User
-    const updateUser = await patchUser('me', token, null, 'firstname');
-    if (!updateUser) {
-      console.error('Failed to update user');
-    }
-    // 4. Test Get User
-    const getUserData = getUser(1, token);
-    if (!getUserData) {
-      console.error('Failed to get user data');
-    }
-    // 5. Test Get Users
-    const getUsersData = getUsers(token);
-    if (!getUsersData) {
-      console.error('Failed to get users data');
-    }
-    // 6. Test Delete User
-    const clearUser = deleteUser(1, token)
+async function runUserTests() {
+  const adminUsername = 'adminUser';
+  const adminPasswordHash = 'hashedAdminPassword';
+  const studioName = 'Test Studio';
+
+  // 1. Test postInitUser (Create Admin User)
+  const initUser = await postInitUser(adminUsername, adminPasswordHash, studioName);
+  if (!initUser) {
+    console.error('Failed to create admin user.');
+    return;
+  }
+  console.log('Admin user created:', initUser);
+
+  // 2. Test Login
+  const token = await loginToken(adminUsername, adminPasswordHash);
+  if (!token) {
+    console.error('Failed to log in as admin user.');
+    return;
+  }
+  console.log('Logged in as admin user.');
+
+  // 3. Test Create User
+  const createUser = await postUser('testUser', 'hashedPassword', token);
+  if (!createUser) {
+    console.error('Failed to create user.');
+  } else {
+    console.log('User created:', createUser);
   }
 
-  async function runSongTest(params) {
-    const login = 'test';
-    const password = 'test';
-  
-    // 1. Test Login
-    const token = await loginToken(login, password);
-    if (!token) {
-      console.error('Failed to log in.');
-      return;
-    }
-
-    
+  // 4. Test Update User
+  const updateUser = await patchUser('me', token, 'updatedUsername');
+  if (!updateUser) {
+    console.error('Failed to update user.');
+  } else {
+    console.log('User updated:', updateUser);
   }
 
-  async function runAlbumTests() {
-    const login = 'test';
-    const password = 'test';
-  
-    // 1. Test Login
-    const token = await loginToken(login, password);
-    if (!token) {
-      console.error('Failed to log in.');
-      return;
-    }
-  
-    // 2. Test Create Song
-    const createSong = await postAlbum(token, 'Test Song', 'A description', 4);
-    if (!createSong){
-      console.error('Failed to add song');
-    }
-
-    // 3. Test Get All Albums
-    const addAlbums = await getAlbums(token);
-    if (!addAlbums) {
-      console.error('Failed to fetch albums.');
-    }
-    // 4. Test Get Album
-    const addAlbum = await getAlbum(1, token);
-    if (!addAlbum) {
-      console.error('Failed to fetch album data.');
-    }
-  
-    // 5. Test Update Album
-    const updatedAlbum = await patchAlbum(1, token, 'Updated Title', null, 4);
-    if (!updatedAlbum) {
-      console.error('Failed to update album.');
-    }
-
-    // 6. Test Delete Album
-    const deletedAlbum = await deleteAlbum(1, token);
-    if (!deletedAlbum) {
-      console.error('Failed to delete album.');
-    }
+  // 5. Test Get Logged User
+  const loggedUser = await getLoggedUser(token);
+  if (!loggedUser) {
+    console.error('Failed to get logged user data.');
+  } else {
+    console.log('Logged user data:', loggedUser);
   }
-  
-  async function runSongTests() {
 
-    // 1. Test Login
-    const token = await loginToken('test', 'test');
-    if (!token) {
-      console.error('Failed to log in.');
-    }
-
-    // 2. Test Create Song
-    const createSong = await postSong(2, token, 'Test Song', 'This is a test description', 3);
-    if (!createSong) {
-      console.error('Failed to create song.');
-    }
-
-    // 3. Test Get Song
-    const song = await getSong(2, token);
-    if (!song) {
-      console.error('Failed to fetch song data.');
-    }
-  
-    // 4. Test Update Song
-    const updatedSong = await patchSong(1, token, 'Updated Test Song', null, null);
-    if (!updatedSong) {
-      console.error('Failed to update song.');
-    }
-  
-    // 5. Test Get All Songs
-    const allSongs = await getSongs(token);
-    if (!allSongs) {
-      console.error('Failed to fetch all songs.');
-    }
-  
-    // 6. Test Delete Song
-    const deletedSong = await deleteSong(2, token);
-    if (!deletedSong) {
-      console.error('Failed to delete song.');
-    }
+  // 6. Test Get Users in Studio
+  const studioUsers = await getUsersInStudio(token);
+  if (!studioUsers) {
+    console.error('Failed to get users in studio.');
+  } else {
+    console.log('Studio users:', studioUsers);
   }
-  
-  // Run the tests
-  runSongTests()
+
+  // 7. Test Delete User
+  const deletedUser = await deleteUser(createUser.id, token);
+  if (!deletedUser) {
+    console.error('Failed to delete user.');
+  } else {
+    console.log('User deleted:', deletedUser);
+  }
+}
+
+async function runAlbumTests() {
+  const login = 'test';
+  const password = 'test';
+
+  // 1. Test Login
+  const token = await loginToken(login, password);
+  if (!token) {
+    console.error('Failed to log in.');
+    return;
+  }
+
+  // 2. Test Create Album
+  const createAlbum = await postAlbum(token, 'Test Album', 'Album description', 2025);
+  if (!createAlbum) {
+    console.error('Failed to create album');
+  } else {
+    console.log('Album created:', createAlbum);
+  }
+
+  // 4. Test Get Album by ID
+  const album = await getAlbum(createAlbum.id, token);
+  if (!album) {
+    console.error('Failed to fetch album by ID.');
+  } else {
+    console.log('Album data:', album);
+  }
+
+  // 5. Test Update Album
+  const updatedAlbum = await patchAlbum(createAlbum.id, token, 'Updated Album Title');
+  if (!updatedAlbum) {
+    console.error('Failed to update album.');
+  } else {
+    console.log('Album updated:', updatedAlbum);
+  }
+
+  // 6. Test Delete Album
+  const deletedAlbum = await deleteAlbum(createAlbum.id, token);
+  if (!deletedAlbum) {
+    console.error('Failed to delete album.');
+  } else {
+    console.log('Album deleted:', deletedAlbum);
+  }
+}
+
+async function runSongTests() {
+  const login = 'test';
+  const password = 'test';
+
+  // 1. Test Login
+  const token = await loginToken(login, password);
+  if (!token) {
+    console.error('Failed to log in.');
+    return;
+  }
+
+  // 2. Test Create Song
+  const createSong = await postSong(1, token, 'Test Song', 'Test description', 4);
+  if (!createSong) {
+    console.error('Failed to create song.');
+  } else {
+    console.log('Song created:', createSong);
+  }
+
+  // 3. Test Get Song by ID
+  const song = await getSong(createSong.id, token);
+  if (!song) {
+    console.error('Failed to fetch song by ID.');
+  } else {
+    console.log('Song data:', song);
+  }
+
+  // 4. Test Update Song
+  const updatedSong = await patchSong(createSong.id, token, 'Updated Song Title');
+  if (!updatedSong) {
+    console.error('Failed to update song.');
+  } else {
+    console.log('Song updated:', updatedSong);
+  }
+
+  // 5. Test Get All Songs
+  const allSongs = await getSongs(token);
+  if (!allSongs) {
+    console.error('Failed to fetch all songs.');
+  } else {
+    console.log('All songs:', allSongs);
+  }
+
+  // 6. Test Delete Song
+  const deletedSong = await deleteSong(createSong.id, token);
+  if (!deletedSong) {
+    console.error('Failed to delete song.');
+  } else {
+    console.log('Song deleted:', deletedSong);
+  }
+}
+
+async function main() {
+  console.log('Running User Tests...');
+  await runUserTests();
+
+  console.log('Running Album Tests...');
+  await runAlbumTests();
+
+  console.log('Running Song Tests...');
+  await runSongTests();
+}
+
+main().catch((err) => console.error(`Error in main: ${err.message}`));

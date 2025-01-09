@@ -1,12 +1,12 @@
 <template>
   <div class="homepage">
     <img
-      src="../assets/profilepicture.jpg"
+      :src="UserProfileImage"
       alt="User Avatar"
       class="avatarhome"
     />
-    <h1 class="welcome">Welcome, nickname!</h1>
-    <p class="msg">This is studio_name studio</p>
+    <h1 class="welcome">Welcome, {{Username}}!</h1>
+    <p class="msg">This is {{StudioName}} studio</p>
     <div class="features">
       <div class="feature">
         <router-link to="/my-collection">
@@ -50,9 +50,31 @@
 </template>
 
 <script>
+import { getLoggedUser, getUserImg, loginToken  } from '@/utils/api_handler/user';
+
 export default {
-  name: "HomePage",
-};
+  data() {
+    return {
+      name: "HomePage",
+      UserProfileImage: '',
+      Username: '',
+      StudioName: '',
+    };
+  },
+async mounted(){
+  try{
+    const savedLoginToken = await loginToken('test','test'); // TEMPORARY LOGIN - TEST USER
+    // localStorage.getItem('loginToken'); // 
+    const HomePageData = await getLoggedUser(savedLoginToken);
+    this.Username = HomePageData.username;
+    this.StudioName = HomePageData.studio_name;
+    const UserProfileImageBinaryData = await getUserImg('me', savedLoginToken);
+    this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;    console.log(this.UserProfileImage)
+  } catch (error) {
+    console.error('Error fetching user data:', error);  
+    }
+  }
+}
 </script>
 
 <style scoped>

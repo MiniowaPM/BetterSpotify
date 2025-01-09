@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
 from typing import List
 import models, schemas, db
@@ -9,6 +9,8 @@ from schemas.user import UpdateUserBase, CreateInitUserBase, CreateUserBase
 from schemas.response import SuccessResponse
 from core.security import bcrypt_context
 from sqlalchemy import func
+import base64
+
 
 router = APIRouter(prefix="/user")
 
@@ -127,8 +129,13 @@ async def get_user_profile_image(user_id: str, user_auth: user_dependency):
     image_path = base_dir/"images"/"users"/f"{user_id}.jpg"
     if not image_path.is_file():
         image_path = base_dir/"images"/"users"/"default.jpg"
-    return FileResponse(image_path)
-
+    try:
+        with open(image_path,"rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        mime_type = "image/jpg"
+        return JSONResponse(content={"mime_type": mime_type, "base64_data": encoded_image})
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 # AdminPanel # Update user 
 @router.patch("/{user_id}", tags=["User"], status_code=status.HTTP_200_OK)
 async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, user_auth: user_dependency):
