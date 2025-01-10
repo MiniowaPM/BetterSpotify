@@ -58,18 +58,20 @@ export default {
       name: "HomePage",
       UserProfileImage: '',
       Username: '',
-      StudioName: '',
+      StudioName: sessionStorage.getItem('StudioName')
     };
   },
 async mounted(){
   try{
     const savedLoginToken = await loginToken('test','test'); // TEMPORARY LOGIN - TEST USER
-    // localStorage.getItem('loginToken'); // 
+    sessionStorage.setItem('loginToken', JSON.stringify(savedLoginToken)); // TEMPORARY SESSION // TO BE IN LOGIN SCREAN
+    // sessionStorage.getItem('loginToken');
     const HomePageData = await getLoggedUser(savedLoginToken);
     this.Username = HomePageData.username;
     this.StudioName = HomePageData.studio_name;
+    sessionStorage.setItem('StudioName', this.StudioName);
     const UserProfileImageBinaryData = await getUserImg('me', savedLoginToken);
-    this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;    console.log(this.UserProfileImage)
+    this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
   } catch (error) {
     console.error('Error fetching user data:', error);  
     }
