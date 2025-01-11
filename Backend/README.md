@@ -52,9 +52,13 @@ Follow these instructions to set up the project locally.
 
 ```python -m venv .env```
 
-```source venv/bin/activate```  # For Linux/Mac
+For Linux/Mac
 
-```.env\Scripts\activate```     # For Windows
+```source venv/bin/activate```  
+
+For Windows
+
+```.env\Scripts\activate```     
 
 3. Install dependencies:
 
@@ -84,8 +88,6 @@ Open database menagment system (eg. XAMPP):
 
 ``` GRANT ALL PRIVILEGES ON database_name.* TO 'database_user'; ```
 
-``` FLUSH PRIVILAGES; ```
-
 7. Start the development server:
 
 ```uvicorn main:app --reload```
@@ -96,46 +98,45 @@ Base URL: http://localhost:8000
 
 ### User Endpoints ###
 
-| Method | Endpoint           | Description                 | Auth Required              |
-|--------|--------------------|-----------------------------|----------------------------|
-| POST   | /user/             | Sign-up user                | No                         |
-| PATCH  | /user/{user_id}    | Update user                 | JWT Token + is_admin       |
-| PATCH  | /user/me           | Update logged user          | JWT Token                  |
-| DELETE | /user/{user_id}    | Delete user                 | JWT Token + is_admin       |
-| GET    | /user/{user_id}    | Get partial user info       | JWT Token                  |
-| GET    | /user/me           | Get all logged user info    | JWT Token                  |
-| GET    | /user/all          | Get partial users info      | JWT Token + is_admin       |
-| GET    | /user/all          | Get users info              | JWT Token + is_admin       |
-| POST   | /user/me/profile-image/ | Uploads user profile image | JWT Token              |
-| GET    | /user/{user_id}/profile-image/ | Get user profile image | JWT Token           |
+| Method | Endpoint           | Description                     | Auth Required              |
+|--------|--------------------|---------------------------------|----------------------------|
+| POST   | /user/signup       | Sign-up initial user            | No                         |
+| POST   | /user/             | Create non-admin user in studio | JWT Token + is_admin       |
+| POST   | /user/me/profile-image/ | Uploads user profile image | JWT Token                  |
+| PATCH  | /user/me           | Update logged user              | JWT Token                  |
+| PATCH  | /user/{user_id}    | Update selected user            | JWT Token + is_admin       |
+| DELETE | /user/{user_id}    | Delete user                     | JWT Token + is_admin       |
+| GET    | /user/me           | Get all logged user info        | JWT Token                  |
+| GET    | /user/{user_id}/profile-image/ | Get user profile image | JWT Token               |
+| GET    | /user/studio       | Get all users in studio         | JWT Token + is_admin       |
 
 ### Album Endpoints ###
 
-| Method | Endpoint             | Description                    | Auth Required              |
-|--------|----------------------|--------------------------------|----------------------------|
-| POST   | /albums/             | Add a new album                | JWT Token + is_admin       |
-| GET    | /albums/             | Get all albums                 | No                         |
-| GET    | /albums/{album_id}   | Get album details by ID        | No                         |
-| PATCH  | /albums/{album_id}   | Update album details           | JWT Token + is_admin       |
-| DELETE | /albums/{album_id}   | Delete album                   | JWT Token + is_admin       |
-| POST   | /albums/{user_id}/album-image/ | Uploads album thumbnail image  | JWT Token        |
-| GET    | /albums/{user_id}/album-image/ | Get user album thumbnail image | JWT Token        |
+| Method | Endpoint                         | Description                    | Auth Required              |
+|--------|------------------------------------------|--------------------------------|----------------------------|
+| POST   | /album/                                  | Add a new album owned by logged studio  | JWT Token + is_admin |
+| POST   | /album/{user_id}/album-image/            | Uploads album thumbnail image           | JWT Token            |
+| PATCH  | /album/{album_id}                        | Update album details                    | JWT Token + is_admin |
+| DELETE | /album/{album_id}                        | Delete album                            | JWT Token + is_admin |
+| GET    | /album/myCollection                      | Get albums owned by logged studio       | JWT Token            |
+| GET    | /album/explore/studio/{studio_id}/albums | Get albums where price is set & not owned by studio            | JWT Token  |
+| GET    | /album/selling                           | Get albums owned by studio logged and with price               | JWT Token  |
+| GET    | /albums/{user_id}/album-image/           | Get user album thumbnail image          | JWT Token            |
 
 ### Song Endpoint ###
 
-| Method | Endpoint             | Description                    | Auth Required              |
-|--------|----------------------|--------------------------------|----------------------------|
-| POST   | /songs/              | Add a new song                 | JWT Token + is_admin       |
-| GET    | /songs/              | Get all songs                  | No                         |
-| GET    | /songs/{song_id}     | Get song details by ID         | No                         |
-| PATCH  | /songs/{song_id}     | Update song details            | JWT Token + is_admin       |
-| DELETE | /songs/{song_id}     | Delete song                    | JWT Token + is_admin       |
+| Method | Endpoint                    | Description                          | Auth Required              |
+|--------|-----------------------------|--------------------------------------|----------------------------|
+| POST   | /song/album/{album_id}/song | Add a new song assigned to an album  | JWT Token + is_admin       |
+| PATCH  | /song/{song_id}             | Update song details                  | JWT Token + is_admin       |
+| DELETE | /song/{song_id}             | Delete song                          | JWT Token + is_admin       |
+| GET    | /song/album/{album_id}      | Get songs details by album id        | JWT Token                  |
 
 ### Other Endpoints ###
 
 | Method | Endpoint              | Description                    | Auth Required              |
 |--------|-----------------------|--------------------------------|----------------------------|
-| GET    | /                     | Welcome page                   | No                         |
+| GET    | /                     | Default page                   | No                         |
 | GET    | /auth/token           | Login and get access token     | No                         |
 
 
