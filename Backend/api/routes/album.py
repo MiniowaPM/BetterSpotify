@@ -79,20 +79,6 @@ async def get_myCollection(db: db_dependency, user_auth: user_dependency):
         raise HTTPException(status_code=404, detail="Album not found")
     return album
 
-# Explore # Get studios + album count
-@router.get("/studio/", tags=["Studio"], status_code=status.HTTP_200_OK)
-async def get_studios(db: db_dependency, user_auth: user_dependency):
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    studio_id = user_auth.get("studio_fk")
-    studio = (
-        db.query(models.Studio, func.count(models.Albums_owned.id))
-        .outerjoin(models.Albums_owned, models.Albums_owned.studio_fk == models.Studio.id)
-        .filter(models.Albums_owned.studio_fk != studio_id)
-        .group_by(models.Studio.id))
-    db.commit()
-    return studio
-
 # Explore # Get album by id
 @router.get("/explore/studio/{studio_id}/albums", tags=["Album"], status_code=status.HTTP_200_OK)
 async def get_explore(db: db_dependency, user_auth: user_dependency, studio_id: int):
@@ -124,21 +110,6 @@ async def get_selling(db: db_dependency, user_auth: user_dependency):
     if album is None:
         raise HTTPException(status_code=404, detail="Album not found")
     return album
-
-# Cart # Get wallet
-@router.get("/cart", tags=["Album"], status_code=status.HTTP_200_OK)
-async def get_wallet(db: db_dependency, user_auth: user_dependency):
-    studio_id = user_auth.get("studio_fk")
-    if user_auth is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
-    wallet = (
-    db.query(models.Studio.wallet)
-    .filter(models.Studio.id == studio_id)
-    .first()
-    )
-    if wallet is None:
-        raise HTTPException(status_code=404, detail="Wallet not found")
-    return {"wallet": wallet[0]}
 
 # Get album thumbnali image #
 @router.get("/{album_id}/album_image/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)

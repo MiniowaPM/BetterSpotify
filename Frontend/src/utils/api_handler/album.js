@@ -115,7 +115,7 @@ export async function getSelling(jwtToken) {
 }
 
 export async function getWallet(jwtToken) {
-    const url = `${serverUrl}/album/cart`;
+    const url = `${serverUrl}/studio/wallet`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
@@ -129,7 +129,7 @@ export async function getWallet(jwtToken) {
 }
 
 export async function getStudio(jwtToken) {
-    const url = `${serverUrl}/album/studio`;
+    const url = `${serverUrl}/studio`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };

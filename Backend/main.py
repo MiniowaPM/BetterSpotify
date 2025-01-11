@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import auth_router, user_router, album_router, song_router
+from api.routes import auth_router, user_router, album_router, song_router, studio_router
 from db import engine, Base
 
 # Create instance of an FastApi app
@@ -25,7 +25,7 @@ app.include_router(user_router)
 app.include_router(album_router)
 app.include_router(song_router)
 app.include_router(auth_router)
-
+app.include_router(studio_router)
 # Initialize and create the database tables
 Base.metadata.create_all(bind=engine)
 

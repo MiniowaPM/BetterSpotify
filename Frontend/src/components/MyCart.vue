@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="cart-summary">
-        <p class="balance">Balance: {{ userBalance.toFixed(2) }}zł</p>
+        <p class="balance">Balance: {{ userBalance }}zł</p>
         <p class="total">Total: {{ cartTotal.toFixed(2) }}zł</p>
 
         <div class="actions">
@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { getWallet } from '@/utils/api_handler/album';
+
 export default {
   name: "MyCart",
   props: {
@@ -53,8 +55,18 @@ export default {
   },
   data() {
     return {
-      userBalance: 38.0,
+      userBalance: '',
     };
+  },
+  async mounted(){
+    try{
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      const UserWalletData = await getWallet(loginToken)
+      this.userBalance = UserWalletData.wallet
+      console.log(UserWalletData)
+    } catch(error){
+      console.error('Error fetching user data:', error);
+    }
   },
   computed: {
     cartTotal() {
