@@ -5,3 +5,4 @@ fastapi
 uvicorn 
 sqlalchemy 
 pymysql
+pillow

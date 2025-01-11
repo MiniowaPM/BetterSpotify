@@ -10,6 +10,7 @@ from schemas.response import SuccessResponse
 from core.security import bcrypt_context
 from sqlalchemy import func
 import base64
+from PIL import Image
 
 
 router = APIRouter(prefix="/user")
@@ -110,8 +111,13 @@ async def upload_user_profile_image(user_auth: user_dependency, file: UploadFile
     if user_auth is None:
         HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
     try:
-        with open(image_path, "wb") as f:
-            f.write(await file.read())
+        with open(image_path, "wb") as image_data:
+            image_data.write(await file.read())
+            image = Image.open(image_path)
+            if image.mode not in ("RGB", "RGBA"):
+                image = image.convert("RGB")
+            image = image.resize((512, 512), Image.LANCZOS)
+            image.save(image_path)
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="File failed to create")
     return {"detail": "User profile image succesfuly created"}

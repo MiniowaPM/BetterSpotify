@@ -8,6 +8,7 @@ import models, schemas, db
 from schemas import CreateAlbumBase, UpdateAlbumBase, SuccessResponse
 from .. import db_dependency, user_dependency
 import base64
+from PIL import Image
 
 router = APIRouter(prefix="/album")
 
@@ -167,8 +168,13 @@ async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency
     if user_auth is None or not user_auth.get('is_admin', False):
         HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
     try:
-        with open(image_path, "wb") as f:
-            f.write(await file.read())
+        with open(image_path, "wb") as image_data:
+            image_data.write(await file.read())
+            image = Image.open(image_path)
+            if image.mode not in ("RGB", "RGBA"):
+                image = image.convert("RGB")
+            image = image.resize((512, 512), Image.LANCZOS)
+            image.save(image_path)
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="File failed to create")
     return {"detail": "User profile image succesfuly created"}
