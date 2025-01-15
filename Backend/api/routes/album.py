@@ -166,7 +166,7 @@ async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file type. Only .jpg, .jpeg, .png are allowed.")
     image_path = base_dir/"images"/"albums"/ f"{album_id}.jpg"
     if user_auth is None or not user_auth.get('is_admin', False):
-        HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
     try:
         with open(image_path, "wb") as image_data:
             image_data.write(await file.read())
@@ -178,3 +178,42 @@ async def upload_album_thumbnail_image(album_id: int ,user_auth: user_dependency
     except:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="File failed to create")
     return {"detail": "User profile image succesfuly created"}
+
+# Cart # Album purchase (album_fk, studio_logged)
+@router.post("/{album_id}/purchase/", tags=["Album"], status_code=status.HTTP_200_OK, response_model=SuccessResponse)
+async def purchase_album(album_id: int, user_auth: user_dependency, db: db_dependency):
+    if user_auth is None or not user_auth.get('is_admin', False):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
+    studio_id = user_auth.get("studio_fk")
+    # Check wallet state
+    album_query = db.query(models.Album).filter(models.Album.id == album_id).first()
+    if album_query == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Album not found')
+    studio_query = db.query(models.Studio).filter(
+        models.Studio.id == studio_id).first()
+    if studio_query == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Studio not found')
+    if album_query.price == None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Album not for sale')
+    if studio_query.wallet == None:
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail='Insufficient funds')
+    if studio_query.wallet < album_query.price:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Insufficient funds')
+    album_ownage_data = db.query(models.Albums_owned).filter(models.Albums_owned.album_fk == album_id).first()
+    if album_ownage_data == None:
+        raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail='Album_owned not found')
+    prev_owner_studio_id = album_ownage_data.studio_fk
+    Prev_studio = db.query(models.Studio).filter(models.Studio.id == prev_owner_studio_id).first()
+    if Prev_studio == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Previous owner not found')
+    db.delete(album_ownage_data)
+    studio_query.wallet -= album_query.price # Decrease funds of new owner account
+    Prev_studio.wallet += album_query.price # Increase funds of old owner account
+    album_query.price = None # Set for newly purchased album
+    album_ownage = models.Albums_owned(
+        album_fk = album_id,
+        studio_fk = studio_id
+    )
+    db.add(album_ownage)
+    db.commit()
+    return {"detail": "Album successfully purchased"}
