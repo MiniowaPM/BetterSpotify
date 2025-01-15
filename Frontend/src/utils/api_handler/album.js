@@ -173,3 +173,17 @@ export async function getAlbumImg(albumId, jwtToken) {
         return null;
     }
 }
+
+export async function postPurchaseAlbum(jwtToken, title, description, artist, releaseDate, genre) {
+    const url = `/${album_id}/purchase/`;
+    const headers = {
+        Authorization: `Bearer ${jwtToken.access_token}`,
+      };
+    try {
+        const response = await axios.post(url, { headers });
+        return response.data;
+    } catch(error){
+        console.error(`Error: ${error.message}`);
+        return null;
+    }
+}
