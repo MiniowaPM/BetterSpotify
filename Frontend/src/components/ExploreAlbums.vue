@@ -20,7 +20,7 @@
               isAlbumInCart(album) ? 'This album is already in your cart' : ''
             "
           >
-            <i class="fa-light fa-cart-plus"></i>
+          <i class="fa-regular fa-cart-circle-plus"></i>
           </span>
         </div>
       </div>
@@ -199,7 +199,7 @@ p {
 
 .cart-icon {
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-color);
   transition: color 0.3s ease;
 }
