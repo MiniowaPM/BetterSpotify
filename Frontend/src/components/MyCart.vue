@@ -86,7 +86,7 @@ export default {
     viewAlbumDetail(album) {
       this.$router.push({
         name: "AlbumDetail",
-        params: { albumId: album.title },
+        params: { albumId: album.id },
       });
     },
   },
@@ -180,7 +180,7 @@ h1 {
   background-color: var(--background-second-color);
   padding: 20px;
   border-radius: 10px;
-  border: 1px solid var(--background-hover-color); /* subtle border */
+  border: 1px solid var(--background-hover-color);
 }
 
 .cart-summary p {

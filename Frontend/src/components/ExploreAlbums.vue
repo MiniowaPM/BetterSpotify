@@ -10,7 +10,7 @@
         <div class="album-footer">
           <span class="price">{{ album.price }}zł</span>
           <span class="separator">
-            <i class="fa-solid fa-circle-small"></i> 
+            <i class="fa-solid fa-circle-small"></i>
           </span>
           <span
             @click="addToCart(album)"
@@ -46,6 +46,7 @@ export default {
       const albumsData = {
         "Studio A": [
           {
+            id: "1",
             title: "Album One",
             artist: "Artist A",
             cover:
@@ -53,6 +54,7 @@ export default {
             price: 14.99,
           },
           {
+            id: "2",
             title: "Album Two",
             artist: "Artist B",
             cover:
@@ -62,6 +64,7 @@ export default {
         ],
         "Studio B": [
           {
+            id: "3",
             title: "Album Three",
             artist: "Artist C",
             cover:
@@ -76,7 +79,7 @@ export default {
       this.$emit("add-to-cart", album);
     },
     isAlbumInCart(album) {
-      return this.cart.some((item) => item.title === album.title);
+      return this.cart.some((item) => item.id === album.id);
     },
   },
 };
