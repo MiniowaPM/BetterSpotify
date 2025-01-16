@@ -9,7 +9,9 @@
         <p class="artist-text">{{ album.artist }}</p>
         <div class="album-footer">
           <span class="price">{{ album.price }}zł</span>
-          <span class="separator">•</span>
+          <span class="separator">
+            <i class="fa-solid fa-circle-small"></i> 
+          </span>
           <span
             @click="addToCart(album)"
             class="cart-icon"
@@ -149,13 +151,12 @@ p {
 .price {
   font-size: 1.1rem;
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--text-color);
 }
 
 .cart-icon {
   cursor: pointer;
   font-size: 1.2rem;
-  margin-left: 8px;
   color: var(--text-color);
   transition: color 0.3s ease;
 }
@@ -165,7 +166,18 @@ p {
 }
 
 .separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-color);
   margin: 0 8px;
+}
+
+.separator i {
+  font-size: 7px;
+  width: 7px;
+  height: 7px;
+  display: inline-block;
 }
 
 .album-footer .cart-icon.disabled {

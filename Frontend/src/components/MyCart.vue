@@ -117,7 +117,6 @@ h1 {
   grid-template-columns: 1fr;
   gap: 20px;
   margin-bottom: 20px;
-  transition: background-color 0.3s ease;
   cursor: pointer;
 }
 
@@ -128,7 +127,7 @@ h1 {
   padding: 15px;
   border-radius: 10px;
   border: 1px solid var(--background-hover-color);
-  transition: border 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .cart-item:hover {
@@ -167,13 +166,13 @@ h1 {
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--contrast-color);
+  color: var(--second-text-color);
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
 .remove-button:hover {
-  color: var(--second-text-color);
+  color: var(--contrast-color);
 }
 
 .cart-summary {
@@ -205,12 +204,11 @@ h1 {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .clear-button:hover,
 .checkout-button:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .clear-button:hover {
