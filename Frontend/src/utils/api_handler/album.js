@@ -174,8 +174,8 @@ export async function getAlbumImg(albumId, jwtToken) {
     }
 }
 
-export async function postPurchaseAlbum(jwtToken, title, description, artist, releaseDate, genre) {
-    const url = `/${album_id}/purchase/`;
+export async function postPurchaseAlbum(albumId, jwtToken) {
+    const url = `/${albumId}/purchase/`;
     const headers = {
         Authorization: `Bearer ${jwtToken.access_token}`,
       };

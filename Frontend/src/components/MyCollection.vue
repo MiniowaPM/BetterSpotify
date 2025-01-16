@@ -51,7 +51,6 @@ export default {
     return {
       studio: {
         name: sessionStorage.getItem('StudioName'),
-        albums: [],
       },
       favorites: [],
       showFavoritesOnly: false,
@@ -87,7 +86,7 @@ export default {
     viewAlbumDetail(album) {
       this.$router.push({
         name: "AlbumDetail",
-        params: { albumId: album.title },
+        params: { albumId: album.id },
       });
     },
     saveFavoritesToLocalStorage() {
