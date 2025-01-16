@@ -29,7 +29,7 @@ const routes = [
     component: ExploreMarket,
   },
   {
-    path: "/explore/:studioName/",
+    path: "/explore/:studioId/",
     name: "ExploreAlbums",
     component: ExploreAlbums,
     props: true,

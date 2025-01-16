@@ -31,20 +31,59 @@
 <script>
 export default {
   name: "ExploreAlbums",
-  props: ["studioName", "cart"],
+  props: ["cart"],
   data() {
     return {
       studio: {
-        name: this.studioName,
-        description: `Browse albums from ${this.studioName}.`,
-        albums: this.getAlbumsByStudio(this.studioName),
+        id: this.$route.params.studioId,
+        name: "",
+        description: "",
+        albums: [],
       },
     };
   },
+  created() {
+    this.getStudioDetails(this.studio.id);
+  },
   methods: {
-    getAlbumsByStudio(studioName) {
+    getStudioDetails(studioId) {
+      const studiosData = {
+        1: {
+          name: "Studio A",
+          description: "Browse albums from Studio A.",
+          albums: this.getAlbumsByStudio(1),
+        },
+        2: {
+          name: "Studio B",
+          description: "Browse albums from Studio B.",
+          albums: this.getAlbumsByStudio(2),
+        },
+        3: {
+          name: "Studio C",
+          description: "Browse albums from Studio C.",
+          albums: this.getAlbumsByStudio(3),
+        },
+        4: {
+          name: "Studio D",
+          description: "Browse albums from Studio D.",
+          albums: this.getAlbumsByStudio(4),
+        },
+        5: {
+          name: "Studio E",
+          description: "Browse albums from Studio E.",
+          albums: this.getAlbumsByStudio(5),
+        },
+      };
+
+      this.studio = studiosData[studioId] || {
+        name: "Unknown Studio",
+        description: "",
+        albums: [],
+      };
+    },
+    getAlbumsByStudio(studioId) {
       const albumsData = {
-        "Studio A": [
+        1: [
           {
             id: "1",
             title: "Album One",
@@ -62,7 +101,7 @@ export default {
             price: 19.99,
           },
         ],
-        "Studio B": [
+        2: [
           {
             id: "3",
             title: "Album Three",
@@ -73,7 +112,8 @@ export default {
           },
         ],
       };
-      return albumsData[studioName] || [];
+
+      return albumsData[studioId] || [];
     },
     addToCart(album) {
       this.$emit("add-to-cart", album);

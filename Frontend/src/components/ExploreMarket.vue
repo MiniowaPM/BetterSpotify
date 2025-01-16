@@ -26,26 +26,31 @@ export default {
     return {
       studios: [
         {
+          id: 1,
           name: "Studio A",
           description: "Explore music from Studio A.",
           logo: musicStudioLogo,
         },
         {
+          id: 2,
           name: "Studio B",
           description: "Explore music from Studio B.",
           logo: musicStudioLogo,
         },
         {
+          id: 3,
           name: "Studio C",
           description: "Explore music from Studio C.",
           logo: musicStudioLogo,
         },
         {
+          id: 4,
           name: "Studio D",
           description: "Explore music from Studio D.",
           logo: musicStudioLogo,
         },
         {
+          id: 5,
           name: "Studio E",
           description: "Explore music from Studio E.",
           logo: musicStudioLogo,
@@ -57,7 +62,7 @@ export default {
     selectStudio(studio) {
       this.$router.push({
         name: "ExploreAlbums",
-        params: { studioName: studio.name },
+        params: { studioId: studio.id },
       });
     },
   },
