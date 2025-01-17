@@ -44,7 +44,7 @@ const routes = [
     path: "/admin-panel",
     name: "AdminPanel",
     component: AdminPanel,
-  }
+  },
 ];
 
 const router = createRouter({

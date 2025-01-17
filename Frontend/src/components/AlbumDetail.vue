@@ -301,7 +301,8 @@ h1 {
 }
 
 .modal-inputs label {
-  font-weight: 400;
+  text-align: center;
+  font-weight: 500;
   font-size: 1.1rem;
   color: var(--text-color);
 }

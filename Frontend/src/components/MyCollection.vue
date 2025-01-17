@@ -32,10 +32,62 @@
           </span>
         </div>
       </div>
-      <div class="album add-album" @click="addAlbum">
+      <div class="album add-album" @click="showAddAlbumModal">
         <div class="add-album-content">
           <i class="fa-duotone fa-light fa-plus add-icon"></i>
           <p class="add-text">Add Album</p>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="isModalVisible" class="modal-backdrop">
+      <div class="modal">
+        <h3 class="modal-title">Add New Album</h3>
+        <div class="modal-inputs">
+          <label for="albumTitle">Title</label>
+          <input
+            id="albumTitle"
+            v-model="newAlbum.title"
+            placeholder="Enter album title"
+          />
+          <label for="albumArtist">Artist</label>
+          <input
+            id="albumArtist"
+            v-model="newAlbum.artist"
+            placeholder="Enter artist name"
+          />
+          <label for="albumCover">Cover Image</label>
+          <input
+            id="albumCover"
+            v-model="newAlbum.cover"
+            placeholder="Enter cover image"
+          />
+          <label for="albumReleaseDate">Release Date</label>
+          <input
+            id="albumReleaseDate"
+            type="date"
+            v-model="newAlbum.releaseDate"
+            placeholder="Enter release date"
+          />
+          <label for="albumGenre">Genre</label>
+          <input
+            id="albumGenre"
+            v-model="newAlbum.genre"
+            placeholder="Enter genre"
+          />
+          <label for="albumDescription">Description</label>
+          <textarea
+            id="albumDescription"
+            v-model="newAlbum.description"
+            placeholder="Enter album description"
+          ></textarea>
+        </div>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <div class="modal-actions">
+          <button class="modal-button save" @click="addAlbum">Save</button>
+          <button class="modal-button cancel" @click="hideAddAlbumModal">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -43,17 +95,27 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection } from '@/utils/api_handler/album';
+import { getAlbumImg, getMyCollection } from "@/utils/api_handler/album";
 
 export default {
   name: "MyCollection",
   data() {
     return {
       studio: {
-        name: sessionStorage.getItem('StudioName'),
+        name: sessionStorage.getItem("StudioName"),
       },
       favorites: [],
       showFavoritesOnly: false,
+      isModalVisible: false,
+      newAlbum: {
+        title: "",
+        artist: "",
+        releaseDate: "",
+        cover: "",
+        genre: "",
+        description: "",
+      },
+      errorMessage: "",
     };
   },
   computed: {
@@ -62,8 +124,41 @@ export default {
     },
   },
   methods: {
+    showAddAlbumModal() {
+      this.isModalVisible = true;
+      this.errorMessage = "";
+    },
+    hideAddAlbumModal() {
+      this.isModalVisible = false;
+      this.newAlbum = {
+        title: "",
+        artist: "",
+        cover: "",
+        releaseDate: "",
+        genre: "",
+        description: "",
+      };
+      this.errorMessage = "";
+    },
     addAlbum() {
-      console.log("Add album func");
+      if (
+        !this.newAlbum.title.trim() ||
+        !this.newAlbum.artist.trim() ||
+        !this.newAlbum.cover.trim() ||
+        !this.newAlbum.releaseDate ||
+        !this.newAlbum.genre.trim() ||
+        !this.newAlbum.description.trim()
+      ) {
+        this.errorMessage = "All fields are required.";
+        return;
+      }
+      // symulacja dodania albumu do listy
+      const album = {
+        ...this.newAlbum,
+        id: Date.now(),
+      };
+      this.studio.albums.push(album);
+      this.hideAddAlbumModal();
     },
     toggleFavorite(album) {
       const index = this.favorites.findIndex(
@@ -115,31 +210,35 @@ export default {
     this.loadFavoritesFromLocalStorage();
     this.loadToggleStateFromLocalStorage();
     // GET DATA
-    const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+    const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
     var myCollectionData = await getMyCollection(loginToken);
 
     this.studio.albums = await Promise.all(
-            myCollectionData.map(async (album) => {
-                try {
-                    const albumImage = await getAlbumImg(album.id, loginToken);
-                    return {
-                        artist: album.artist,
-                        id: album.id,
-                        title: album.title,
-                        releaseDate: album.release_date.slice(0, 4),
-                        cover: `data:${albumImage.mime_type};base64,${albumImage.base64_data}`,
-                    };
-                } catch (error) {
-                    console.error(`Failed to fetch image for album ID ${album.id}:`, error);
-                    return {
-                        artist: album.artist,
-                        id: album.id,
-                        title: album.title,
-                        releaseDate: album.release_date,
-                        cover: null,
-                    };
-                  }
-    }));
+      myCollectionData.map(async (album) => {
+        try {
+          const albumImage = await getAlbumImg(album.id, loginToken);
+          return {
+            artist: album.artist,
+            id: album.id,
+            title: album.title,
+            releaseDate: album.release_date.slice(0, 4),
+            cover: `data:${albumImage.mime_type};base64,${albumImage.base64_data}`,
+          };
+        } catch (error) {
+          console.error(
+            `Failed to fetch image for album ID ${album.id}:`,
+            error
+          );
+          return {
+            artist: album.artist,
+            id: album.id,
+            title: album.title,
+            releaseDate: album.release_date,
+            cover: null,
+          };
+        }
+      })
+    );
   },
 };
 </script>
@@ -274,5 +373,130 @@ p {
   font-size: 1rem;
   color: var(--text-color);
   margin-top: 8px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal {
+  background-color: var(--background-second-color);
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.modal-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-inputs label {
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.modal-inputs input,
+.modal-inputs textarea {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px;
+  font-size: 1.1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  outline: none;
+  text-align: center;
+  resize: none;
+}
+
+.modal-inputs input:focus {
+  border-color: var(--contrast-color);
+}
+
+#albumReleaseDate {
+  color: var(--placeholder-color);
+  padding-left: 35px;
+}
+
+#albumReleaseDate:focus {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] #albumReleaseDate::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+
+[data-theme="dark"] #albumReleaseDate:focus::-webkit-calendar-picker-indicator {
+  filter: invert(95%);
+}
+
+[data-theme="light"] #albumReleaseDate::-webkit-calendar-picker-indicator {
+  filter: brightness(0) contrast(5%);
+}
+
+[data-theme="light"] #albumReleaseDate:focus::-webkit-calendar-picker-indicator {
+  filter: brightness(0) contrast(35%);
+}
+
+.error-message {
+  color: var(--second-text-color);
+  font-size: 1rem;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-button {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 48%;
+}
+
+.modal-button.cancel,
+.modal-button.save {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--background-hover-color);
+}
+
+.modal-button:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-button.cancel:hover,
+.modal-button.save:hover {
+  background-color: var(--background-color);
+  border-color: var(--contrast-color);
+  color: var(--contrast-color);
 }
 </style>
