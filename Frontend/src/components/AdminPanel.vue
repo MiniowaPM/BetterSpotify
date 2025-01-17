@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import { getUserImg, getUsersInStudio } from '@/utils/api_handler/user';
+
 export default {
   name: "AdminPanel",
   data() {
