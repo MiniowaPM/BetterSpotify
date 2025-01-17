@@ -3,7 +3,7 @@
     <div class="profile">
       <img src="../assets/icon_onsite.png" alt="Logo" class="logo" />
       <img
-        src="../assets/profilepicture.jpg"
+        :src="UserProfileImage"
         alt="User Avatar"
         class="avatar"
       />
@@ -54,8 +54,15 @@
 </template>
 
 <script>
+import { getUserImg, loginToken } from '@/utils/api_handler/user';
+
 export default {
   name: "AppSidebar",
+  data(){
+    return{
+      UserProfileImage: '',
+    }
+  },
   methods: {
     toggleTheme() {
       const currentTheme =
@@ -65,9 +72,13 @@ export default {
       localStorage.setItem("theme", newTheme);
     },
   },
-  mounted() {
+  async mounted() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
+    const TEMP_LOGIN = await loginToken("test","test")
+    // const loginToken = JSON.parse(sessionStorage.getItem("loginToken")) # jak już będzie login screan to ez
+    const UserProfileImageBinaryData = await getUserImg("me",TEMP_LOGIN) 
+    this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
   },
 };
 </script>

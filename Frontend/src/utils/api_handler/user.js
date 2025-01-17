@@ -66,14 +66,13 @@ export async function getLoggedUser(jwtToken) {
 }
 
 export async function getUsersInStudio(jwtToken) {
-  const url = `${serverUrl}/user/studio`;
+  const url = `${serverUrl}/user/studio/`;
   const headers = {
     Authorization: `Bearer ${jwtToken.access_token}`,
   };
   try {
       const response = await axios.get(url, {headers});
       return response.data;
-
   } catch(error){
       console.error(`Error: ${error.message}`);
       return null;

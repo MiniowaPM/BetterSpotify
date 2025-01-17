@@ -60,24 +60,10 @@ export default {
     return {
       users: [
         {
-          id: 1,
-          icon: "https://avatars.githubusercontent.com/u/144287819?v=4",
-          username: "Miniowa123",
-          isAdmin: true,
-          isEditing: false,
-        },
-        {
-          id: 2,
-          icon: "https://avatars.githubusercontent.com/u/144287819?v=4",
-          username: "Posac",
-          isAdmin: false,
-          isEditing: false,
-        },
-        {
-          id: 3,
-          icon: "https://avatars.githubusercontent.com/u/144287819?v=4",
-          username: "Dupa",
-          isAdmin: true,
+          id: '',
+          icon: '',
+          username: '',
+          isAdmin: Boolean,
           isEditing: false,
         },
       ],
@@ -88,6 +74,19 @@ export default {
       return this.users.filter((user) => user.isAdmin).length;
     },
   },
+  async mounted(){
+        const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+        const usersInStudio = await getUsersInStudio(loginToken)
+        this.users = await Promise.all(usersInStudio.map(async (user) => {
+            const userIcon = await getUserImg(user.id, loginToken)
+            return {
+                id: user.id,
+                icon: `data:${userIcon.mime_type};base64,${userIcon.base64_data}`,
+                username: user.username,
+                isAdmin: user.is_admin,
+            }
+        }))
+    },
   methods: {
     toggleEditMode(index) {
       const user = this.users[index];

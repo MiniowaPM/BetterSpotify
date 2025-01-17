@@ -174,7 +174,7 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
     return {"detail": "User successfully modified"}
 
 # AdminPanel # Get user in studio
-@router.get("/studio/", tags=["User"], status_code=status.HTTP_200_OK)
+@router.get("/studio", tags=["User"], status_code=status.HTTP_200_OK)
 async def get_users_in_group(db: db_dependency, user_auth: user_dependency):
     if user_auth is None or not user_auth.get('is_admin', False):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed or insufficient premissions')
