@@ -9,49 +9,39 @@
         class="studio"
         @click="selectStudio(studio)"
       >
-        <img :src="studio.logo" alt="Studio logo" class="studio-logo" />
+        <img src="../assets/music_studios.png" alt="Studio logo" class="studio-logo" />
         <h3>{{ studio.name }}</h3>
-        <p class="studio-description">{{ studio.description }}</p>
+        <p class="studio-description">Album count: {{ studio.albumCount }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import musicStudioLogo from "../assets/music_studios.png";
+import { getStudio } from "@/utils/api_handler/album";
 
 export default {
   name: "ExploreMarket",
+
   data() {
     return {
       studios: [
         {
-          name: "Studio A",
-          description: "Explore music from Studio A.",
-          logo: musicStudioLogo,
-        },
-        {
-          name: "Studio B",
-          description: "Explore music from Studio B.",
-          logo: musicStudioLogo,
-        },
-        {
-          name: "Studio C",
-          description: "Explore music from Studio C.",
-          logo: musicStudioLogo,
-        },
-        {
-          name: "Studio D",
-          description: "Explore music from Studio D.",
-          logo: musicStudioLogo,
-        },
-        {
-          name: "Studio E",
-          description: "Explore music from Studio E.",
-          logo: musicStudioLogo,
+          id: "",
+          name: "",
+          albumCount: "",
         },
       ],
     };
+  },
+  async mounted(){
+    const loginToken = JSON.parse(sessionStorage.getItem('loginToken'))
+    const Studio_data = await getStudio(loginToken)
+    this.studios = Studio_data.map((album)=>({
+        id: album.id,
+        name: album.studio,
+        albumCount : album.album_count
+      }))
   },
   methods: {
     selectStudio(studio) {

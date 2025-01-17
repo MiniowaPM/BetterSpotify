@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getWallet } from '@/utils/api_handler/album';
+import { getWallet, postPurchaseAlbum } from '@/utils/api_handler/album';
 
 export default {
   name: "MyCart",
@@ -63,7 +63,6 @@ export default {
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
       const UserWalletData = await getWallet(loginToken)
       this.userBalance = UserWalletData.wallet
-      console.log(UserWalletData)
     } catch(error){
       console.error('Error fetching user data:', error);
     }
@@ -81,7 +80,16 @@ export default {
       this.$emit("clear-cart");
     },
     checkout() {
-      alert("ayo 🤨");
+      this.cart.forEach((album, index)=>{
+        console.log(`Album ${index}:`, album);
+         try{
+            const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+            postPurchaseAlbum(album.albumId, loginToken)
+         } catch(error){
+           console.error('Error fetching studio data:', error);
+         }
+        this.clearCart()
+      })
     },
     viewAlbumDetail(album) {
       this.$router.push({

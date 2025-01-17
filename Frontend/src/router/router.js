@@ -5,6 +5,7 @@ import ExploreMarket from "../components/ExploreMarket.vue";
 import ExploreAlbums from "../components/ExploreAlbums.vue";
 import MyCart from "../components/MyCart.vue";
 import AlbumDetail from "../components/AlbumDetail.vue";
+import AdminPanel from "@/components/AdminPanel.vue";
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     path: "/cart",
     name: "MyCart",
     component: MyCart,
+  },
+  {
+    path: "/admin-panel",
+    name: "AdminPanel",
+    component: AdminPanel,
   },
 ];
 
