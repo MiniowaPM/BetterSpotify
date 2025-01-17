@@ -11,13 +11,21 @@ async def get_studios(db: db_dependency, user_auth: user_dependency):
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
     studio_id = user_auth.get("studio_fk")
-    studio = (
-        db.query(models.Studio, func.count(models.Albums_owned.id))
+    studios = (
+        db.query(
+            models.Studio.id.label("id"),
+            models.Studio.studio_name.label("studio_name"),
+            func.count(models.Albums_owned.id).label("album_count")
+        )
         .outerjoin(models.Albums_owned, models.Albums_owned.studio_fk == models.Studio.id)
-        .filter(models.Albums_owned.studio_fk != studio_id)
-        .group_by(models.Studio.id))
+        .filter(models.Studio.id != studio_id)  # Filter out the user's own studio
+        .group_by(models.Studio.id, models.Studio.studio_name)
+        .all()
+    )
+    if studios == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Studio not found')
     db.commit()
-    return studio
+    return [{"id": studio.id,"studio": studio.studio_name, "album_count": studio.album_count} for studio in studios]
 
 # Cart # Get my wallet
 @router.get("/wallet", tags=["Studio"], status_code=status.HTTP_200_OK)
