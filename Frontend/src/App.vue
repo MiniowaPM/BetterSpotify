@@ -81,7 +81,6 @@ export default {
   --second-text-color: #d3d3d3;
   --contrast-color: #ff7f50;
   --contrast-hover-color: #ff5722;
-  --placeholder-color:#7c7c7c;
 }
 
 [data-theme="light"] {
@@ -92,7 +91,6 @@ export default {
   --second-text-color: #6a6a6a;
   --contrast-color: #ff6f61;
   --contrast-hover-color: #e65a50;
-  --placeholder-color: #797878;
 }
 
 * {

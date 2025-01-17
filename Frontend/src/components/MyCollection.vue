@@ -435,29 +435,18 @@ p {
 }
 
 #albumReleaseDate {
-  color: var(--placeholder-color);
+  color: var(--text-color);
   padding-left: 35px;
 }
 
-#albumReleaseDate:focus {
-  color: var(--text-color);
-}
-
 [data-theme="dark"] #albumReleaseDate::-webkit-calendar-picker-indicator {
-  filter: invert(50%);
-}
-
-[data-theme="dark"] #albumReleaseDate:focus::-webkit-calendar-picker-indicator {
   filter: invert(95%);
 }
 
 [data-theme="light"] #albumReleaseDate::-webkit-calendar-picker-indicator {
-  filter: brightness(0) contrast(5%);
-}
-
-[data-theme="light"] #albumReleaseDate:focus::-webkit-calendar-picker-indicator {
   filter: brightness(0) contrast(35%);
 }
+
 
 .error-message {
   color: var(--second-text-color);
