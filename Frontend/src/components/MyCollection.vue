@@ -402,6 +402,11 @@ p {
 
 .star-icon {
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.star-icon:hover {
+  color: var(--text-color);
 }
 
 .separator {
@@ -616,6 +621,6 @@ input[type="file"] {
   width: 150px;
   height: 150px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--background-hover-color);
 }
 </style>

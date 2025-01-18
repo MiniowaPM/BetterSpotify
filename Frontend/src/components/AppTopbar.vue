@@ -27,6 +27,27 @@
       aria-label="Search"
     />
     <div class="side-controls right-controls">
+      <div class="wallet">
+        <button
+          id="walletButton"
+          class="wallet-btn"
+          @click="toggleWalletInfo"
+          aria-label="Wallet"
+        >
+          <i class="fa-solid fa-wallet"></i>
+        </button>
+        <div v-if="isWalletInfoVisible" class="wallet-info">
+          <div class="wallet-balance">
+            <p id="balance-headline">Account Balance</p>
+            <div class="balance-row">
+              <p>{{ studioBalance }}zł</p>
+              <button class="add-funds-btn" @click="addFunds">
+                <i class="fa-solid fa-circle-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="control-buttons">
         <button
           id="minimizeButton"
@@ -62,6 +83,12 @@ import { ipcRenderer } from "electron";
 
 export default {
   name: "AppTopbar",
+  data() {
+    return {
+      isWalletInfoVisible: false,
+      studioBalance: 0,
+    };
+  },
   methods: {
     goBack() {
       ipcRenderer.send("go-back");
@@ -78,6 +105,34 @@ export default {
     closeApp() {
       ipcRenderer.send("close-app");
     },
+    toggleWalletInfo() {
+      this.isWalletInfoVisible = !this.isWalletInfoVisible;
+    },
+    addFunds() {
+      if (this.studioBalance + 50 > 10000) {
+        alert(`Cannot add more funds. Maximum balance is 10000.`);
+      } else {
+        this.studioBalance += 50;
+      }
+    },
+    handleOutsideClick(event) {
+      const walletInfoElement = this.$el.querySelector('.wallet-info');
+      const controlButtonsElement = this.$el.querySelector('.control-buttons');
+      if (
+        walletInfoElement &&
+        !walletInfoElement.contains(event.target) &&
+        !event.target.closest('.wallet-btn') &&
+        !controlButtonsElement.contains(event.target)
+      ) {
+        this.isWalletInfoVisible = false;
+      }
+    },
+  },
+  mounted() {
+    document.addEventListener('click', this.handleOutsideClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleOutsideClick);
   },
 };
 </script>
@@ -105,11 +160,12 @@ export default {
 }
 
 .back-forward-buttons,
-.control-buttons {
+.control-buttons,
+.wallet {
   display: flex;
   align-items: center;
   background-color: var(--background-color);
-  border-radius: 50px;
+  border-radius: 25px;
 }
 
 .search-box {
@@ -119,7 +175,7 @@ export default {
   transform: translateX(-50%);
   background-color: var(--background-color);
   border: none;
-  border-radius: 50px;
+  border-radius: 25px;
   padding: 10px 15px;
   color: var(--text-color);
   font-size: 15px;
@@ -131,6 +187,7 @@ export default {
 
 .back-btn,
 .forward-btn,
+.wallet-btn,
 .control-buttons button {
   background: none;
   border: none;
@@ -149,6 +206,7 @@ export default {
 .forward-btn,
 .minimize-btn,
 .maximize-btn,
+.wallet-btn,
 .close-btn {
   transition: background-color 0.3s ease;
   border-radius: 25px;
@@ -158,7 +216,63 @@ export default {
 .forward-btn:hover,
 .minimize-btn:hover,
 .maximize-btn:hover,
-.close-btn:hover {
+.close-btn:hover,
+.wallet-btn:hover {
   background-color: var(--background-hover-color);
+}
+
+.wallet {
+  position: relative;
+  color: var(--text-color);
+  height: 40px;
+  width: 40px;
+  margin-right: 10px;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.wallet-info {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-radius: 15px;
+  padding: 10px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.wallet-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#balance-headline {
+  font-weight: bold;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.add-funds-btn {
+  background: none;
+  color: var(--contrast-color);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.add-funds-btn:hover {
+  color: var(--contrast-hover-color);
 }
 </style>
