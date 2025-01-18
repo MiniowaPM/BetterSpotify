@@ -57,11 +57,17 @@
             placeholder="Enter artist name"
           />
           <label for="albumCover">Cover Image</label>
+          <div @click="triggerFileInput" class="custom-file-label">Upload Cover Image</div>
           <input
             id="albumCover"
-            v-model="newAlbum.cover"
-            placeholder="Enter cover image"
+            type="file"
+            accept="image/png, image/jpeg"
+            @change="handleFileUpload"
           />
+          <p v-if="coverErrorMessage" class="error-message">{{ coverErrorMessage }}</p>
+          <div v-if="newAlbum.cover" class="cover-preview">
+            <img :src="newAlbum.cover" alt="Album Cover Preview" />
+          </div>
           <label for="albumReleaseDate">Release Date</label>
           <input
             id="albumReleaseDate"
@@ -70,11 +76,15 @@
             placeholder="Enter release date"
           />
           <label for="albumGenre">Genre</label>
-          <input
-            id="albumGenre"
-            v-model="newAlbum.genre"
-            placeholder="Enter genre"
-          />
+          <select id="albumGenre" v-model="newAlbum.genre" class="genre-select">
+            <option
+              v-for="(genre, index) in genres"
+              :key="index"
+              :value="index + 1"
+            >
+              {{ genre }}
+            </option>
+          </select>
           <label for="albumDescription">Description</label>
           <textarea
             id="albumDescription"
@@ -104,6 +114,26 @@ export default {
       studio: {
         name: sessionStorage.getItem("StudioName"),
       },
+      genres: [
+      "Pop", "Rock", "Jazz", "Classical", "HipHop", "RnB", "Reggae", 
+      "Country", "Blues", "Electronic", "Folk", "Metal", "Soul", "Funk", 
+      "Punk", "Disco", "Gospel", "House", "Techno", "Trance", "Dubstep", 
+      "Ambient", "Indie", "KPop", "JPop", "Latin", "Salsa", "Bachata", 
+      "Reggaeton", "Afrobeat", "Ska", "Grunge", "Alternative", "Emo", 
+      "ProgressiveRock", "SymphonicMetal", "PostRock", "Noise", 
+      "Experimental", "GarageRock", "Hardcore", "Industrial", "NewWave", 
+      "SynthPop", "LoFi", "TripHop", "Chillwave", "Vaporwave", "Shoegaze", 
+      "DreamPop", "PsychedelicRock", "Psytrance", "Hardstyle", "DrumAndBass", 
+      "Breakbeat", "Glitch", "EDM", "Dancehall", "Trap", "Grime", "Drill", 
+      "Dub", "Moombahton", "TropicalHouse", "FutureBass", "BigRoom", 
+      "Electropop", "Electroswing", "Baroque", "Opera", "Choral", 
+      "Minimalism", "ContemporaryClassical", "March", "Soundtrack", 
+      "MusicalTheatre", "AvantGarde", "SpokenWord", "World", "Celtic", 
+      "Flamenco", "MiddleEastern", "Bollywood", "Tango", "BossaNova", 
+      "Samba", "Zydeco", "Cajun", "Bluegrass", "Americana", "Roots", 
+      "Chillout", "Meditation", "Workout", "Holiday", "ChildrensMusic", 
+      "Acapella", "Mashup", "Covers", "Parody"
+      ],
       favorites: [],
       showFavoritesOnly: false,
       isModalVisible: false,
@@ -112,10 +142,11 @@ export default {
         artist: "",
         releaseDate: "",
         cover: "",
-        genre: "",
+        genre: 1,
         description: "",
       },
       errorMessage: "",
+      coverErrorMessage: "",
     };
   },
   computed: {
@@ -124,6 +155,9 @@ export default {
     },
   },
   methods: {
+    triggerFileInput() {
+      document.getElementById("albumCover").click();
+    },
     showAddAlbumModal() {
       this.isModalVisible = true;
       this.errorMessage = "";
@@ -135,7 +169,7 @@ export default {
         artist: "",
         cover: "",
         releaseDate: "",
-        genre: "",
+        genre: 1,
         description: "",
       };
       this.errorMessage = "";
@@ -146,7 +180,7 @@ export default {
         !this.newAlbum.artist.trim() ||
         !this.newAlbum.cover.trim() ||
         !this.newAlbum.releaseDate ||
-        !this.newAlbum.genre.trim() ||
+        !this.newAlbum.genre ||
         !this.newAlbum.description.trim()
       ) {
         this.errorMessage = "All fields are required.";
@@ -204,6 +238,35 @@ export default {
       if (storedToggleState !== null) {
         this.showFavoritesOnly = JSON.parse(storedToggleState);
       }
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const allowedTypes = ["image/png", "image/jpeg"];
+      if (!allowedTypes.includes(file.type)) {
+        this.errorMessage = "Please upload a valid image (PNG or JPEG).";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          if (img.width !== img.height) {
+            this.coverErrorMessage = "Please upload a square image.";
+            this.newAlbum.cover = "";
+          } else {
+            this.newAlbum.cover = e.target.result; // Base64 string
+            this.coverErrorMessage = "";
+          }
+        };
+        img.onerror = () => {
+          this.coverErrorMessage = "Invalid image file.";
+        };
+        img.src = e.target.result; 
+      };
+      reader.readAsDataURL(file);
     },
   },
   async mounted() {
@@ -386,14 +449,18 @@ p {
   justify-content: center;
   align-items: center;
   z-index: 2000;
+  overflow: hidden;
 }
 
 .modal {
   background-color: var(--background-second-color);
   padding: 20px;
   border-radius: 10px;
-  width: 400px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
 }
 
 .modal-title {
@@ -447,7 +514,6 @@ p {
   filter: brightness(0) contrast(35%);
 }
 
-
 .error-message {
   color: var(--second-text-color);
   font-size: 1rem;
@@ -487,5 +553,69 @@ p {
   background-color: var(--background-color);
   border-color: var(--contrast-color);
   color: var(--contrast-color);
+}
+
+.genre-select {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px;
+  font-size: 1.1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  outline: none;
+  text-align: center;
+  appearance: none;
+  cursor: pointer;
+}
+
+.genre-select:focus {
+  border-color: var(--contrast-color);
+}
+
+.genre-select option {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-label {
+  display: inline-block;
+  padding: 10px 20px;
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 1.1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.custom-file-label:hover {
+  background-color: var(--background-color);
+  border-color: var(--contrast-color);
+  color: var(--contrast-color);
+}
+
+.custom-file-label:focus {
+  outline: none;
+  border-color: var(--contrast-color);
+}
+
+.cover-preview {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.cover-preview img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>
