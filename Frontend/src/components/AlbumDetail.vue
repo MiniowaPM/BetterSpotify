@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { getAlbumImg } from '@/utils/api_handler/album';
 import { deleteSong, getSongsInAlbum, postSong } from '@/utils/api_handler/song';
 
 export default {
@@ -104,6 +105,8 @@ export default {
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
       const SongsInAlbum = await getSongsInAlbum(this.albumId, loginToken);
       this.album = SongsInAlbum;
+      const AlbumThumbnail = await getAlbumImg(this.albumId,loginToken)
+      this.album.cover = `data:${AlbumThumbnail.mime_type};base64,${AlbumThumbnail.base64_data}`;
     },
     dropSong(index) {
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
