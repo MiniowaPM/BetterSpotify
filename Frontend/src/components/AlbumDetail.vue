@@ -22,7 +22,7 @@
           <li v-for="(song, index) in album.songs" :key="index" class="song">
             <span>{{ song.title }}</span>
             <div class="song-actions">
-              <span class="song-length">{{ song.length }}</span>
+              <span class="song-length">{{ formatDuration(song.length) }}</span>
               <button class="delete-song" @click="deleteSong(index)">
                 <i class="fa-solid fa-xmark"></i>
               </button>
@@ -92,19 +92,11 @@ export default {
   },
   computed: {
     albumLength() {
-      const totalLength = this.album.songs.reduce((sum, song) => {
-        if (typeof song.length === "number") {
-          return sum + song.length;
-        }
-        else {
-          const [minutes, seconds] = song.length.split(":").map(Number);
-          return sum + minutes * 60 + seconds;
-        }
-      }, 0);
-      const minutes = Math.floor(totalLength / 60);
+      const totalLength = this.album.songs.reduce((sum, song) => sum + song.length, 0);
+      const minutes = Math.floor(totalLength/60);
       const seconds = totalLength % 60;
-      const formattedMinutes = minutes < 10 ? minutes : minutes;
-      return `${formattedMinutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     },
   },
   methods: {
@@ -135,17 +127,21 @@ export default {
         this.errorMessage = "Duration must be in MM:SS format.";
         return;
       }
+
+      const [minutes,seconds] = this.newSongDuration.split(":").map(Number);
+      const durationInSeconds = minutes * 60 + seconds;
+
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
-      postSong(this.albumId, loginToken, this.newSongTitle.trim(), this.newSongDuration) // DOTO: Fix newSongDuration string 10:10 to int
+      postSong(this.albumId, loginToken, this.newSongTitle.trim(), durationInSeconds) // DOTO: Fix newSongDuration string 10:10 to int
         .then(()=>{
           this.featchAlbumData();
           this.hideAddSongModal();
         })
     },
     formatDuration(duration) {
-      const [minutes, seconds] = duration.split(":");
-      const formattedMinutes = parseInt(minutes, 10);
-      return `${formattedMinutes}:${seconds}`;
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     },
   },
   async mounted(){
