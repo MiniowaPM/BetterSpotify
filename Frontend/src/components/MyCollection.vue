@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection } from "@/utils/api_handler/album";
+import { getAlbumImg, getMyCollection, postAlbum, postAlbumImg } from "@/utils/api_handler/album";
 
 export default {
   name: "MyCollection",
@@ -212,7 +212,7 @@ export default {
       };
       this.errorMessage = "";
     },
-    addAlbum() {
+    async addAlbum() {
       if (
         !this.newAlbum.title.trim() ||
         !this.newAlbum.artist.trim() ||
@@ -224,12 +224,10 @@ export default {
         this.errorMessage = "All fields are required.";
         return;
       }
-      // symulacja dodania albumu do listy
-      const album = {
-        ...this.newAlbum,
-        id: Date.now(),
-      };
-      this.studio.albums.push(album);
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      const postAlbumResponse = await postAlbum(loginToken, this.newAlbum.title, this.newAlbum.description, this.newAlbum.artist, this.newAlbum.releaseDate, this.newAlbum.genre);
+      postAlbumImg(postAlbumResponse.id, loginToken, this.newAlbum.cover.trim());
+      this.featchAlbumsData();
       this.hideAddAlbumModal();
     },
     toggleFavorite(album) {
@@ -286,7 +284,6 @@ export default {
         this.errorMessage = "Please upload a valid image (PNG or JPEG).";
         return;
       }
-
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();

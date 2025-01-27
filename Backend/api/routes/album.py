@@ -13,7 +13,7 @@ from PIL import Image
 router = APIRouter(prefix="/album")
 
 # My Collection # Create album and creates album_owned (album_id, studio_fk)
-@router.post("/", tags=["Album"], status_code=status.HTTP_201_CREATED, response_model=SuccessResponse)
+@router.post("/", tags=["Album"], status_code=status.HTTP_201_CREATED)
 async def create_album(album: CreateAlbumBase, user_auth: user_dependency, db: db_dependency):
     # Check if logged
     if user_auth is None or not user_auth.get('is_admin', False):
@@ -31,7 +31,7 @@ async def create_album(album: CreateAlbumBase, user_auth: user_dependency, db: d
     )
     db.add(album_owned)
     db.commit()
-    return {"detail": "Album successfully created"}
+    return {"id": album.id}
 
 # My Collection # Deletes album and songs assigned to album # By album_id
 @router.delete("/{album_id}", tags=["Album"], status_code=status.HTTP_200_OK)

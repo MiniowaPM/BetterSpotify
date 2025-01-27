@@ -143,7 +143,7 @@ export async function getStudio(jwtToken) {
 }
 
 export async function postAlbumImg(albumId, jwtToken, imgData) {
-    const url = `${serverUrl}/user/${albumId}/album-image`;
+    const url = `${serverUrl}/album/${albumId}/album_image`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
