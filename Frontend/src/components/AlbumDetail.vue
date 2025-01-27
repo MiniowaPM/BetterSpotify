@@ -67,24 +67,22 @@
 </template>
 
 <script>
+import { getSongsInAlbum, postSong } from '@/utils/api_handler/song';
+
 export default {
   name: "AlbumDetail",
-  props: ["albumId"],
+  props: ["albumId", "albumTitle", "albumArtist", "albumGenre", "albumDescription"],
   data() {
     return {
       album: {
         id: this.albumId,
-        title: "Album One",
-        artist: "Artist A",
-        genre: "Rock",
+        title: this.albumTitle,
+        artist: this.albumArtist,
+        genre: this.albumGenre,
         cover:
           "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
-        description: "Blahblah",
-        songs: [
-          { title: "Track 1", length: "3:30" },
-          { title: "Track 2", length: "4:15" },
-          { title: "Track 3", length: "2:50" },
-        ],
+        description: this.albumDescription,
+        songs: [],
       },
       isModalVisible: false,
       newSongTitle: "",
@@ -95,8 +93,13 @@ export default {
   computed: {
     albumLength() {
       const totalLength = this.album.songs.reduce((sum, song) => {
-        const [minutes, seconds] = song.length.split(":").map(Number);
-        return sum + minutes * 60 + seconds;
+        if (typeof song.length === "number") {
+          return sum + song.length;
+        }
+        else {
+          const [minutes, seconds] = song.length.split(":").map(Number);
+          return sum + minutes * 60 + seconds;
+        }
       }, 0);
       const minutes = Math.floor(totalLength / 60);
       const seconds = totalLength % 60;
@@ -105,6 +108,11 @@ export default {
     },
   },
   methods: {
+    async featchAlbumData(){
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      const SongsInAlbum = await getSongsInAlbum(this.albumId, loginToken);
+      this.album.songs = SongsInAlbum;
+    },
     deleteSong(index) {
       this.album.songs.splice(index, 1);
     },
@@ -127,18 +135,21 @@ export default {
         this.errorMessage = "Duration must be in MM:SS format.";
         return;
       }
-      const formattedDuration = this.formatDuration(this.newSongDuration);
-      this.album.songs.push({
-        title: this.newSongTitle.trim(),
-        length: formattedDuration,
-      });
-      this.hideAddSongModal();
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      postSong(this.albumId, loginToken, this.newSongTitle.trim(), this.newSongDuration) // DOTO: Fix newSongDuration string 10:10 to int
+        .then(()=>{
+          this.featchAlbumData();
+          this.hideAddSongModal();
+        })
     },
     formatDuration(duration) {
       const [minutes, seconds] = duration.split(":");
       const formattedMinutes = parseInt(minutes, 10);
       return `${formattedMinutes}:${seconds}`;
     },
+  },
+  async mounted(){
+    this.featchAlbumData()
   },
 };
 </script>

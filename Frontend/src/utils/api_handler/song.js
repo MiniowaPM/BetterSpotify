@@ -48,15 +48,29 @@ export async function getSongInAlbum(songId, jwtToken) {
     }
 }
 
-export async function postSong(albumId, jwtToken, title, description, genre) {
+export async function getSongsInAlbum(albumId, jwtToken) {
+  const url = `${serverUrl}/song/album/${albumId}`;
+  const headers = {
+    Authorization: `Bearer ${jwtToken.access_token}`,
+  };
+  try {
+      const response = await axios.get(url, {headers});
+      return response.data;
+
+  } catch(error){
+      console.error(`Error: ${error.message}`);
+      return null;
+  }
+}
+
+export async function postSong(albumId, jwtToken, title, length) {
     const url = `${serverUrl}/song/album/${albumId}/song`;
     const headers = {
         Authorization: `Bearer ${jwtToken.access_token}`,
       };
     const params = {
         "title": title,
-        "description": description,
-        "genre": genre
+        "length": length,
     }
     try {
         const response = await axios.post(url, params, { headers });
