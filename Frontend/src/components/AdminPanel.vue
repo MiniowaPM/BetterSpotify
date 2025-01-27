@@ -114,18 +114,18 @@ export default {
     toggleEditMode(index) {
       const user = this.users[index];
 
-      // if (!user.username.trim()) {
-      //   alert("Username cannot be empty!");
-      //   return;
-      // }
+      if (!user.username.trim()) {
+        alert("Username cannot be empty!");
+        return;
+      }
 
-      // const duplicate = this.users.some(
-      //   (u, i) => u.username === user.username && i !== index
-      // );
-      // if (duplicate) {
-      //   alert("Username is already taken!");
-      //   return;
-      // }
+      const duplicate = this.users.some(
+        (u, i) => u.username === user.username && i !== index
+      );
+      if (duplicate) {
+        alert("Username is already taken!");
+        return;
+      }
 
       if (user.isEditing) {
         user.isEditing = false;

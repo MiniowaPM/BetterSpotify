@@ -16,7 +16,13 @@
         <h3>{{ album.title }}</h3>
         <p class="artist-text">{{ album.artist }}</p>
         <div class="album-footer">
-          <span class="release-date">{{ album.releaseDate }}</span>
+          <button
+            class="sell-button"
+            @click.stop="sellAlbum(album)"
+            title="Sell Album"
+          >
+            <i class="fa-solid fa-dollar-sign"></i>
+          </button>
           <span class="separator">•</span>
           <span>
             <i
@@ -113,6 +119,7 @@ export default {
     return {
       studio: {
         name: sessionStorage.getItem("StudioName"),
+        albums: [],
       },
       genres: [
       "Pop", "Rock", "Jazz", "Classical", "HipHop", "RnB", "Reggae", 
@@ -267,6 +274,9 @@ export default {
         img.src = e.target.result; 
       };
       reader.readAsDataURL(file);
+    },
+    sellAlbum(album) {
+      alert(`You are selling the album: ${album.title} by ${album.artist}`);
     },
   },
   async mounted() {
@@ -622,5 +632,19 @@ input[type="file"] {
   height: 150px;
   border-radius: 10px;
   border: 1px solid var(--background-hover-color);
+}
+
+.sell-button {
+  background: none;
+  border: none;
+  color: var(--second-text-color);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 2px;
+}
+
+.sell-button:hover {
+  color: var(--contrast-color);
 }
 </style>
