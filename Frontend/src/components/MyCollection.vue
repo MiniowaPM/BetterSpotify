@@ -222,7 +222,7 @@ export default {
     viewAlbumDetail(album) {
       this.$router.push({
         name: "AlbumDetail",
-        params: { albumId: album.id },
+        params: { albumId: album.id , albumTitle: album.title, albumArtist: album.artist, albumGenre: album.genre, albumDescription: album.description},
       });
     },
     saveFavoritesToLocalStorage() {
