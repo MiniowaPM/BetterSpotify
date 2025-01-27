@@ -162,6 +162,37 @@ export default {
     },
   },
   methods: {
+    async featchAlbumsData(){
+      const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      var myCollectionData = await getMyCollection(loginToken);
+
+      this.studio.albums = await Promise.all(
+        myCollectionData.map(async (album) => {
+          try {
+            const albumImage = await getAlbumImg(album.id, loginToken);
+            return {
+              artist: album.artist,
+              id: album.id,
+              title: album.title,
+              releaseDate: album.release_date.slice(0, 4),
+              cover: `data:${albumImage.mime_type};base64,${albumImage.base64_data}`,
+            };
+          } catch (error) {
+            console.error(
+              `Failed to fetch image for album ID ${album.id}:`,
+              error
+            );
+            return {
+              artist: album.artist,
+              id: album.id,
+              title: album.title,
+              releaseDate: album.release_date,
+              cover: null,
+            };
+          }
+        })
+      );
+    },
     triggerFileInput() {
       document.getElementById("albumCover").click();
     },
@@ -282,36 +313,7 @@ export default {
   async mounted() {
     this.loadFavoritesFromLocalStorage();
     this.loadToggleStateFromLocalStorage();
-    // GET DATA
-    const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-    var myCollectionData = await getMyCollection(loginToken);
-
-    this.studio.albums = await Promise.all(
-      myCollectionData.map(async (album) => {
-        try {
-          const albumImage = await getAlbumImg(album.id, loginToken);
-          return {
-            artist: album.artist,
-            id: album.id,
-            title: album.title,
-            releaseDate: album.release_date.slice(0, 4),
-            cover: `data:${albumImage.mime_type};base64,${albumImage.base64_data}`,
-          };
-        } catch (error) {
-          console.error(
-            `Failed to fetch image for album ID ${album.id}:`,
-            error
-          );
-          return {
-            artist: album.artist,
-            id: album.id,
-            title: album.title,
-            releaseDate: album.release_date,
-            cover: null,
-          };
-        }
-      })
-    );
+    this.featchAlbumsData();    
   },
 };
 </script>
