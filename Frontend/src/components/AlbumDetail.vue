@@ -23,7 +23,7 @@
             <span>{{ song.title }}</span>
             <div class="song-actions">
               <span class="song-length">{{ formatDuration(song.length) }}</span>
-              <button class="delete-song" @click="deleteSong(index)">
+              <button class="delete-song" @click="dropSong(index)">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
@@ -67,21 +67,21 @@
 </template>
 
 <script>
-import { getSongsInAlbum, postSong } from '@/utils/api_handler/song';
+import { deleteSong, getSongsInAlbum, postSong } from '@/utils/api_handler/song';
 
 export default {
   name: "AlbumDetail",
-  props: ["albumId", "albumTitle", "albumArtist", "albumGenre", "albumDescription"],
+  props: ["albumId"],
   data() {
     return {
       album: {
         id: this.albumId,
-        title: this.albumTitle,
-        artist: this.albumArtist,
-        genre: this.albumGenre,
+        title: '',
+        artist: '',
+        genre: '',
         cover:
           "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
-        description: this.albumDescription,
+        description: '',
         songs: [],
       },
       isModalVisible: false,
@@ -103,10 +103,12 @@ export default {
     async featchAlbumData(){
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
       const SongsInAlbum = await getSongsInAlbum(this.albumId, loginToken);
-      this.album.songs = SongsInAlbum;
+      this.album = SongsInAlbum;
     },
-    deleteSong(index) {
-      this.album.songs.splice(index, 1);
+    dropSong(index) {
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      deleteSong(this.album.songs[index].id, loginToken);
+      this.featchAlbumData();
     },
     showAddSongModal() {
       this.isModalVisible = true;

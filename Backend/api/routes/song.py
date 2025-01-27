@@ -51,11 +51,21 @@ async def update_user(song_id: int, song: UpdateSongBase, db: db_dependency, use
     return {"detail": "Song successfully modified"}
 
 # Album profile # get songs in album
-@router.get("/album/{album_id}", tags=["Song"], status_code=status.HTTP_200_OK, response_model=List[CreateSongBase])
+@router.get("/album/{album_id}", tags=["Song"], status_code=status.HTTP_200_OK)
 async def get_song(db: db_dependency, user_auth: user_dependency, album_id: int):
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
     songs = db.query(models.Song).filter(models.Song.album_fk == album_id).all()
+    album_data = db.query(models.Album).filter(models.Album.id == album_id).first()
     if songs is None:
         raise HTTPException(status_code=404, detail="Songs not found")
-    return songs
+    if album_data is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    fetched_data = {
+        "title": album_data.title,
+        "artist": album_data.artist,
+        "genre": album_data.genre.name,
+        "description": album_data.description,
+        "songs": songs
+    }
+    return fetched_data
