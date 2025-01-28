@@ -18,7 +18,9 @@ async def get_studios(db: db_dependency, user_auth: user_dependency):
             func.count(models.Albums_owned.id).label("album_count")
         )
         .outerjoin(models.Albums_owned, models.Albums_owned.studio_fk == models.Studio.id)
-        .filter(models.Studio.id != studio_id)  # Filter out the user's own studio
+        .join(models.Album, models.Albums_owned.album_fk == models.Album.id)
+        .filter(models.Studio.id != studio_id)
+        .filter(models.Album.price != None)
         .group_by(models.Studio.id, models.Studio.studio_name)
         .all()
     )

@@ -43,6 +43,7 @@ async def delete_album(album_id: int, db: db_dependency, user_auth: user_depende
     if album is None:
         raise HTTPException(status_code=404, detail="Album not found")
     db.query(models.Song).filter(models.Song.album_fk == album_id).delete()
+    db.query(models.Albums_owned).filter(models.Albums_owned.album_fk == album_id).delete()
     db.delete(album)
     db.commit()
     return {"detail": "Album and associated songs data successfully cleared"}
@@ -73,6 +74,7 @@ async def get_myCollection(db: db_dependency, user_auth: user_dependency):
     db.query(models.Album)
     .join(models.Albums_owned, models.Album.id == models.Albums_owned.album_fk)
     .filter(models.Albums_owned.studio_fk == studio_id)
+    .filter(models.Album.price == None)
     .all()
     )
     if album is None:
