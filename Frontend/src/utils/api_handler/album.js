@@ -86,7 +86,7 @@ export async function getMyCollection(jwtToken) {
     }
 }
 
-export async function getExplore(studio_id ,jwtToken) {
+export async function getAlbumsByStudio(studio_id ,jwtToken) {
     const url = `${serverUrl}/album/explore/studio/${studio_id}/albums`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
@@ -175,12 +175,12 @@ export async function getAlbumImg(albumId, jwtToken) {
 }
 
 export async function postPurchaseAlbum(albumId, jwtToken) {
-    const url = `/${albumId}/purchase/`;
+    const url = `${serverUrl}/album/${albumId}/purchase/`;
     const headers = {
         Authorization: `Bearer ${jwtToken.access_token}`,
       };
     try {
-        const response = await axios.post(url, { headers });
+        const response = await axios.post(url, null, { headers });
         return response.data;
     } catch(error){
         console.error(`Error: ${error.message}`);

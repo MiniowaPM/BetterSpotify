@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { getAlbumImg, getAlbumsByStudio } from '@/utils/api_handler/album';
+
 export default {
   name: "ExploreAlbums",
   props: ["cart"],
@@ -42,78 +44,15 @@ export default {
       },
     };
   },
-  created() {
-    this.getStudioDetails(this.studio.id);
-  },
   methods: {
-    getStudioDetails(studioId) {
-      const studiosData = {
-        1: {
-          name: "Studio A",
-          description: "Browse albums from Studio A.",
-          albums: this.getAlbumsByStudio(1),
-        },
-        2: {
-          name: "Studio B",
-          description: "Browse albums from Studio B.",
-          albums: this.getAlbumsByStudio(2),
-        },
-        3: {
-          name: "Studio C",
-          description: "Browse albums from Studio C.",
-          albums: this.getAlbumsByStudio(3),
-        },
-        4: {
-          name: "Studio D",
-          description: "Browse albums from Studio D.",
-          albums: this.getAlbumsByStudio(4),
-        },
-        5: {
-          name: "Studio E",
-          description: "Browse albums from Studio E.",
-          albums: this.getAlbumsByStudio(5),
-        },
-      };
-
-      this.studio = studiosData[studioId] || {
-        name: "Unknown Studio",
-        description: "",
-        albums: [],
-      };
-    },
-    getAlbumsByStudio(studioId) {
-      const albumsData = {
-        1: [
-          {
-            id: "1",
-            title: "Album One",
-            artist: "Artist A",
-            cover:
-              "https://media.pitchfork.com/photos/6059f80bc72914c0c86e988d/1:1/w_320,c_limit/Parannoul:%20To%20See%20the%20Next%20Part%20of%20the%20Dream.jpeg",
-            price: 14.99,
-          },
-          {
-            id: "2",
-            title: "Album Two",
-            artist: "Artist B",
-            cover:
-              "https://upload.wikimedia.org/wikipedia/en/c/cc/Kraus_-_Path.jpg",
-            price: 19.99,
-          },
-        ],
-        2: [
-          {
-            id: "3",
-            title: "Album Three",
-            artist: "Artist C",
-            cover:
-              "https://upload.wikimedia.org/wikipedia/en/5/53/Decide_Djo.png",
-            price: 12.99,
-          },
-        ],
-      };
-
-      return albumsData[studioId] || [];
+    async fetchAlbumData(){
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      const exploreAlbumsData = await getAlbumsByStudio(this.studio.id, loginToken);
+      for (let album of exploreAlbumsData){
+        const coverImage = await getAlbumImg(album.id, loginToken);
+        album.cover = `data:${coverImage.mime_type};base64,${coverImage.base64_data}`;
+      }
+      this.studio.albums = exploreAlbumsData;
     },
     addToCart(album) {
       this.$emit("add-to-cart", album);
@@ -122,6 +61,9 @@ export default {
       return this.cart.some((item) => item.id === album.id);
     },
   },
+  mounted(){
+    this.fetchAlbumData();
+  }
 };
 </script>
 

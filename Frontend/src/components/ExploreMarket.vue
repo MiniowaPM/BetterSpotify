@@ -22,7 +22,6 @@ import { getStudio } from "@/utils/api_handler/album";
 
 export default {
   name: "ExploreMarket",
-
   data() {
     return {
       studios: [
@@ -34,22 +33,25 @@ export default {
       ],
     };
   },
-  async mounted(){
-    const loginToken = JSON.parse(sessionStorage.getItem('loginToken'))
-    const Studio_data = await getStudio(loginToken)
-    this.studios = Studio_data.map((album)=>({
+  methods: {
+    async fetchData(){
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'))
+      const Studio_data = await getStudio(loginToken)
+      this.studios = Studio_data.map((album)=>({
         id: album.id,
         name: album.studio,
         albumCount : album.album_count
       }))
-  },
-  methods: {
+    },
     selectStudio(studio) {
       this.$router.push({
         name: "ExploreAlbums",
         params: { studioId: studio.id },
       });
     },
+  },
+  mounted(){
+    this.fetchData();
   },
 };
 </script>

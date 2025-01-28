@@ -79,17 +79,12 @@ export default {
     clearCart() {
       this.$emit("clear-cart");
     },
-    checkout() {
-      this.cart.forEach((album, index)=>{
-        console.log(`Album ${index}:`, album);
-         try{
-            const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
-            postPurchaseAlbum(album.albumId, loginToken)
-         } catch(error){
-           console.error('Error fetching studio data:', error);
-         }
-        this.clearCart()
-      })
+    async checkout() {
+      const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+      for (let album of this.cart){
+        await postPurchaseAlbum(album.id, loginToken)
+      }
+      this.clearCart();
     },
     viewAlbumDetail(album) {
       this.$router.push({

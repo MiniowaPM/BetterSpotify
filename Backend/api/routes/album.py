@@ -79,15 +79,16 @@ async def get_myCollection(db: db_dependency, user_auth: user_dependency):
         raise HTTPException(status_code=404, detail="Album not found")
     return album
 
-# Explore # Get album by id
+# Explore # Get albums by studio
 @router.get("/explore/studio/{studio_id}/albums", tags=["Album"], status_code=status.HTTP_200_OK)
 async def get_explore(db: db_dependency, user_auth: user_dependency, studio_id: int):
     if user_auth is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
     album = (
         db.query(models.Album)
+        .join(models.Albums_owned)
         .filter(models.Album.price != None)
-        .filter(models.Album.id == studio_id)
+        .filter(models.Albums_owned.studio_fk == studio_id)
         .all()
         )
     if album is None:
