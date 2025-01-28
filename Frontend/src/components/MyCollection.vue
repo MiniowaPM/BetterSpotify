@@ -1,9 +1,9 @@
 <template>
   <div class="my-collection">
-    <h1>{{ studio.name }}'s Albums</h1>
-    <p>Browse through your amazing albums.</p>
+    <h1>{{ $t('albums', { studioName: studio.name }) }}</h1>
+    <p>{{ $t('browseAlbums') }}</p>
     <button class="toggle-button" @click="toggleFavoritesView">
-      {{ showFavoritesOnly ? "Show All Albums" : "Show Favorites" }}
+      {{ showFavoritesOnly ? $t('showAllAlbums') : $t('showFavorites') }}
     </button>
     <div class="albums">
       <div
@@ -19,7 +19,7 @@
           <button
             class="sell-button"
             @click.stop="showSellAlbumModal(album)"
-            title="Sell Album"
+            :title="$t('sellAlbum')"
           >
             <i class="fa-solid fa-dollar-sign"></i>
           </button>
@@ -32,9 +32,7 @@
                 isFavorite(album) ? 'fa-solid fa-star' : 'fa-regular fa-star'
               "
               class="star-icon"
-              :title="
-                isFavorite(album) ? 'Remove from favorites' : 'Add to favorites'
-              "
+              :title="isFavorite(album) ? $t('removeFromFavorites') : $t('addToFavorites')"
               @click.stop="toggleFavorite(album)"
             ></i>
           </span>
@@ -44,7 +42,7 @@
           <button
             class="remove-button"
             @click.stop="removeAlbum(album)"
-            title="Remove Album"
+            :title="$t('removeAlbum')"
           >
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -53,28 +51,28 @@
       <div class="album add-album" @click="showAddAlbumModal">
         <div class="add-album-content">
           <i class="fa-duotone fa-light fa-plus add-icon"></i>
-          <p class="add-text">Add Album</p>
+          <p class="add-text">{{ $t('addAlbum') }}</p>
         </div>
       </div>
     </div>
 
     <div v-if="isSellModalVisible" class="modal-backdrop">
       <div class="modal">
-        <h3 class="modal-title">Sell Album</h3>
-        <p>Enter the price for selling the album:</p>
+        <h3 class="modal-title">{{ $t('sellAlbumModalTitle') }}</h3>
+        <p>{{ $t('enterPrice') }}</p>
         <div class="modal-inputs">
           <input
             id="sellPrice"
             v-model="sellPrice"
             type="number"
-            placeholder="Enter price in złoty"
+            :placeholder="$t('sellPricePlaceholder')"
           />
         </div>
         <p v-if="sellErrorMessage" class="error-message">{{ sellErrorMessage }}</p>
         <div class="modal-actions">
-          <button class="modal-button save" @click="confirmSellAlbum">Sell</button>
+          <button class="modal-button save" @click="confirmSellAlbum">{{ $t('save') }}</button>
           <button class="modal-button cancel" @click="hideSellAlbumModal">
-            Cancel
+            {{ $t('cancel') }}
           </button>
         </div>
       </div>
@@ -82,22 +80,22 @@
 
     <div v-if="isModalVisible" class="modal-backdrop">
       <div class="modal">
-        <h3 class="modal-title">Add New Album</h3>
+        <h3 class="modal-title">{{ $t('addNewAlbum') }}</h3>
         <div class="modal-inputs">
-          <label for="albumTitle">Title</label>
+          <label for="albumTitle">{{ $t('albumTitle') }}</label>
           <input
             id="albumTitle"
             v-model="newAlbum.title"
-            placeholder="Enter album title"
+            :placeholder="$t('albumTitle')"
           />
-          <label for="albumArtist">Artist</label>
+          <label for="albumArtist">{{ $t('albumArtist') }}</label>
           <input
             id="albumArtist"
             v-model="newAlbum.artist"
-            placeholder="Enter artist name"
+            :placeholder="$t('albumArtist')"
           />
-          <label for="albumCover">Cover Image</label>
-          <div @click="triggerFileInput" class="custom-file-label">Upload Cover Image</div>
+          <label for="albumCover">{{ $t('albumCover') }}</label>
+          <div @click="triggerFileInput" class="custom-file-label">{{ $t('uploadCoverImage') }}</div>
           <input
             id="albumCover"
             type="file"
@@ -106,16 +104,16 @@
           />
           <p v-if="coverErrorMessage" class="error-message">{{ coverErrorMessage }}</p>
           <div v-if="newAlbum.cover" class="cover-preview">
-            <img :src="newAlbum.cover" alt="Album Cover Preview" />
+            <img :src="newAlbum.cover" alt="{{ $t('coverPreview') }}" />
           </div>
-          <label for="albumReleaseDate">Release Date</label>
+          <label for="albumReleaseDate">{{ $t('albumReleaseDate') }}</label>
           <input
             id="albumReleaseDate"
             type="date"
             v-model="newAlbum.releaseDate"
-            placeholder="Enter release date"
+            :placeholder="$t('albumReleaseDate')"
           />
-          <label for="albumGenre">Genre</label>
+          <label for="albumGenre">{{ $t('albumGenre') }}</label>
           <select id="albumGenre" v-model="newAlbum.genre" class="genre-select">
             <option
               v-for="(genre, index) in genres"
@@ -125,18 +123,18 @@
               {{ genre }}
             </option>
           </select>
-          <label for="albumDescription">Description</label>
+          <label for="albumDescription">{{ $t('albumDescription') }}</label>
           <textarea
             id="albumDescription"
             v-model="newAlbum.description"
-            placeholder="Enter album description"
+            :placeholder="$t('albumDescription')"
           ></textarea>
         </div>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <div class="modal-actions">
-          <button class="modal-button save" @click="addAlbum">Save</button>
+          <button class="modal-button save" @click="addAlbum">{{ $t('save') }}</button>
           <button class="modal-button cancel" @click="hideAddAlbumModal">
-            Cancel
+            {{ $t('cancel') }}
           </button>
         </div>
       </div>

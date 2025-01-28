@@ -1,7 +1,7 @@
 <template>
   <div class="explore-market">
-    <h1>Explore Studios</h1>
-    <p>Select a studio to browse its albums.</p>
+    <h1>{{ $t('exploreMarket.title') }}</h1>
+    <p>{{ $t('exploreMarket.description') }}</p>
     <div class="studios">
       <div
         v-for="(studio, idx) in studios"
@@ -11,7 +11,9 @@
       >
         <img src="../assets/music_studios.png" alt="Studio logo" class="studio-logo" />
         <h3>{{ studio.name }}</h3>
-        <p class="studio-description">Album count: {{ studio.albumCount }}</p>
+        <p class="studio-description">
+          {{ $t('exploreMarket.albumCount') }}: {{ studio.albumCount }}
+        </p>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="admin-panel">
-    <h1>Admin Panel</h1>
+    <h1>{{ $t('adminPanelSettings.title') }}</h1>
     <div class="studio-name">
       <span v-if="!isStudioNameEditing">{{ studioName }}</span>
       <input
@@ -17,17 +17,17 @@
       @click="addNewUser"
       :disabled="isAnyUserEditing"
     >
-      Add New User
+      {{ $t('adminPanelSettings.addNewUser') }}
     </button>
     <table class="user-table">
       <thead>
         <tr>
-          <th>User Icon</th>
-          <th>Username</th>
-          <th>Password</th>
-          <th>Status</th>
-          <th>Edit/Confirm</th>
-          <th>Delete</th>
+          <th>{{ $t('adminPanelSettings.userIcon') }}</th>
+          <th>{{ $t('adminPanelSettings.username') }}</th>
+          <th>{{ $t('adminPanelSettings.password') }}</th>
+          <th>{{ $t('adminPanelSettings.status') }}</th>
+          <th>{{ $t('adminPanelSettings.editConfirm') }}</th>
+          <th>{{ $t('adminPanelSettings.delete') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -71,17 +71,17 @@
           </td>
           <td>
             <span v-if="!user.isEditing" class="admin-status">
-              <span v-if="user.isAdmin">Admin</span>
-              <span v-else>User</span>
+              <span v-if="user.isAdmin">{{ $t('adminPanelSettings.admin') }}</span>
+              <span v-else>{{ $t('adminPanelSettings.user') }}</span>
             </span>
-            <span v-if="user.isEditing && !canToggleAdmin(user)">Admin</span>
+            <span v-if="user.isEditing && !canToggleAdmin(user)">{{ $t('adminPanelSettings.admin') }}</span>
             <select
               v-if="user.isEditing && canToggleAdmin(user)"
               v-model="user.isAdmin"
               class="status-dropdown"
             >
-              <option :value="true">Admin</option>
-              <option :value="false">User</option>
+              <option :value="true">{{ $t('adminPanelSettings.admin') }}</option>
+              <option :value="false">{{ $t('adminPanelSettings.user') }}</option>
             </select>
           </td>
           <td>
@@ -91,7 +91,7 @@
               :class="{ confirm: user.isEditing }"
               :disabled="!user.isEditing && isEditingAnyUser"
             >
-              {{ user.isEditing ? "Confirm" : "Edit" }}
+              {{ user.isEditing ? $t('adminPanelSettings.confirm') : $t('adminPanelSettings.edit') }}
             </button>
           </td>
           <td>

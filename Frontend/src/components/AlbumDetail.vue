@@ -5,19 +5,19 @@
       <div class="album-text">
         <h1>{{ album.title }}</h1>
         <p class="artist">{{ album.artist }}</p>
-        <p class="genre">{{ album.genre }}</p>
-        <p class="length">{{ albumLength }}</p>
+        <p class="genre">{{ $t('albumDetail.genre') }}: {{ album.genre }}</p>
+        <p class="length">{{ $t('albumDetail.length') }}: {{ albumLength }}</p>
       </div>
     </div>
 
     <div class="album-description">
-      <h3>Description</h3>
+      <h3>{{ $t('albumDetail.description') }}</h3>
       <p>{{ album.description }}</p>
     </div>
 
     <div class="album-content">
       <div class="album-songs">
-        <h3>Songs</h3>
+        <h3>{{ $t('albumDetail.songs') }}</h3>
         <ul>
           <li v-for="(song, index) in album.songs" :key="index" class="song">
             <span>{{ song.title }}</span>
@@ -28,10 +28,10 @@
               </button>
             </div>
           </li>
-          <li class="add-song">
-            <span class="add-song-text" @click="showAddSongModal"
-              >+ Add New Song</span
-            >
+          <li v-if="!showAddSong" class="add-song">
+            <span class="add-song-text" @click="showAddSongModal">
+              {{ $t('albumDetail.addSong') }}
+            </span>
           </li>
         </ul>
       </div>
@@ -39,26 +39,26 @@
 
     <div v-if="isModalVisible" class="modal-backdrop">
       <div class="modal">
-        <h3 class="modal-title">Add New Song</h3>
+        <h3 class="modal-title">{{ $t('albumDetail.addNewSong') }}</h3>
         <div class="modal-inputs">
-          <label for="newSongTitle">Title</label>
+          <label for="newSongTitle">{{ $t('albumDetail.songTitle') }}</label>
           <input
             id="newSongTitle"
             v-model="newSongTitle"
-            placeholder="Enter song title"
+            :placeholder="$t('albumDetail.enterSongTitle')"
           />
-          <label for="newSongDuration">Duration</label>
+          <label for="newSongDuration">{{ $t('albumDetail.songDuration') }}</label>
           <input
             id="newSongDuration"
             v-model="newSongDuration"
-            placeholder="MM:SS"
+            :placeholder="$t('albumDetail.enterSongDuration')"
           />
         </div>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <div class="modal-actions">
-          <button class="modal-button save" @click="addSong">Save</button>
+          <button class="modal-button save" @click="addSong">{{ $t('albumDetail.save') }}</button>
           <button class="modal-button cancel" @click="hideAddSongModal">
-            Cancel
+            {{ $t('albumDetail.cancel') }}
           </button>
         </div>
       </div>
@@ -72,7 +72,7 @@ import { deleteSong, getSongsInAlbum, postSong } from '@/utils/api_handler/song'
 
 export default {
   name: "AlbumDetail",
-  props: ["albumId"],
+  props: ["albumId", "showAddSong"],
   data() {
     return {
       album: {

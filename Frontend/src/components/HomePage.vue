@@ -5,48 +5,42 @@
       alt="User Avatar"
       class="avatarhome"
     />
-    <h1 class="welcome">Welcome, {{Username}}!</h1>
-    <p class="msg">This is {{StudioName}} studio</p>
+    <h1 class="welcome">{{ $t('welcome', { username: Username }) }}</h1>
+    <p class="msg">{{ $t('studioMessage', { studioName: StudioName }) }}</p>
     <div class="features">
       <div class="feature">
         <router-link to="/my-collection">
           <i class="fa-solid fa-book"></i>
-          <h2>My Collection</h2>
-          <p class="description">
-            Access and manage your personal collection effortlessly.
-          </p>
+          <h2>{{ $t('myCollection') }}</h2>
+          <p class="description">{{ $t('myCollectionDesc') }}</p>
         </router-link>
       </div>
       <div class="feature">
         <router-link to="/explore">
           <i class="fa-solid fa-music"></i>
-          <h2>Explore</h2>
-          <p class="description">
-            Stay updated with the latest and trending items.
-          </p>
+          <h2>{{ $t('explore') }}</h2>
+          <p class="description">{{ $t('exploreDesc') }}</p>
         </router-link>
       </div>
       <div class="feature">
         <router-link to="/cart">
           <i class="fa-solid fa-cart-shopping-fast"></i>
-          <h2>Cart</h2>
-          <p class="description">
-            Make your shopping experience quick and effortless.
-          </p>
+          <h2>{{ $t('cart') }}</h2>
+          <p class="description">{{ $t('cartDesc') }}</p>
         </router-link>
       </div>
       <div class="feature">
         <router-link to="/currently-sold">
           <i class="fa-solid fa-cart-circle-arrow-up"></i>
-          <h2>Currenty Sold</h2>
-          <p class="description">View items that you have listed for sale.</p>
+          <h2>{{ $t('currentlySold') }}</h2>
+          <p class="description">{{ $t('currentlySoldDesc') }}</p>
         </router-link>
       </div>
       <div class="feature">
         <router-link to="/profile-settings">
           <i class="fa-solid fa-cog"></i>
-          <h2>Settings</h2>
-          <p class="description">Customize your experience and preferences.</p>
+          <h2>{{ $t('settings') }}</h2>
+          <p class="description">{{ $t('settingsDesc') }}</p>
         </router-link>
       </div>
     </div>

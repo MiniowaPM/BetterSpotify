@@ -1,8 +1,8 @@
 <template>
   <div class="my-cart">
-    <h1>My Cart</h1>
+    <h1>{{ $t('myCart.title') }}</h1>
     <p v-if="cart.length === 0" class="empty-cart-text">
-      Your cart is empty. Add some albums to proceed!
+      {{ $t('myCart.emptyCart') }}
     </p>
     <div v-else>
       <div class="cart-items">
@@ -24,17 +24,16 @@
         </div>
       </div>
       <div class="cart-summary">
-        <p class="balance">Balance: {{ userBalance }}zł</p>
-        <p class="total">Total: {{ cartTotal.toFixed(2) }}zł</p>
-
+        <p class="balance">{{ $t('myCart.balance', { balance: userBalance }) }}</p>
+        <p class="total">{{ $t('myCart.total', { total: cartTotal.toFixed(2) }) }}</p>
         <div class="actions">
-          <button class="clear-button" @click="clearCart">Clear Cart</button>
+          <button class="clear-button" @click="clearCart">{{ $t('myCart.clearCart') }}</button>
           <button
             class="checkout-button"
             :disabled="cartTotal > userBalance"
             @click="checkout"
           >
-            {{ cartTotal > userBalance ? "Insufficient Balance" : "Checkout" }}
+            {{ cartTotal > userBalance ? $t('myCart.insufficientBalance') : $t('myCart.checkout') }}
           </button>
         </div>
       </div>
@@ -90,8 +89,9 @@ export default {
       this.$router.push({
         name: "AlbumDetail",
         params: { albumId: album.id },
+        query: { showAddSong: false },
       });
-    },
+    }
   },
 };
 </script>
