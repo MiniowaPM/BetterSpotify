@@ -95,6 +95,19 @@ async def get_explore(db: db_dependency, user_auth: user_dependency, studio_id: 
         raise HTTPException(status_code=404, detail="Album not found")
     return album
 
+@router.get("/explore/studio/{studio_id}/", tags=["Album"], status_code=status.HTTP_200_OK)
+async def get_explore(db: db_dependency, user_auth: user_dependency, studio_id: int):
+    if user_auth is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication failed')
+    studio = (
+        db.query(models.Studio)
+        .filter(models.Studio.id == studio_id)
+        .first()
+        )
+    if studio is None:
+        raise HTTPException(status_code=404, detail="Album not found")
+    return studio.studio_name
+
 # Selling # Get album data with price and owned by logged studio
 @router.get("/selling", tags=["Album"], status_code=status.HTTP_200_OK)
 async def get_selling(db: db_dependency, user_auth: user_dependency):

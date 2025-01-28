@@ -100,6 +100,20 @@ export async function getAlbumsByStudio(studio_id ,jwtToken) {
     }
 }
 
+export async function getStudioName(studio_id ,jwtToken) {
+    const url = `${serverUrl}/album/explore/studio/${studio_id}`;
+    const headers = {
+      Authorization: `Bearer ${jwtToken.access_token}`,
+    };
+    try {
+        const response = await axios.get(url, { headers });
+        return response.data;
+    } catch(error){
+        console.error(`Error: ${error.message}`);
+        return null;
+    }
+}
+
 export async function getSelling(jwtToken) {
     const url = `${serverUrl}/album/selling`;
     const headers = {

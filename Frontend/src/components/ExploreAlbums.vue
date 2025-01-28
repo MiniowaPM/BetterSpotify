@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { getAlbumImg, getAlbumsByStudio } from '@/utils/api_handler/album';
+import { getAlbumImg, getAlbumsByStudio, getStudioName } from '@/utils/api_handler/album';
 
 export default {
   name: "ExploreAlbums",
@@ -52,6 +52,7 @@ export default {
         const coverImage = await getAlbumImg(album.id, loginToken);
         album.cover = `data:${coverImage.mime_type};base64,${coverImage.base64_data}`;
       }
+      this.studio.name = await getStudioName(this.studio.id, loginToken);
       this.studio.albums = exploreAlbumsData;
     },
     addToCart(album) {
