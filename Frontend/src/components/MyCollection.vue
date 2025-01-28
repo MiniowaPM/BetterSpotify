@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection, postAlbum, postAlbumImg } from "@/utils/api_handler/album";
+import { getAlbumImg, getMyCollection, patchAlbum, postAlbum, postAlbumImg } from "@/utils/api_handler/album";
 
 export default {
   name: "MyCollection",
@@ -303,8 +303,10 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    sellAlbum(album) {
-      alert(`You are selling the album: ${album.title} by ${album.artist}`);
+    async sellAlbum(album) {
+      alert(`You are selling the album: ${album.title} by ${album.artist} for 20`);
+      const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      await patchAlbum(album.id, loginToken, null, null, null, 20, null)
     },
   },
   async mounted() {
