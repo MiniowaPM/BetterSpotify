@@ -193,6 +193,12 @@ export default {
         })
       );
     },
+    handleKeydown(event) {
+      if (event.ctrlKey && event.key === 'o') {
+        event.preventDefault();
+        this.showAddAlbumModal();
+      }
+    },
     triggerFileInput() {
       document.getElementById("albumCover").click();
     },
@@ -312,7 +318,9 @@ export default {
   async mounted() {
     this.loadFavoritesFromLocalStorage();
     this.loadToggleStateFromLocalStorage();
-    this.featchAlbumsData();    
+    this.featchAlbumsData();
+    
+    window.addEventListener('keydown', this.handleKeydown);
   },
 };
 </script>

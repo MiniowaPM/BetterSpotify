@@ -1,7 +1,24 @@
 <template>
   <div class="admin-panel">
     <h1>Admin Panel</h1>
-    <button class="add-user-button" @click="addNewUser">Add New User</button>
+    <div class="studio-name">
+      <span v-if="!isStudioNameEditing">{{ studioName }}</span>
+      <input
+        v-if="isStudioNameEditing"
+        v-model="studioName"
+        class="studio-name-input"
+      />
+      <button class="edit-studio-name-button" @click="toggleStudioNameEditMode">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+    </div>
+    <button
+      class="add-user-button"
+      @click="addNewUser"
+      :disabled="isAnyUserEditing"
+    >
+      Add New User
+    </button>
     <table class="user-table">
       <thead>
         <tr>
@@ -95,6 +112,8 @@ export default {
   name: "AdminPanel",
   data() {
     return {
+      studioName: "STudioooo",
+      isStudioNameEditing: false,
       users: [
         {
           id: "",
@@ -122,8 +141,18 @@ export default {
         };
       })
     );
+    window.addEventListener("keydown", this.handleKeyDown);
   },
   methods: {
+    handleKeyDown(event) {
+      if (event.ctrlKey && event.key === "u") {
+        event.preventDefault();
+        this.addNewUser();
+      }
+    },
+    toggleStudioNameEditMode() {
+      this.isStudioNameEditing = !this.isStudioNameEditing;
+    },
     toggleEditMode(index) {
       const user = this.users[index];
 
@@ -141,7 +170,7 @@ export default {
       }
 
       if (user.isEditing) {
-        if (user.password && user.password.length < 6) {
+        if (user.password.length < 6) {
           alert("Password must be at least 6 characters.");
           return;
         }
@@ -195,6 +224,9 @@ export default {
     },
   },
   computed: {
+    isAnyUserEditing() {
+    return this.users.some((user) => user.isEditing);
+    },
     isEditingAnyUser() {
       return this.users.some((user) => user.isEditing);
     },
@@ -363,5 +395,57 @@ h1 {
   color: var(--text-color);
   text-align: center;
   outline: none;
+}
+
+.studio-name {
+  margin-bottom: 20px;
+}
+
+.studio-name span {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.studio-name-input {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px;
+  margin-right: 13px;
+  font-size: 1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  text-align: center;
+  outline: none;
+  width: 200px;
+}
+
+.edit-studio-name-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.edit-studio-name-button:hover {
+  color: var(--contrast-color);
+}
+
+.add-user-button:disabled {
+  background-color: var(--background-hover-color);
+  color: var(--second-text-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+  border: 1px solid var(--background-hover-color);
+  transition: all 0.3s ease;
+}
+
+.add-user-button:disabled:hover {
+  background-color: var(--background-hover-color);
+  color: var(--second-text-color);
+  box-shadow: none;
+  border-color: var(--background-hover-color);
 }
 </style>
