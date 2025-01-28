@@ -108,9 +108,9 @@ export default {
       const AlbumThumbnail = await getAlbumImg(this.albumId,loginToken)
       this.album.cover = `data:${AlbumThumbnail.mime_type};base64,${AlbumThumbnail.base64_data}`;
     },
-    dropSong(index) {
+    async dropSong(index) {
       const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
-      deleteSong(this.album.songs[index].id, loginToken);
+      await deleteSong(this.album.songs[index].id, loginToken);
       this.featchAlbumData();
     },
     showAddSongModal() {
