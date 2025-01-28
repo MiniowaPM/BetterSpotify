@@ -193,6 +193,8 @@ async def purchase_album(album_id: int, user_auth: user_dependency, db: db_depen
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Previous owner not found')
     db.delete(album_ownage_data)
     studio_query.wallet -= album_query.price # Decrease funds of new owner account
+    if Prev_studio.wallet == None:
+        Prev_studio.wallet = 0
     Prev_studio.wallet += album_query.price # Increase funds of old owner account
     album_query.price = None # Set for newly purchased album
     album_ownage = models.Albums_owned(
