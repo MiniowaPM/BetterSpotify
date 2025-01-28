@@ -1,11 +1,12 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, nativeImage } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const path = require('path');
+const fs = require('fs');
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -22,9 +23,11 @@ async function createWindow() {
       minWidth: 800,
       minHeight: 600,
       frame: false,
+      icon: path.join(__dirname, '../src/assets/icon_onsite.ico'),
+      title: 'Reptillia',
       webPreferences: {
-        nodeIntegration: true, // Set to true for testing
-        contextIsolation: false // Set to false for testing
+        nodeIntegration: true,
+        contextIsolation: false 
       }
     });
 
@@ -43,18 +46,22 @@ async function createWindow() {
 function createAnotherWindow() {
   try {
     loginWindow = new BrowserWindow({
-      width: 400,
-      height: 600,
-      minWidth: 300,
-      minHeight: 400,
+      width: 800,
+      height: 500,
+      titleBarStyle: 'hidden',
+      icon: path.join(__dirname, '../src/assets/icon_onsite.ico'),
+      devTools: true,
       webPreferences: {
-        nodeIntegration: true, // Set to true for testing
-        contextIsolation: false // Set to false for testing
+        nodeIntegration: true,
+        contextIsolation: false 
       }
     });
 
     loginWindow.loadFile(path.join(__dirname, '../src/login.html')); // Load the login page
-
+    
+    if (process.env.NODE_ENV === 'development') {
+      loginWindow.webContents.openDevTools();
+    }
     ipcMain.on("login-success", () => {
       loginWindow.close();
       createWindow(); // Show the main window on successful login
@@ -64,6 +71,13 @@ function createAnotherWindow() {
   }
 }
 
+
+
+
+const RulesFile = '../src/components/rules.txt'
+fs.writeFile(RulesFile, 'Rules', () => {
+  app.addRecentDocument(path.join(__dirname, RulesFile))
+})
 // Open only the login window on application startup
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
@@ -87,6 +101,11 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
+
+
+
+
+
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
@@ -101,3 +120,42 @@ if (isDevelopment) {
     });
   }
 }
+
+ipcMain.on("go-back", (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    focusedWindow.webContents.goBack();
+  }
+});
+
+ipcMain.on("go-forward", (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    focusedWindow.webContents.goForward();
+  }
+});
+
+ipcMain.on("toggle-maximize", (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    if (focusedWindow.isMaximized()) {
+      focusedWindow.unmaximize();
+    } else {
+      focusedWindow.maximize();
+    }
+  }
+});
+
+ipcMain.on("minimize", (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    focusedWindow.minimize();
+  }
+});
+
+ipcMain.on("close-app", (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    focusedWindow.close();
+  }
+});
