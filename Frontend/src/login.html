@@ -63,7 +63,12 @@
             box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
         }
         aside{
-            width: 400px;
+            background-image: url("../src/assets/vinyl.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 500px;
+            height: 500px;
             box-shadow: rgba(63, 63, 63, 0.06) 0px 2px 4px 0px inset;
         }
         #LoginOrRegister{
@@ -119,6 +124,34 @@
             cursor: pointer;
             color:#930000;
         }
+        ::-webkit-scrollbar {
+            width: 2px;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f100;
+            margin: 2px; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            width: 4px;
+            margin: 2px;
+            border-radius: 2px;
+        }
+        #rulesContent{
+            width: 360px;
+            height: 360px;
+            background-color: #191919c7;
+            padding: 10px;
+            margin:74px 10px 10px 50px;
+            border-radius: 8px;
+            overflow-y: scroll;
+            
+            box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+        }
+        #text{
+            padding: 2px;
+        }
     </style>
 </head>
 <body>
@@ -154,13 +187,14 @@
             </article>
 
             <aside>
-                <img src="../src/assets/vinyl.jpg" width="600px" height="500px"/>
+                <!-- <img src="../src/assets/vinyl.jpg" width="600px" height="500px"/> -->
+                <button id="closeButton" v-on:click="closeWindow"><i class="fa-solid fa-xmark"></i></button>
                 <nav id="ExtraNav">
                         <div v-on:click="changeLanguage('en')" class="extraNavElement"><img src="../src/assets/english.png" width="25px" height="25px"></div>
                         <div v-on:click="changeLanguage('pl')" class="extraNavElement"><img src="../src/assets/poland.png" width="25px" height="25px"></div>
-                        <div v-on:click="fetchRulesData" class="extraNavElement"><img src="../src/assets/regulation.png" width="25px" height="25px"></div>
+                        <div v-on:click="fileContent"          class="extraNavElement"><img src="../src/assets/regulation.png" width="25px" height="25px"></div>
                 </nav>
-                <button id="closeButton" v-on:click="closeWindow"><i class="fa-solid fa-xmark"></i></button>
+                <article v-show="rulesVisable" id="rulesContent"><span id="text">{{rulesFileContent}}</span></article>
             </aside>
             
         </main>
@@ -179,6 +213,8 @@
                     studioName: '',
                     loginIsVisable: true,
                     registerIsVisable: false,
+                    rulesVisable: false,
+                    rulesFileContent: '',
                     language: 'en',
                     texts: {
                         en: {
@@ -252,6 +288,8 @@
                 },
                 register() {
                     alert(`Registering: ${this.username}, StudioName: ${this.studioName}, Password: ${this.password}`);
+                    this.loginIsVisable = true;
+                    this.registerIsVisable = false;
                 },
                 toogleVisableLogin(){
                     this.loginIsVisable = true;
@@ -267,14 +305,21 @@
                 closeWindow(){
                     ipcRenderer.send('close-app');
                 },
-                fetchRulesData(){
-                    const result = ref(null)
-                    fetch('../src/components/rules.txt')
-                        .then(response => response.json())
-                        .then(data => result.value = data);
-                    return{result}
-                    alert(result);
-                }
+                async fileContent(){
+                    this.rulesVisable = true;
+                    try{
+                        const response = await fetch('../src/components/rules.txt');
+                        if(!response){
+                            console.log("Error to fetch file");
+                        }
+                        this.rulesFileContent = await response.text();
+                        
+                    }catch(error){
+                        consol.log(error);
+                        this.rulesFileContent = "Empyt file";
+                    
+                    }
+                },
             }
         });
     </script>
