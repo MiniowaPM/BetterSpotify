@@ -1,7 +1,9 @@
 <template>
   <div class="explore-albums">
-    <h1>{{ studio.name }}'s Albums</h1>
-    <p>{{ studio.description }}</p>
+    <h1>{{ $t('exploreAlbums.albums', { studioName: studio.name }) }}</h1>
+    
+    <p>{{ $t('exploreAlbums.description') }}</p>
+
     <div class="albums">
       <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
         <img :src="album.cover" alt="Album cover" class="album-cover" />
@@ -16,11 +18,9 @@
             @click="addToCart(album)"
             class="cart-icon"
             :class="{ disabled: isAlbumInCart(album) }"
-            :title="
-              isAlbumInCart(album) ? 'This album is already in your cart' : ''
-            "
+            :title="isAlbumInCart(album) ? $t('exploreAlbums.cartDisabled') : ''"
           >
-          <i class="fa-regular fa-cart-circle-plus"></i>
+            <i class="fa-regular fa-cart-circle-plus"></i>
           </span>
         </div>
       </div>

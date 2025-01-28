@@ -6,25 +6,25 @@
           id="backButton"
           class="back-btn"
           @click="goBack"
-          aria-label="Go Back"
+          :aria-label="$t('goBack')"
         >
-          <i class="fa-regular fa-chevron-left" alt="Back"></i>
+          <i class="fa-regular fa-chevron-left" :alt="$t('goBack')"></i>
         </button>
         <button
           id="forwardButton"
           class="forward-btn"
           @click="goForward"
-          aria-label="Go Forward"
+          :aria-label="$t('goForward')"
         >
-          <i class="fa-regular fa-chevron-right" alt="Forward"></i>
+          <i class="fa-regular fa-chevron-right" :alt="$t('goForward')"></i>
         </button>
       </div>
     </div>
     <input
       type="text"
       class="search-box"
-      placeholder="Search..."
-      aria-label="Search"
+      :placeholder="$t('searchPlaceholder')"
+      aria-label="$t('searchPlaceholder')"
     />
     <div class="side-controls right-controls">
       <div class="wallet">
@@ -32,13 +32,13 @@
           id="walletButton"
           class="wallet-btn"
           @click="toggleWalletInfo"
-          aria-label="Wallet"
+          :aria-label="$t('wallet')"
         >
           <i class="fa-solid fa-wallet"></i>
         </button>
         <div v-if="isWalletInfoVisible" class="wallet-info">
           <div class="wallet-balance">
-            <p id="balance-headline">Account Balance</p>
+            <p id="balance-headline">{{ $t('accountBalance') }}</p>
             <div class="balance-row">
               <p>{{ studioBalance }}zł</p>
               <button class="add-funds-btn" @click="addFunds">
@@ -53,25 +53,25 @@
           id="minimizeButton"
           class="minimize-btn"
           @click="minimize"
-          aria-label="Minimize"
+          :aria-label="$t('minimize')"
         >
-          <i class="fa-thin fa-window-minimize" alt="Minimize"></i>
+          <i class="fa-thin fa-window-minimize" :alt="$t('minimize')"></i>
         </button>
         <button
           id="maximizeButton"
           class="maximize-btn"
           @click="toggleMaximize"
-          aria-label="Maximize"
+          :aria-label="$t('maximize')"
         >
-          <i class="fa-light fa-expand" alt="Maximize"></i>
+          <i class="fa-light fa-expand" :alt="$t('maximize')"></i>
         </button>
         <button
           id="closeButton"
           class="close-btn"
           @click="closeApp"
-          aria-label="Close"
+          :aria-label="$t('close')"
         >
-          <i class="fa-light fa-xmark" alt="Close"></i>
+          <i class="fa-light fa-xmark" :alt="$t('close')"></i>
         </button>
       </div>
     </div>

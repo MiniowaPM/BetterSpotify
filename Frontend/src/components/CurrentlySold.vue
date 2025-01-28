@@ -1,7 +1,7 @@
 <template>
   <div class="currently-sold">
-    <h1>{{ studio.name }}'s Albums for sale</h1>
-    <p>Take a look at your albums currently for sale</p>
+    <h1>{{ $t("albumsForSale.title", { studioName: studio.name }) }}</h1>
+    <p>{{ $t("albumsForSale.description") }}</p>
     <div class="albums">
       <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
         <img :src="album.cover" alt="Album cover" class="album-cover" />
@@ -15,7 +15,7 @@
           <span
             @click="removeAlbum(album)"
             class="remove-button"
-            :title="'Remove album from sale'"
+            :title="$t('albumsForSale.removeAlbum')"
           >
             <i class="fa-solid fa-xmark"></i>
           </span>
@@ -26,7 +26,11 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection, patchAlbum} from "@/utils/api_handler/album";
+import {
+  getAlbumImg,
+  getMyCollection,
+  patchAlbum,
+} from "@/utils/api_handler/album";
 
 export default {
   name: "CurrentlySold",
@@ -39,7 +43,7 @@ export default {
     };
   },
   methods: {
-    async fetchAlbumsData(){
+    async fetchAlbumsData() {
       const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
       var myCollectionData = await getMyCollection(loginToken);
 
@@ -71,16 +75,18 @@ export default {
       );
     },
     async removeAlbum(album) {
-      const confirmed = window.confirm(`Are you sure you want to stop selling the album "${album.title}"?`);
+      const confirmed = window.confirm(
+        `Are you sure you want to stop selling the album "${album.title}"?`
+      );
       if (confirmed) {
         const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
         await patchAlbum(album.id, loginToken, null, null, null, 0, null);
       }
     },
   },
-  mounted(){
+  mounted() {
     this.fetchAlbumsData();
-  }
+  },
 };
 </script>
 

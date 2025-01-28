@@ -24,7 +24,10 @@ const routes = [
     path: "/album/:albumId",
     name: "AlbumDetail",
     component: AlbumDetail,
-    props: true,
+    props: route => ({
+      albumId: route.params.albumId,
+      showAddSong: route.query.showAddSong === 'false'
+    }),
   },
   {
     path: "/explore",

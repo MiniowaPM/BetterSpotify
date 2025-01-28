@@ -24,32 +24,32 @@
       <ul>
         <li>
           <router-link to="/">
-            <div class="sidebar-content">Home</div>
+            <div class="sidebar-content">{{ $t('home') }}</div>
           </router-link>
         </li>
         <li>
           <router-link to="/my-collection">
-            <div class="sidebar-content">My Collection</div>
+            <div class="sidebar-content">{{ $t('myCollection') }}</div>
           </router-link>
         </li>
         <li>
           <router-link to="/explore">
-            <div class="sidebar-content">Explore</div>
+            <div class="sidebar-content">{{ $t('explore') }}</div>
           </router-link>
         </li>
         <li>
           <router-link to="/currently-sold">
-            <div class="sidebar-content">Selling</div>
+            <div class="sidebar-content">{{ $t('selling') }}</div>
           </router-link>
         </li>
         <li>
           <router-link to="/cart">
-            <div class="sidebar-content">Cart</div>
+            <div class="sidebar-content">{{ $t('cart') }}</div>
           </router-link>
         </li>
         <li>
           <router-link to="/admin-panel">
-            <div class="sidebar-content">Admin Panel</div>
+            <div class="sidebar-content">{{ $t('adminPanel') }}</div>
           </router-link>
         </li>
       </ul>
@@ -60,6 +60,9 @@
           <i class="fa-solid fa-gear" alt="Settings"></i>
         </button>
       </router-link>
+      <button class="language-button" @click="toggleLanguage">
+        <i class="fa-solid fa-language" alt="Language"></i>
+      </button>
       <button class="lightswitch-button" @click="toggleTheme">
         <i class="fa-solid fa-lightbulb" alt="Lightswitch"></i>
       </button>
@@ -72,19 +75,22 @@ import { getUserImg, loginToken } from '@/utils/api_handler/user';
 
 export default {
   name: "AppSidebar",
-  data(){
+  data() {
     return {
       UserProfileImage: '',
       logoImage: require('@/assets/icon_onsite.png'),
-    }
+    };
   },
   methods: {
     toggleTheme() {
-      const currentTheme =
-        document.documentElement.getAttribute("data-theme") || "dark";
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
       const newTheme = currentTheme === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", newTheme);
       localStorage.setItem("theme", newTheme);
+    },
+    toggleLanguage() {
+      const newLocale = this.$i18n.locale === 'en' ? 'pl' : 'en';
+      this.$i18n.locale = newLocale;
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -103,9 +109,8 @@ export default {
   async mounted() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
-    const TEMP_LOGIN = await loginToken("test","test")
-    // const loginToken = JSON.parse(sessionStorage.getItem("loginToken")) # jak już będzie login screan to ez
-    const UserProfileImageBinaryData = await getUserImg("me",TEMP_LOGIN) 
+    const TEMP_LOGIN = await loginToken("test", "test");
+    const UserProfileImageBinaryData = await getUserImg("me", TEMP_LOGIN);
     this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
   },
 };
@@ -187,14 +192,14 @@ nav a:hover {
 }
 
 .settings-button,
-.lightswitch-button {
+.lightswitch-button,
+.language-button {
   color: var(--text-color);
   width: 32px;
   height: 32px;
   background: none;
   border: none;
-  padding: 6px;
-  margin: 22px;
+  padding: 15px;
   display: flex;
   cursor: pointer;
   font-size: 20px;
@@ -202,10 +207,16 @@ nav a:hover {
   align-items: center;
   transition: background-color 0.3s ease;
   border-radius: 25px;
+  height: 35px;
+  width: 35px;
+  margin-bottom: 15px;
+  margin-left: 12px;
+  margin-right: 12px;
 }
 
 .settings-button:hover,
-.lightswitch-button:hover {
+.lightswitch-button:hover,
+.language-button:hover {
   background-color: var(--background-hover-color);
 }
 </style>
