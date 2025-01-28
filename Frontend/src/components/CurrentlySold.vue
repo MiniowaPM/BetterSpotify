@@ -1,7 +1,7 @@
 <template>
   <div class="currently-sold">
     <h1>{{ studio.name }}'s Albums for sale</h1>
-    <p>Take a look at your albums currently for sale – a showcase of your finest creations, ready to be discovered and enjoyed!</p>
+    <p>Take a look at your albums currently for sale</p>
     <div class="albums">
       <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
         <img :src="album.cover" alt="Album cover" class="album-cover" />

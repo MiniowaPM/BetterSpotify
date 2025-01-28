@@ -1,7 +1,19 @@
 <template>
   <aside class="sidebar">
     <div class="profile">
-      <img src="../assets/icon_onsite.png" alt="Logo" class="logo" />
+      <img 
+        :src="logoImage" 
+        alt="Logo" 
+        class="logo" 
+        @click="triggerFileInput"
+      />
+      <input 
+        type="file" 
+        ref="fileInput" 
+        @change="handleFileChange" 
+        style="display: none"
+        accept="image/*"
+      />
       <img
         :src="UserProfileImage"
         alt="User Avatar"
@@ -59,8 +71,9 @@ import { getUserImg, loginToken } from '@/utils/api_handler/user';
 export default {
   name: "AppSidebar",
   data(){
-    return{
+    return {
       UserProfileImage: '',
+      logoImage: require('@/assets/icon_onsite.png'),
     }
   },
   methods: {
@@ -71,6 +84,19 @@ export default {
       document.documentElement.setAttribute("data-theme", newTheme);
       localStorage.setItem("theme", newTheme);
     },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.logoImage = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   },
   async mounted() {
     const savedTheme = localStorage.getItem("theme") || "dark";

@@ -36,9 +36,11 @@
         </router-link>
       </div>
       <div class="feature">
-        <i class="fa-solid fa-star"></i>
-        <h2>Favorites</h2>
-        <p class="description">Quickly access your favorite items.</p>
+        <router-link to="/currently-sold">
+          <i class="fa-solid fa-cart-circle-arrow-up"></i>
+          <h2>Currenty Sold</h2>
+          <p class="description">View items that you have listed for sale.</p>
+        </router-link>
       </div>
       <div class="feature">
         <i class="fa-solid fa-cog"></i>

@@ -7,6 +7,7 @@
         <tr>
           <th>User Icon</th>
           <th>Username</th>
+          <th>Password</th>
           <th>Status</th>
           <th>Edit/Confirm</th>
           <th>Delete</th>
@@ -40,6 +41,16 @@
               :key="user.id"
             />
             <span v-else>{{ user.username }}</span>
+          </td>
+          <td>
+            <input
+              v-if="user.isEditing"
+              type="password"
+              v-model="user.password"
+              placeholder="Enter new password"
+              class="password-input"
+            />
+            <span v-else>*****</span>
           </td>
           <td>
             <span v-if="!user.isEditing" class="admin-status">
@@ -89,6 +100,7 @@ export default {
           id: "",
           icon: "",
           username: "",
+          password: "",
           isAdmin: Boolean,
           isEditing: false,
         },
@@ -105,6 +117,7 @@ export default {
           id: user.id,
           icon: `data:${userIcon.mime_type};base64,${userIcon.base64_data}`,
           username: user.username,
+          password: "",
           isAdmin: user.is_admin,
         };
       })
@@ -128,6 +141,11 @@ export default {
       }
 
       if (user.isEditing) {
+        if (user.password && user.password.length < 6) {
+          alert("Password must be at least 6 characters.");
+          return;
+        }
+
         user.isEditing = false;
       } else {
         user.isEditing = true;
@@ -146,6 +164,7 @@ export default {
         id: "",
         icon: "https://i.pinimg.com/736x/9f/16/72/9f1672710cba6bcb0dfd93201c6d4c00.jpg",
         username: "",
+        password: "",
         isAdmin: false,
         isEditing: true,
       });
@@ -332,5 +351,17 @@ h1 {
 
 .delete-button:hover {
   color: var(--contrast-color);
+}
+
+.password-input {
+  font-family: "Hanken Grotesk", sans-serif;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--background-hover-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  text-align: center;
+  outline: none;
 }
 </style>
