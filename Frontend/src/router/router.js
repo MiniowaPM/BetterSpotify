@@ -7,6 +7,7 @@ import MyCart from "../components/MyCart.vue";
 import AlbumDetail from "../components/AlbumDetail.vue";
 import AdminPanel from "@/components/AdminPanel.vue";
 import CurrentlySold from "@/components/CurrentlySold.vue";
+import ProfileSettings from "@/components/ProfileSettings.vue";
 
 const routes = [
   {
@@ -50,6 +51,11 @@ const routes = [
     path: "/currently-sold",
     name: "CurrentlySold",
     component: CurrentlySold,
+  },
+  {
+    path: "/profile-settings",
+    name: "ProfileSettings",
+    component: ProfileSettings,
   },
 ];
 

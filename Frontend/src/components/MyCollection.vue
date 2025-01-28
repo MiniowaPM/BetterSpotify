@@ -18,12 +18,14 @@
         <div class="album-footer">
           <button
             class="sell-button"
-            @click.stop="sellAlbum(album)"
+            @click.stop="showSellAlbumModal(album)"
             title="Sell Album"
           >
             <i class="fa-solid fa-dollar-sign"></i>
           </button>
-          <span class="separator">•</span>
+          <span class="separator">
+            <i class="fa-solid fa-circle-small"></i>
+          </span>
           <span>
             <i
               :class="
@@ -36,12 +38,44 @@
               @click.stop="toggleFavorite(album)"
             ></i>
           </span>
+          <span class="separator">
+            <i class="fa-solid fa-circle-small"></i>
+          </span>
+          <button
+            class="remove-button"
+            @click.stop="removeAlbum(album)"
+            title="Remove Album"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
       </div>
       <div class="album add-album" @click="showAddAlbumModal">
         <div class="add-album-content">
           <i class="fa-duotone fa-light fa-plus add-icon"></i>
           <p class="add-text">Add Album</p>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="isSellModalVisible" class="modal-backdrop">
+      <div class="modal">
+        <h3 class="modal-title">Sell Album</h3>
+        <p>Enter the price for selling the album:</p>
+        <div class="modal-inputs">
+          <input
+            id="sellPrice"
+            v-model="sellPrice"
+            type="number"
+            placeholder="Enter price in złoty"
+          />
+        </div>
+        <p v-if="sellErrorMessage" class="error-message">{{ sellErrorMessage }}</p>
+        <div class="modal-actions">
+          <button class="modal-button save" @click="confirmSellAlbum">Sell</button>
+          <button class="modal-button cancel" @click="hideSellAlbumModal">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -111,7 +145,7 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection, patchAlbum, postAlbum, postAlbumImg } from "@/utils/api_handler/album";
+import { getAlbumImg, getMyCollection, patchAlbum, postAlbum, postAlbumImg, deleteAlbum } from "@/utils/api_handler/album";
 
 export default {
   name: "MyCollection",
@@ -154,6 +188,9 @@ export default {
       },
       errorMessage: "",
       coverErrorMessage: "",
+      isSellModalVisible: false,
+      sellPrice: null,
+      sellErrorMessage: "",
     };
   },
   computed: {
@@ -309,10 +346,32 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    async sellAlbum(album) {
-      alert(`You are selling the album: ${album.title} by ${album.artist} for 20`);
+    showSellAlbumModal(album) {
+      this.isSellModalVisible = true;
+      this.selectedAlbum = album;
+    },
+    hideSellAlbumModal() {
+      this.isSellModalVisible = false;
+      this.sellPrice = null;
+      this.sellErrorMessage = "";
+    },
+    async confirmSellAlbum() {
+      if (!this.sellPrice || this.sellPrice <= 0) {
+        this.sellErrorMessage = "Please enter a valid price.";
+        return;
+      } 
+      alert(`Album "${this.selectedAlbum.title}" is being sold for ${this.sellPrice}zł`);
       const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-      await patchAlbum(album.id, loginToken, null, null, null, 20, null)
+      await patchAlbum(this.selectedAlbum.id, loginToken, null, null, null, this.sellPrice, null);
+      this.hideSellAlbumModal();
+    },
+    async removeAlbum(album) {
+      //funkcja usuwania albumu nie działa
+      const confirmed = window.confirm(`Are you sure you want to delete the album "${album.title}"?`);
+      if (confirmed) {
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        await deleteAlbum(album.id, loginToken);
+      }
     },
   },
   async mounted() {
@@ -415,21 +474,19 @@ p {
   justify-content: center;
 }
 
-.release-date {
-  font-size: 0.9rem;
-}
-
-.star-icon {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.star-icon:hover {
-  color: var(--text-color);
-}
-
 .separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--second-text-color);
   margin: 0 8px;
+}
+
+.separator i {
+  font-size: 7px;
+  width: 7px;
+  height: 7px;
+  display: inline-block;
 }
 
 .add-album {
@@ -655,5 +712,21 @@ input[type="file"] {
 
 .sell-button:hover {
   color: var(--contrast-color);
+}
+
+.remove-button {
+  background: transparent;
+  border: none;
+  color: var(--second-text-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.remove-button:hover {
+  color: var(--contrast-color);
+}
+
+.remove-button i {
+  font-size: 1rem;
 }
 </style>

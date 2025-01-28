@@ -55,9 +55,11 @@
       </ul>
     </nav>
     <div class="footer">
-      <button class="settings-button">
-        <i class="fa-solid fa-gear" alt="Settings"></i>
-      </button>
+      <router-link to="/profile-settings">
+        <button class="settings-button">
+          <i class="fa-solid fa-gear" alt="Settings"></i>
+        </button>
+      </router-link>
       <button class="lightswitch-button" @click="toggleTheme">
         <i class="fa-solid fa-lightbulb" alt="Lightswitch"></i>
       </button>

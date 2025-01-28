@@ -43,9 +43,11 @@
         </router-link>
       </div>
       <div class="feature">
-        <i class="fa-solid fa-cog"></i>
-        <h2>Settings</h2>
-        <p class="description">Customize your experience and preferences.</p>
+        <router-link to="/profile-settings">
+          <i class="fa-solid fa-cog"></i>
+          <h2>Settings</h2>
+          <p class="description">Customize your experience and preferences.</p>
+        </router-link>
       </div>
     </div>
   </div>

@@ -14,10 +14,10 @@
           </span>
           <span
             @click="removeAlbum(album)"
-            class="trash-icon"
+            class="remove-button"
             :title="'Remove album from sale'"
           >
-            <i class="fa-regular fa-trash-can"></i>
+            <i class="fa-solid fa-xmark"></i>
           </span>
         </div>
       </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { getAlbumImg, getMyCollection} from "@/utils/api_handler/album";
+import { getAlbumImg, getMyCollection, patchAlbum} from "@/utils/api_handler/album";
 
 export default {
   name: "CurrentlySold",
@@ -70,8 +70,12 @@ export default {
         })
       );
     },
-    removeAlbum(album) {
-      console.log(album);
+    async removeAlbum(album) {
+      const confirmed = window.confirm(`Are you sure you want to stop selling the album "${album.title}"?`);
+      if (confirmed) {
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        await patchAlbum(album.id, loginToken, null, null, null, 0, null);
+      }
     },
   },
   mounted(){
@@ -149,25 +153,30 @@ p {
 .price {
   font-size: 1.1rem;
   font-weight: bold;
-  color: var(--text-color);
+  color: var(--second-text-color);
 }
 
-.trash-icon {
+.remove-button {
+  background: transparent;
+  border: none;
+  color: var(--second-text-color);
   cursor: pointer;
-  font-size: 1.1rem;
-  color: var(--text-color);
   transition: color 0.3s ease;
 }
 
-.trash-icon:hover {
-  color: var(--primary-color);
+.remove-button:hover {
+  color: var(--contrast-color);
+}
+
+.remove-button i {
+  font-size: 1rem;
 }
 
 .separator {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--text-color);
+  color: var(--second-text-color);
   margin: 0 8px;
 }
 
