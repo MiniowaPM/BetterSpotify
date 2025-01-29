@@ -68,12 +68,20 @@ async function createMainWindow() {
 }
 
 // When login is successful, close login window and create the main window
-ipcMain.on('login-success', () => {
-  if (loginWindow) {
-    loginWindow.close()
-  }
-  createMainWindow()
-})
+let userToken = null; // Store token in main process
+
+ipcMain.on("login-success", (event, token) => {
+    userToken = token; // Store login token in the main process
+
+    if (loginWindow) {
+        loginWindow.close();
+    }
+    createMainWindow();
+});
+
+ipcMain.handle("get-login-token", () => {
+  return userToken; // Send token to renderer process
+});
 
 ipcMain.on('register-success', () => {
   if (loginWindow) {

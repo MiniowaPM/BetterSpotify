@@ -144,7 +144,7 @@ export default {
         // Handle login logic here
         if (login.value === "posac" && password.value === "password123") {
           // Successfully logged in, send a signal to Electron
-          ipcRenderer.send("login-success");
+          ipcRenderer.send("login-success", savedLoginToken);
           router.push("/"); // Navigate to the home page after successful login
         } else {
           errorMessage.value = "Invalid login or password";
