@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { patchStudio } from "@/utils/api_handler/album";
 import { deleteUser, getUserImg, getUsersInStudio, patchUser, postUser } from "@/utils/api_handler/user";
 
 export default {
@@ -181,6 +182,7 @@ export default {
             username: user.username,
             password: "",
             isAdmin: user.is_admin,
+            studioFk: user.studio_fk,
           };
         })
       );
@@ -193,6 +195,10 @@ export default {
     },
     toggleStudioNameEditMode() {
       this.isStudioNameEditing = !this.isStudioNameEditing;
+      if (this.isStudioNameEditing == false){
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        patchStudio(this.users.at(1).studioFk, loginToken, this.studioName, undefined);
+      }
     },
     async toggleEditMode(index) {
       if (this.newUser) {
