@@ -87,6 +87,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ipcRenderer } from "electron";
+import { loginToken } from "@/utils/api_handler/user";
 
 export default {
   name: "AuthPage",
@@ -124,7 +125,7 @@ export default {
       showTermsModal.value = false;
     };
 
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async() => {
       if (isRegistering.value) {
         // Handle registration logic here
         if (login.value && password.value && studioName.value) {
@@ -142,7 +143,8 @@ export default {
         }
       } else {
         // Handle login logic here
-        if (login.value === "posac" && password.value === "password123") {
+        const savedLoginToken = await loginToken(login.value,password.value);
+        if (savedLoginToken && savedLoginToken.token_type == 'bearer' ) {
           // Successfully logged in, send a signal to Electron
           ipcRenderer.send("login-success", savedLoginToken);
           router.push("/"); // Navigate to the home page after successful login
