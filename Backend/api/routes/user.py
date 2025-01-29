@@ -142,10 +142,10 @@ async def get_user_profile_image(user_id: str, user_auth: user_dependency):
         return JSONResponse(content={"mime_type": mime_type, "base64_data": encoded_image})
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
 # AdminPanel # Update user 
 @router.patch("/{user_id}", tags=["User"], status_code=status.HTTP_200_OK)
 async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, user_auth: user_dependency):
-    print('test')
     if user_id == "me":
         user_id = user_auth["id"]
     else:
@@ -162,14 +162,17 @@ async def update_user(user_id: str, user: UpdateUserBase, db: db_dependency, use
         setattr(user, key, value)
         if key == "password_hash":
             value = bcrypt_context.hash(user.password_hash)
-        if key == "is_admin" and user_auth.get("is_admin", False) is False:
-            value = False
+        if key == "is_admin":
+            if not user_auth.get("is_admin", False):
+                value = False
+            else:
+                if value is False:
+                    admin_users_in_studio = db.query(func.count(models.User.id)).filter(
+                        models.User.is_admin == True, models.User.studio_fk == user_auth.get('studio_fk')
+                    ).scalar()
+                    if admin_users_in_studio == 1 and user_query.is_admin:
+                        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot remove the only admin from the group. Assign another admin before proceeding.")
         setattr(user_query, key, value)
-    if user_auth.get("is_admin", False):
-            admin_users_in_studio = db.query(func.count(models.User.id)).filter(models.User.is_admin == True, models.User.studio_fk == user_auth.get('studio_fk')).scalar()
-            print(admin_users_in_studio)
-            if admin_users_in_studio == 1:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot delete the only admin in the group. Assign another admin before proceeding.")
     db.commit()
     return {"detail": "User successfully modified"}
 
