@@ -49,6 +49,8 @@
 
 <script>
 import { getLoggedUser, getUserImg } from '@/utils/api_handler/user';
+import { ipcRenderer } from "electron";
+import { ref } from "vue";
 
 export default {
   data() {
@@ -61,6 +63,9 @@ export default {
   },
 async mounted(){
   try{
+    const loginTokenIPC = ref(null);
+    loginTokenIPC.value = await ipcRenderer.invoke("get-login-token");
+    sessionStorage.setItem('loginToken', JSON.stringify(loginTokenIPC.value));
     const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
     const HomePageData = await getLoggedUser(loginToken);
     this.Username = HomePageData.username;
