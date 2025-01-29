@@ -28,9 +28,10 @@
         <p class="total">{{ $t('myCart.total', { total: cartTotal.toFixed(2) }) }}</p>
         <div class="actions">
           <button class="clear-button" @click="clearCart">{{ $t('myCart.clearCart') }}</button>
-          <button
+          <button 
             class="checkout-button"
-            :disabled="cartTotal > userBalance"
+            :disabled="!isAdmin || cartTotal > userBalance" 
+            
             @click="checkout"
           >
             {{ cartTotal > userBalance ? $t('myCart.insufficientBalance') : $t('myCart.checkout') }}

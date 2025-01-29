@@ -9,10 +9,10 @@
         <p class="artist-text">{{ album.artist }}</p>
         <div class="album-footer">
           <span class="price">{{ album.price }}zł</span>
-          <span class="separator">
+          <span class="separator" v-if="isAdmin">
             <i class="fa-solid fa-circle-small"></i>
           </span>
-          <span
+          <span v-if="isAdmin"
             @click="removeAlbum(album)"
             class="remove-button"
             :title="$t('albumsForSale.removeAlbum')"

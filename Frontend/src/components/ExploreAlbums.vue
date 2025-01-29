@@ -5,7 +5,7 @@
     <p>{{ $t('exploreAlbums.description') }}</p>
 
     <div class="albums">
-      <div v-for="(album, idx) in studio.albums" :key="idx" class="album">
+      <div v-for="(album, idx) in studio.albums" :key="idx" class="album" @click="viewAlbumDetail(album)">
         <img :src="album.cover" alt="Album cover" class="album-cover" />
         <h3>{{ album.title }}</h3>
         <p class="artist-text">{{ album.artist }}</p>
@@ -61,6 +61,13 @@ export default {
     isAlbumInCart(album) {
       return this.cart.some((item) => item.id === album.id);
     },
+    viewAlbumDetail(album) {
+      this.$router.push({
+        name: "AlbumDetail",
+        params: { albumId: album.id },
+        query: { showAddSong: false },
+      });
+    }
   },
   mounted(){
     this.fetchAlbumData();
