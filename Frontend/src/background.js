@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -66,12 +66,20 @@ async function createMainWindow() {
 }
 
 // When login is successful, close login window and create the main window
-ipcMain.on('login-success', () => {
-  if (loginWindow) {
-    loginWindow.close()
-  }
-  createMainWindow()
-})
+let userToken = null; // Store token in main process
+
+ipcMain.on("login-success", (event, token) => {
+    userToken = token; // Store login token in the main process
+
+    if (loginWindow) {
+        loginWindow.close();
+    }
+    createMainWindow();
+});
+
+ipcMain.handle("get-login-token", () => {
+  return userToken; // Send token to renderer process
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -113,8 +121,6 @@ if (isDevelopment) {
     })
   }
 }
-
-import { ipcMain } from "electron"
 
 ipcMain.on("go-back", (event) => {
   const focusedWindow = BrowserWindow.getFocusedWindow()

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getLoggedUser, getUserImg, loginToken  } from '@/utils/api_handler/user';
+import { getLoggedUser, getUserImg } from '@/utils/api_handler/user';
 
 export default {
   data() {
@@ -61,14 +61,12 @@ export default {
   },
 async mounted(){
   try{
-    const savedLoginToken = await loginToken('test','test'); // TEMPORARY LOGIN - TEST USER
-    sessionStorage.setItem('loginToken', JSON.stringify(savedLoginToken)); // TEMPORARY SESSION // TO BE IN LOGIN SCREAN
-    // sessionStorage.getItem('loginToken');
-    const HomePageData = await getLoggedUser(savedLoginToken);
+    const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+    const HomePageData = await getLoggedUser(loginToken);
     this.Username = HomePageData.username;
     this.StudioName = HomePageData.studio_name;
     sessionStorage.setItem('StudioName', this.StudioName);
-    const UserProfileImageBinaryData = await getUserImg('me', savedLoginToken);
+    const UserProfileImageBinaryData = await getUserImg('me', loginToken);
     this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
   } catch (error) {
     console.error('Error fetching user data:', error);  

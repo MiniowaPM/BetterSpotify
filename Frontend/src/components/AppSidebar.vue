@@ -71,7 +71,10 @@
 </template>
 
 <script>
-import { getUserImg, loginToken, getLoggedUser } from '@/utils/api_handler/user';
+import { getUserImg, getLoggedUser } from '@/utils/api_handler/user';
+import { ipcRenderer } from "electron";
+import { ref } from "vue";
+
 
 export default {
   name: "AppSidebar",
@@ -107,9 +110,12 @@ export default {
       }
     },
     async fetchUserData() {
+      const loginTokenIPC = ref(null);
+      loginTokenIPC.value = await ipcRenderer.invoke("get-login-token");
+      sessionStorage.setItem('loginToken', JSON.stringify(loginTokenIPC.value));
       const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
       const userData = await getLoggedUser(loginToken);
-      
+    
       if (userData.is_admin) {
         this.isAdmin = true;
       }
@@ -119,8 +125,8 @@ export default {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
     await this.fetchUserData();
-    const TEMP_LOGIN = await loginToken("test", "test");
-    const UserProfileImageBinaryData = await getUserImg("me", TEMP_LOGIN);
+    const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));
+    const UserProfileImageBinaryData = await getUserImg("me", loginToken);
     this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
   },
 };

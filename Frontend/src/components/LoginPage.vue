@@ -45,7 +45,8 @@
   import { ref } from "vue";
   import { useRouter } from "vue-router";
   import { ipcRenderer } from "electron";
-  
+  import { loginToken } from "@/utils/api_handler/user";
+
   export default {
     name: "LoginPage",
     setup() {
@@ -54,15 +55,11 @@
       const password = ref("");
       const errorMessage = ref("");
   
-      // Mock login credentials for simulation
-      const validLogin = "posac";
-      const validPassword = "password123";
-  
-      const handleLogin = () => {
-        // Simulate validation check
-        if (login.value === validLogin && password.value === validPassword) {
+      const handleLogin = async() => {
+        const savedLoginToken = await loginToken(login.value,password.value);
+        if (savedLoginToken && savedLoginToken.token_type == 'bearer' ) {
           // Successfully logged in, send a signal to Electron
-          ipcRenderer.send("login-success");
+          ipcRenderer.send("login-success", savedLoginToken);
           router.push("/"); // Navigate to the home page after successful login
         } else {
           errorMessage.value = "Invalid login or password";
