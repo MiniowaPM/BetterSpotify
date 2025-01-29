@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+// import LoginPage from "@/components/LoginPage.vue";
 import HomePage from "../components/HomePage.vue";
 import MyCollection from "../components/MyCollection.vue"; 
 import ExploreMarket from "../components/ExploreMarket.vue";
@@ -10,6 +11,11 @@ import CurrentlySold from "@/components/CurrentlySold.vue";
 import ProfileSettings from "@/components/ProfileSettings.vue";
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'login',
+  //   component: Login,
+  // },
   {
     path: "/",
     name: "Home",

@@ -44,7 +44,7 @@
               <input
                 type="file"
                 accept="image/*"
-                ref="fileInputs"
+                :ref="el => fileInputs[idx] = el"
                 class="file-input"
                 @change="updateProfilePicture($event, idx)"
               />
@@ -100,6 +100,42 @@
             </button>
           </td>
         </tr>
+        <tr v-if="newUser">
+          <td>
+            <img
+            :src="newUser.icon"
+            alt="User icon"
+            class="user-icon"
+            :style="{ cursor: 'pointer' }"
+            @click="triggerFileInput('new')"
+            />
+            <input
+            type="file"
+            class="file-input"
+            accept="image/*"
+            :ref="el => fileInputs['new'] = el"
+            @change="updateProfilePicture($event, 'new')"
+            />
+          </td>
+          <td><input v-model="newUser.username" class="username-input" /></td>
+          <td><input type="password" v-model="newUser.password" class="password-input" /></td>
+          <td>
+            <select v-model="newUser.isAdmin" class="status-dropdown">
+              <option :value="true">{{ $t('adminPanelSettings.admin') }}</option>
+              <option :value="false">{{ $t('adminPanelSettings.user') }}</option>
+            </select>
+          </td>
+          <td>
+            <button class="edit-button confirm" @click="confirmAddUser()">
+              {{ $t('adminPanelSettings.confirm') }}
+            </button>
+          </td>
+          <td>
+            <button class="delete-button" @click="newUser = null">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -124,6 +160,8 @@ export default {
           isEditing: false,
         },
       ],
+      newUser: null,
+      fileInputs: {},
     };
   },
   async mounted() {
@@ -154,6 +192,11 @@ export default {
       this.isStudioNameEditing = !this.isStudioNameEditing;
     },
     toggleEditMode(index) {
+      if (this.newUser) {
+        this.confirmAddUser();
+        return;
+      }
+
       const user = this.users[index];
 
       if (!user.username.trim()) {
@@ -174,7 +217,6 @@ export default {
           alert("Password must be at least 6 characters.");
           return;
         }
-
         user.isEditing = false;
       } else {
         user.isEditing = true;
@@ -185,18 +227,42 @@ export default {
       return adminCount > 1 || !user.isAdmin;
     },
     addNewUser() {
-      this.users.forEach((user) => {
-        user.isEditing = false;
-      });
-
-      this.users.push({
+      if (this.newUser) return;
+      this.newUser = {
         id: "",
         icon: "https://i.pinimg.com/736x/9f/16/72/9f1672710cba6bcb0dfd93201c6d4c00.jpg",
         username: "",
         password: "",
         isAdmin: false,
         isEditing: true,
-      });
+      };
+    },
+    confirmAddUser() {
+      if (!this.newUser.username.trim()) {
+        alert("Username cannot be empty!");
+        return;
+      }
+
+      const duplicate = this.users.some(user => user.username === this.newUser.username);
+      if (duplicate) {
+        alert("Username is already taken!");
+        return;
+      }
+
+      if (this.newUser.password.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+      }
+
+      this.newUser.isEditing = false;
+      this.users.push(this.newUser);
+      this.newUser = null;
+
+      if (this.newUser) {
+        this.newUser.isEditing = false;
+        this.users.push(this.newUser);
+        this.newUser = null;
+      }
     },
     deleteUser(index) {
       const user = this.users[index];
@@ -209,18 +275,23 @@ export default {
       }
     },
     triggerFileInput(index) {
-      const fileInput = this.$refs.fileInputs[index];
-      fileInput.click();
+      if (this.fileInputs[index]) {
+        this.fileInputs[index].click();
+      }
     },
     updateProfilePicture(event, index) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.users[index].icon = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (index === "new") {
+          this.newUser.icon = e.target.result; 
+        } else {
+          this.users[index].icon = e.target.result; 
+        }
+      };
+      reader.readAsDataURL(file);
     },
   },
   computed: {

@@ -41,7 +41,7 @@
             <p id="balance-headline">{{ $t('accountBalance') }}</p>
             <div class="balance-row">
               <p>{{ studioBalance }}zł</p>
-              <button class="add-funds-btn" @click="addFunds">
+              <button class="add-funds-btn" @click="addFunds" v-if="isAdmin">
                 <i class="fa-solid fa-circle-plus"></i>
               </button>
             </div>
@@ -87,6 +87,7 @@ export default {
     return {
       isWalletInfoVisible: false,
       studioBalance: 0,
+      isAdmin: false
     };
   },
   methods: {

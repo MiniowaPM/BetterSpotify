@@ -47,7 +47,7 @@
             <div class="sidebar-content">{{ $t('cart') }}</div>
           </router-link>
         </li>
-        <li>
+        <li v-if="isAdmin">
           <router-link to="/admin-panel">
             <div class="sidebar-content">{{ $t('adminPanel') }}</div>
           </router-link>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { getUserImg, loginToken } from '@/utils/api_handler/user';
+import { getUserImg, loginToken, getLoggedUser } from '@/utils/api_handler/user';
 
 export default {
   name: "AppSidebar",
@@ -79,6 +79,7 @@ export default {
     return {
       UserProfileImage: '',
       logoImage: require('@/assets/icon_onsite.png'),
+      isAdmin: false,
     };
   },
   methods: {
@@ -104,11 +105,20 @@ export default {
         };
         reader.readAsDataURL(file);
       }
-    }
+    },
+    async fetchUserData() {
+      const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      const userData = await getLoggedUser(loginToken);
+      
+      if (userData.is_admin) {
+        this.isAdmin = true;
+      }
+    },
   },
   async mounted() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
+    await this.fetchUserData();
     const TEMP_LOGIN = await loginToken("test", "test");
     const UserProfileImageBinaryData = await getUserImg("me", TEMP_LOGIN);
     this.UserProfileImage = `data:${UserProfileImageBinaryData.mime_type};base64,${UserProfileImageBinaryData.base64_data}`;
