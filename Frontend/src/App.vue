@@ -1,22 +1,27 @@
 <template>
-  <div class="container">
-    <AppSidebar />
-    <main class="main-content">
-      <AppTopbar />
-      <router-view
-        :cart="cart"
-        @add-to-cart="addToCart"
-        @remove-from-cart="removeFromCart"
-        @clear-cart="clearCart"
-      />
-    </main>
+  <div id="app">
+    <div v-if="!isLoginPage" class="container">
+      <AppSidebar />
+      <main class="main-content">
+        <AppTopbar />
+        <router-view
+          :cart="cart"
+          @add-to-cart="addToCart"
+          @remove-from-cart="removeFromCart"
+          @clear-cart="clearCart"
+        />
+      </main>
+    </div>
+    <!-- For the login page, no sidebar or topbar -->
+    <router-view v-if="isLoginPage" />
   </div>
 </template>
 
 <script>
 import AppSidebar from "./components/AppSidebar.vue";
 import AppTopbar from "./components/AppTopbar.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";  // <-- Importing 'computed' and 'onMounted' here
+import { useRoute } from "vue-router";  // Importing the useRoute hook from 'vue-router'
 
 export default {
   name: "App",
@@ -25,6 +30,11 @@ export default {
     AppTopbar,
   },
   setup() {
+    const route = useRoute();  // Using the route hook
+
+    // Computed property to check if we're on the login page
+    const isLoginPage = computed(() => route.path === '/login');
+
     const cart = ref(JSON.parse(localStorage.getItem("cart")) || []);
 
     const saveCartToLocalStorage = () => {
@@ -53,7 +63,8 @@ export default {
       saveCartToLocalStorage();
     });
 
-    return { cart, addToCart, removeFromCart, clearCart };
+    // Returning the necessary variables to the template
+    return { cart, addToCart, removeFromCart, clearCart, isLoginPage };
   },
 };
 </script>

@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-// import LoginPage from "@/components/LoginPage.vue";
 import HomePage from "../components/HomePage.vue";
 import MyCollection from "../components/MyCollection.vue"; 
 import ExploreMarket from "../components/ExploreMarket.vue";
@@ -9,13 +8,14 @@ import AlbumDetail from "../components/AlbumDetail.vue";
 import AdminPanel from "@/components/AdminPanel.vue";
 import CurrentlySold from "@/components/CurrentlySold.vue";
 import ProfileSettings from "@/components/ProfileSettings.vue";
+import LoginPage from "@/components/LoginPage.vue";
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'login',
-  //   component: Login,
-  // },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage,
+  },
   {
     path: "/",
     name: "Home",

@@ -12,13 +12,40 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-async function createWindow() {
-  const win = new BrowserWindow({
+let mainWindow
+let loginWindow
+
+async function createLoginWindow() {
+  loginWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    frame: false,  // Optional, hide window frame for custom design
+    webPreferences: {
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+    }
+  })
+
+  // In development, ensure you're targeting the correct URL path with the hash (`#/login`)
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    await loginWindow.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/login`)
+  } else {
+    createProtocol('app')
+    loginWindow.loadURL('app://./index.html#/login') // For production, ensure correct route with hash
+  }
+
+  loginWindow.on('closed', () => {
+    loginWindow = null
+  })
+}
+
+async function createMainWindow() {
+  mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    frame: false,
+    frame: false,  // If you want to keep it with custom frame
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
@@ -26,42 +53,50 @@ async function createWindow() {
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    await mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    if (!process.env.IS_TEST) mainWindow.webContents.openDevTools()
   } else {
     createProtocol('app')
-    win.loadURL('app://./index.html')
+    mainWindow.loadURL('app://./index.html')
   }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
 }
+
+// When login is successful, close login window and create the main window
+ipcMain.on('login-success', () => {
+  if (loginWindow) {
+    loginWindow.close()
+  }
+  createMainWindow()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createLoginWindow() // Show login window if app is reactivated
+  }
 })
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
     try {
       await installExtension(VUEJS3_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+  createLoginWindow() // Start with the login window
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -79,43 +114,43 @@ if (isDevelopment) {
   }
 }
 
-import { ipcMain } from "electron";
+import { ipcMain } from "electron"
 
 ipcMain.on("go-back", (event) => {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const focusedWindow = BrowserWindow.getFocusedWindow()
   if (focusedWindow) {
-    focusedWindow.webContents.goBack();
+    focusedWindow.webContents.goBack()
   }
-});
+})
 
 ipcMain.on("go-forward", (event) => {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const focusedWindow = BrowserWindow.getFocusedWindow()
   if (focusedWindow) {
-    focusedWindow.webContents.goForward();
+    focusedWindow.webContents.goForward()
   }
-});
+})
 
 ipcMain.on("toggle-maximize", (event) => {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const focusedWindow = BrowserWindow.getFocusedWindow()
   if (focusedWindow) {
     if (focusedWindow.isMaximized()) {
-      focusedWindow.unmaximize();
+      focusedWindow.unmaximize()
     } else {
-      focusedWindow.maximize();
+      focusedWindow.maximize()
     }
   }
-});
+})
 
 ipcMain.on("minimize", (event) => {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const focusedWindow = BrowserWindow.getFocusedWindow()
   if (focusedWindow) {
-    focusedWindow.minimize();
+    focusedWindow.minimize()
   }
-});
+})
 
 ipcMain.on("close-app", (event) => {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
+  const focusedWindow = BrowserWindow.getFocusedWindow()
   if (focusedWindow) {
-    focusedWindow.close();
+    focusedWindow.close()
   }
-});
+})
