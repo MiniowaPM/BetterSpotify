@@ -202,3 +202,21 @@ export async function postPurchaseAlbum(albumId, jwtToken) {
         return null;
     }
 }
+
+export async function patchStudio(studioId, jwtToken, studio_name = undefined, wallet = undefined) {
+    const url = `${serverUrl}/studio/${studioId}`;
+    const headers = {
+      Authorization: `Bearer ${jwtToken.access_token}`,
+    };
+    const params = {
+        ...(studio_name !== undefined && { studio_name }),
+        ...(wallet !== undefined && { wallet }), 
+    };
+    try {
+        const response = await axios.patch(url, params, { headers });
+        return response.data;
+
+    } catch(error){
+        console.error(`Error: ${error.message}`);
+        return null;
+    }  }

@@ -142,7 +142,8 @@
 </template>
 
 <script>
-import { getUserImg, getUsersInStudio } from "@/utils/api_handler/user";
+import { patchStudio } from "@/utils/api_handler/album";
+import { deleteUser, getUserImg, getUsersInStudio, patchUser, postUser } from "@/utils/api_handler/user";
 
 export default {
   name: "AdminPanel",
@@ -164,24 +165,28 @@ export default {
       fileInputs: {},
     };
   },
-  async mounted() {
-    const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-    const usersInStudio = await getUsersInStudio(loginToken);
-    this.users = await Promise.all(
-      usersInStudio.map(async (user) => {
-        const userIcon = await getUserImg(user.id, loginToken);
-        return {
-          id: user.id,
-          icon: `data:${userIcon.mime_type};base64,${userIcon.base64_data}`,
-          username: user.username,
-          password: "",
-          isAdmin: user.is_admin,
-        };
-      })
-    );
+  mounted() {
+    this.fetchUserData()
     window.addEventListener("keydown", this.handleKeyDown);
   },
   methods: {
+    async fetchUserData(){
+      const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      const usersInStudio = await getUsersInStudio(loginToken);
+      this.users = await Promise.all(
+        usersInStudio.map(async (user) => {
+          const userIcon = await getUserImg(user.id, loginToken);
+          return {
+            id: user.id,
+            icon: `data:${userIcon.mime_type};base64,${userIcon.base64_data}`,
+            username: user.username,
+            password: "",
+            isAdmin: user.is_admin,
+            studioFk: user.studio_fk,
+          };
+        })
+      );
+    },
     handleKeyDown(event) {
       if (event.ctrlKey && event.key === "u") {
         event.preventDefault();
@@ -190,8 +195,12 @@ export default {
     },
     toggleStudioNameEditMode() {
       this.isStudioNameEditing = !this.isStudioNameEditing;
+      if (this.isStudioNameEditing == false){
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        patchStudio(this.users.at(1).studioFk, loginToken, this.studioName, undefined);
+      }
     },
-    toggleEditMode(index) {
+    async toggleEditMode(index) {
       if (this.newUser) {
         this.confirmAddUser();
         return;
@@ -218,6 +227,9 @@ export default {
           return;
         }
         user.isEditing = false;
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        await patchUser(user.id, loginToken, user.username, user.password, user.isAdmin);
+        this.fetchUserData();
       } else {
         user.isEditing = true;
       }
@@ -254,13 +266,11 @@ export default {
         return;
       }
 
-      this.newUser.isEditing = false;
-      this.users.push(this.newUser);
-      this.newUser = null;
-
       if (this.newUser) {
         this.newUser.isEditing = false;
-        this.users.push(this.newUser);
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        postUser(this.newUser.username, this.newUser.password, loginToken);
+        this.fetchUserData();
         this.newUser = null;
       }
     },
@@ -271,7 +281,9 @@ export default {
         return;
       }
       if (confirm("Are you sure you want to delete this user?")) {
-        this.users.splice(index, 1);
+        const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+        deleteUser(user.id, loginToken);
+        this.fetchUserData();
       }
     },
     triggerFileInput(index) {
