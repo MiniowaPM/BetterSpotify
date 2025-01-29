@@ -87,7 +87,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ipcRenderer } from "electron";
-import { loginToken } from "@/utils/api_handler/user";
+import { loginToken, postInitUser } from "@/utils/api_handler/user";
 
 export default {
   name: "AuthPage",
@@ -135,9 +135,11 @@ export default {
             password.value,
             studioName.value
           );
-          // Simulate successful registration
-          ipcRenderer.send("register-success");
-          router.push("/"); // Redirect after registration
+          const postInitUserResponse = postInitUser(login.value,password.value,studioName.value);
+          if (postInitUserResponse == {"detail": "User successfully created"}){
+            ipcRenderer.send("register-success");
+            router.push("/"); // Redirect after registration
+          }
         } else {
           errorMessage.value = "All fields are required for registration.";
         }
