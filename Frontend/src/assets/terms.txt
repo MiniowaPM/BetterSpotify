@@ -1,0 +1,67 @@
+Regulamin korzystania z aplikacji do sprzedaży i kupna utworów i albumów muzycznych
+
+Postanowienia ogólne
+
+• Niniejszy regulamin określa zasady korzystania z aplikacji umożliwiającej sprzedaż i zakup utworów muzycznych oraz albumów (dalej: „Aplikacja”).
+
+• Właścicielem i operatorem Aplikacji jest [nazwa firmy], z siedzibą w [adres firmy], zarejestrowana w [KRS/NIP/REGON].
+
+• Korzystanie z Aplikacji oznacza akceptację niniejszego regulaminu.
+
+Definicje
+
+• Użytkownik – każda osoba fizyczna, prawna lub jednostka organizacyjna, która korzysta z Aplikacji po dokonaniu rejestracji.
+
+• Sprzedawca – Użytkownik, który oferuje sprzedaż utworów lub albumów za pośrednictwem Aplikacji.
+
+• Kupujący – Użytkownik dokonujący zakupu utworów lub albumów.
+
+• Treści – utwory muzyczne, albumy, opisy, zdjęcia i inne materiały oferowane za pośrednictwem Aplikacji.
+
+Warunki korzystania
+
+• Rejestracja w Aplikacji jest bezpłatna. Każdy Użytkownik musi podać prawdziwe dane i zaakceptować regulamin.
+
+• Użytkownik zobowiązuje się do korzystania z Aplikacji w sposób zgodny z prawem, dobrymi obyczajami oraz z poszanowaniem praw innych Użytkowników.
+
+• Wszelkie Treści dodane przez Użytkownika do Aplikacji muszą być zgodne z prawem, w szczególności z przepisami dotyczącymi ochrony praw autorskich.
+
+• Właściciel Aplikacji zastrzega sobie prawo do usuwania Treści naruszających regulamin lub obowiązujące przepisy prawa.
+
+Sprzedaż i zakup Treści
+
+• Sprzedawca ponosi pełną odpowiedzialność za oferowane Treści, w tym za ich zgodność z opisem oraz przestrzeganie praw autorskich.
+
+• Kupujący dokonuje płatności za pośrednictwem dostępnych w Aplikacji metod płatności.
+
+• Po dokonaniu zakupu, Kupujący nabywa licencję do korzystania z Treści zgodnie z zasadami określonymi przez Sprzedawcę i obowiązującymi przepisami prawa.
+
+• W przypadku naruszenia przez Sprzedawcę praw autorskich lub wprowadzenia w błąd Kupującego, Właściciel Aplikacji może podjąć stosowne kroki, w tym zawiesić konto Sprzedawcy.
+
+Prawa i obowiązki Właściciela Aplikacji
+
+• Właściciel Aplikacji zapewnia funkcjonowanie platformy, lecz nie odpowiada za Treści dodawane przez Użytkowników.
+
+• Właściciel Aplikacji ma prawo czasowo zawiesić działanie Aplikacji w celach konserwacyjnych lub technicznych.
+
+• Właściciel Aplikacji zastrzega sobie prawo do usunięcia konta Użytkownika naruszającego regulamin.
+
+Reklamacje i zwroty
+
+• Reklamacje dotyczące funkcjonowania Aplikacji należy zgłaszać na adres: [adres e-mail wsparcia technicznego].
+
+• Reklamacje związane z zakupionymi Treściami należy zgłaszać bezpośrednio do Sprzedawcy.
+
+• Zwroty zakupionych Treści są możliwe wyłącznie w przypadku uzasadnionych reklamacji, w zgodzie z obowiązującymi przepisami prawa.
+
+Ochrona danych osobowych
+
+• Dane osobowe Użytkowników są przetwarzane zgodnie z obowiązującymi przepisami prawa o ochronie danych osobowych.
+
+• Szczegóły dotyczące przetwarzania danych osobowych określa Polityka Prywatności, dostępna w Aplikacji.
+
+Postanowienia końcowe
+
+• Właściciel Aplikacji zastrzega sobie prawo do zmiany niniejszego regulaminu. Zmiany wchodzą w życie w terminie 14 dni od ich opublikowania w Aplikacji.
+
+• Wszelkie spory wynikłe z korzystania z Aplikacji będą rozstrzygane przez właściwy sąd powszechny w Polsce.
