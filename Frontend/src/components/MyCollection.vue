@@ -16,14 +16,14 @@
         <h3>{{ album.title }}</h3>
         <p class="artist-text">{{ album.artist }}</p>
         <div class="album-footer">
-          <button
+          <button v-if="isAdmin"
             class="sell-button"
             @click.stop="showSellAlbumModal(album)"
             :title="$t('sellAlbum')"
           >
             <i class="fa-solid fa-dollar-sign"></i>
           </button>
-          <span class="separator">
+          <span v-if="isAdmin" class="separator">
             <i class="fa-solid fa-circle-small"></i>
           </span>
           <span>
@@ -36,10 +36,10 @@
               @click.stop="toggleFavorite(album)"
             ></i>
           </span>
-          <span class="separator">
+          <span class="separator" v-if="isAdmin">
             <i class="fa-solid fa-circle-small"></i>
           </span>
-          <button
+          <button v-if="isAdmin"
             class="remove-button"
             @click.stop="removeAlbum(album)"
             :title="$t('removeAlbum')"
