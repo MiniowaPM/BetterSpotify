@@ -87,7 +87,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ipcRenderer } from "electron";
-import { loginToken } from "@/utils/api_handler/user";
 
 export default {
   name: "AuthPage",
@@ -101,17 +100,13 @@ export default {
     const showTermsModal = ref(false); // Modal visibility for Terms of Use
     const termsOfUse = ref(""); // Store Terms of Use text
 
-    const fetchTermsOfUse = async () => {
-        try {
-            const response = await fetch('/Frontend/src/assets/terms.txt');
-            if (!response.ok) {
-            throw new Error("Failed to fetch Terms of Use");
-            }
-            termsOfUse.value = await response.text();
-        } catch (error) {
+    const fetchTermsOfUse = () => {
+        ipcRenderer.invoke("read-terms-file").then((data) => {
+            termsOfUse.value = data;
+        }).catch((error) => {
             console.error(error);
             termsOfUse.value = "Error loading Terms of Use.";
-        }
+        });
     };
 
     // Open the Terms of Use modal
@@ -125,7 +120,7 @@ export default {
       showTermsModal.value = false;
     };
 
-    const handleFormSubmit = async() => {
+    const handleFormSubmit = () => {
       if (isRegistering.value) {
         // Handle registration logic here
         if (login.value && password.value && studioName.value) {
@@ -143,10 +138,9 @@ export default {
         }
       } else {
         // Handle login logic here
-        const savedLoginToken = await loginToken(login.value,password.value);
-        if (savedLoginToken && savedLoginToken.token_type == 'bearer' ) {
+        if (login.value === "posac" && password.value === "password123") {
           // Successfully logged in, send a signal to Electron
-          ipcRenderer.send("login-success", savedLoginToken);
+          ipcRenderer.send("login-success");
           router.push("/"); // Navigate to the home page after successful login
         } else {
           errorMessage.value = "Invalid login or password";

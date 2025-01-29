@@ -9,7 +9,6 @@ import path from 'path' // Import path module
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-// Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
@@ -21,19 +20,20 @@ async function createLoginWindow() {
   loginWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: false,  // Optional, hide window frame for custom design
+    frame: true,
+    icon: path.join(__dirname, '../src/assets/icon_onsite.ico'),
+    title: 'Reptilia',
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
 
-  // In development, ensure you're targeting the correct URL path with the hash (`#/login`)
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     await loginWindow.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/login`)
   } else {
     createProtocol('app')
-    loginWindow.loadURL('app://./index.html#/login') // For production, ensure correct route with hash
+    loginWindow.loadURL('app://./index.html#/login')
   }
 
   loginWindow.on('closed', () => {
@@ -47,7 +47,9 @@ async function createMainWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    frame: false,  // If you want to keep it with custom frame
+    frame: false,
+    icon: path.join(__dirname, '../src/assets/icon_onsite.ico'),
+    title: 'Reptilia',
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
@@ -67,11 +69,11 @@ async function createMainWindow() {
   })
 }
 
-// When login is successful, close login window and create the main window
-let userToken = null; // Store token in main process
+
+let userToken = null;
 
 ipcMain.on("login-success", (event, token) => {
-    userToken = token; // Store login token in the main process
+    userToken = token;
 
     if (loginWindow) {
         loginWindow.close();
@@ -79,18 +81,28 @@ ipcMain.on("login-success", (event, token) => {
     createMainWindow();
 });
 
+ipcMain.handle("read-terms-file", async () => {
+  try {
+    const filePath = path.join(__dirname,'terms.txt');
+      return fs.promises.readFile(filePath, "utf-8");
+  } catch (error) {
+      console.error("Error reading terms file:", error);
+      return "Error loading Terms of Use.";
+  }
+});
+
 ipcMain.handle("get-login-token", () => {
-  return userToken; // Send token to renderer process
+  return userToken; 
 });
 
 ipcMain.on('register-success', () => {
   if (loginWindow) {
-    loginWindow.close(); // Close registration window
+    loginWindow.close();
   }
-  createMainWindow(); // Open the main window
+  createMainWindow();
 });
 
-// Quit when all windows are closed.
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -99,12 +111,10 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createLoginWindow() // Show login window if app is reactivated
+    createLoginWindow() 
   }
 })
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     try {
@@ -113,10 +123,10 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createLoginWindow() // Start with the login window
+  createLoginWindow() 
 })
 
-// Exit cleanly on request from parent process in development mode.
+
 if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
