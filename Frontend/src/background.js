@@ -3,9 +3,11 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-const isDevelopment = process.env.NODE_ENV !== 'production'
+import fs from 'fs' // Import fs module
+import path from 'path' // Import path module
 
-const path = require('path')
+
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -79,6 +81,13 @@ ipcMain.on("login-success", (event, token) => {
 
 ipcMain.handle("get-login-token", () => {
   return userToken; // Send token to renderer process
+});
+
+ipcMain.on('register-success', () => {
+  if (loginWindow) {
+    loginWindow.close(); // Close registration window
+  }
+  createMainWindow(); // Open the main window
 });
 
 // Quit when all windows are closed.
