@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { patchUser } from '@/utils/api_handler/user';
+
 export default {
   name: "ProfileSettings",
   data() {
@@ -65,6 +67,8 @@ export default {
         username: "",
         password: "",
       };
+      // const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      // this.user.icon = getUserImg('me', loginToken)
     },
     triggerFileInput() {
       const fileInput = this.$refs.fileInput;
@@ -90,8 +94,8 @@ export default {
         alert("Password must be at least 6 characters!");
         return;
       }
-      //symulowanie zapisywania
-      //tutaj api
+      const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
+      patchUser('me',loginToken,this.user.username, this.user.password, undefined)
       alert("Profile updated successfully!");
     },
   },
