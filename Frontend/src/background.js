@@ -73,6 +73,13 @@ ipcMain.on('login-success', () => {
   createMainWindow()
 })
 
+ipcMain.on('register-success', () => {
+  if (loginWindow) {
+    loginWindow.close(); // Close registration window
+  }
+  createMainWindow(); // Open the main window
+});
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

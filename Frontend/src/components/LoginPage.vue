@@ -1,14 +1,14 @@
 <template>
     <div class="login-container">
       <div class="login-form">
-        <h2>Login</h2>
+        <h2>{{ isRegistering ? 'Register' : 'Login' }}</h2>
   
-        <form @submit.prevent="handleLogin">
+        <form @submit.prevent="handleFormSubmit">
           <div class="form-group">
-            <label for="email">Username</label>
+            <label for="username">{{ isRegistering ? 'Username' : 'Login' }}</label>
             <input
               v-model="login"
-              type="login"
+              type="text"
               id="login"
               required
               placeholder="Enter your username"
@@ -28,14 +28,30 @@
             />
           </div>
   
+          <div v-if="isRegistering">
+            <div class="form-group">
+              <label for="studioName">Studio Name</label>
+              <input
+                v-model="studioName"
+                type="text"
+                id="studioName"
+                required
+                placeholder="Enter your studio name"
+                class="input-field"
+              />
+            </div>
+          </div>
+  
           <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   
-          <button type="submit" class="submit-button">Login</button>
+          <button type="submit" class="submit-button">{{ isRegistering ? 'Register' : 'Login' }}</button>
         </form>
   
         <p class="register-link">
-          Don't have an account? 
-          <router-link to="/register" class="register-link-text">Register</router-link>
+          {{ isRegistering ? 'Already have an account?' : "Don't have an account?" }}
+          <a @click.prevent="toggleForm" class="register-link-text">
+            {{ isRegistering ? 'Login' : 'Register' }}
+          </a>
         </p>
       </div>
     </div>
@@ -47,32 +63,55 @@
   import { ipcRenderer } from "electron";
   
   export default {
-    name: "LoginPage",
+    name: "AuthPage",
     setup() {
       const router = useRouter();
       const login = ref("");
       const password = ref("");
+      const studioName = ref(""); // Added for registration
       const errorMessage = ref("");
+      const isRegistering = ref(false); // State to toggle between login and register
   
       // Mock login credentials for simulation
       const validLogin = "posac";
       const validPassword = "password123";
   
-      const handleLogin = () => {
-        // Simulate validation check
-        if (login.value === validLogin && password.value === validPassword) {
-          // Successfully logged in, send a signal to Electron
-          ipcRenderer.send("login-success");
-          router.push("/"); // Navigate to the home page after successful login
+      const handleFormSubmit = () => {
+        if (isRegistering.value) {
+          // Handle registration logic here
+          // For example, save new user details to a database
+          if (login.value && password.value && studioName.value) {
+            console.log("Registered with:", login.value, password.value, studioName.value);
+            // Simulate successful registration
+            ipcRenderer.send("register-success");
+            router.push("/"); // Redirect after registration
+          } else {
+            errorMessage.value = "All fields are required for registration.";
+          }
         } else {
-          errorMessage.value = "Invalid login or password";
+          // Handle login logic here
+          if (login.value === validLogin && password.value === validPassword) {
+            // Successfully logged in, send a signal to Electron
+            ipcRenderer.send("login-success");
+            router.push("/"); // Navigate to the home page after successful login
+          } else {
+            errorMessage.value = "Invalid login or password";
+          }
         }
       };
+  
+      const toggleForm = () => {
+        isRegistering.value = !isRegistering.value; // Toggle the form between login and register
+      };
+  
       return {
         login,
         password,
+        studioName,
         errorMessage,
-        handleLogin,
+        isRegistering,
+        handleFormSubmit,
+        toggleForm,
       };
     },
   };
