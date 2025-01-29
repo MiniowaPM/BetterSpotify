@@ -26,11 +26,7 @@
 </template>
 
 <script>
-import {
-  getAlbumImg,
-  getMyCollection,
-  patchAlbum,
-} from "@/utils/api_handler/album";
+import { getAlbumImg, getSelling, patchAlbum} from "@/utils/api_handler/album";
 
 export default {
   name: "CurrentlySold",
@@ -45,10 +41,10 @@ export default {
   methods: {
     async fetchAlbumsData() {
       const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-      var myCollectionData = await getMyCollection(loginToken);
+      var sellingAlbumsData = await getSelling(loginToken);
 
       this.studio.albums = await Promise.all(
-        myCollectionData.map(async (album) => {
+        sellingAlbumsData.map(async (album) => {
           try {
             const albumImage = await getAlbumImg(album.id, loginToken);
             return {
@@ -56,6 +52,7 @@ export default {
               id: album.id,
               title: album.title,
               releaseDate: album.release_date.slice(0, 4),
+              price: album.price,
               cover: `data:${albumImage.mime_type};base64,${albumImage.base64_data}`,
             };
           } catch (error) {
@@ -80,7 +77,8 @@ export default {
       );
       if (confirmed) {
         const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-        await patchAlbum(album.id, loginToken, null, null, null, 0, null);
+        await patchAlbum(album.id, loginToken, undefined, undefined, undefined, null, undefined);
+        await this.fetchAlbumsData();
       }
     },
   },

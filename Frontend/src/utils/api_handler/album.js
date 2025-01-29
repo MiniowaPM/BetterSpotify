@@ -15,17 +15,18 @@ export async function deleteAlbum(albumId, jwtToken) {
     }
   }
 
-  export async function patchAlbum(albumId, jwtToken, title = null, description = null,  artist = null, price = null , genre = null) {
+  export async function patchAlbum(albumId, jwtToken, title = undefined, description = undefined,  artist = undefined, price = undefined , genre = undefined) {
     const url = `${serverUrl}/album/${albumId}`;
     const headers = {
       Authorization: `Bearer ${jwtToken.access_token}`,
     };
-    const params = {};
-    if (title !== null) params.title = title;
-    if (description !== null) params.description = description;
-    if (artist !== null) params.artist = artist;
-    if (price !== null) params.price = price;
-    if (genre !== null) params.genre = genre;
+    const params = {
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(artist !== undefined && { artist }),
+        ...(price !== undefined ? { price } : { price: null }),
+        ...(genre !== undefined && { genre }),
+    };
     try {
         const response = await axios.patch(url, params, { headers });
         return response.data;
@@ -34,7 +35,7 @@ export async function deleteAlbum(albumId, jwtToken) {
         console.error(`Error: ${error.message}`);
         return null;
     }
-}
+  }
 
 export async function getAlbum(albumId, jwtToken) {
     const url = `${serverUrl}/album/${albumId}`;

@@ -360,15 +360,16 @@ export default {
       } 
       alert(`Album "${this.selectedAlbum.title}" is being sold for ${this.sellPrice}zł`);
       const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
-      await patchAlbum(this.selectedAlbum.id, loginToken, null, null, null, this.sellPrice, null);
+      await patchAlbum(this.selectedAlbum.id, loginToken, undefined, undefined, undefined, this.sellPrice, undefined);
+      this.featchAlbumsData();
       this.hideSellAlbumModal();
     },
     async removeAlbum(album) {
-      //funkcja usuwania albumu nie działa
       const confirmed = window.confirm(`Are you sure you want to delete the album "${album.title}"?`);
       if (confirmed) {
         const loginToken = JSON.parse(sessionStorage.getItem("loginToken"));
         await deleteAlbum(album.id, loginToken);
+        await this.featchAlbumsData();
       }
     },
   },
