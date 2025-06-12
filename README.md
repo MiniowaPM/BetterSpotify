@@ -43,3 +43,8 @@ cd BetterSpotify
 ```
 
 ### Showcase
+
+![Image](https://github.com/user-attachments/assets/2f740ae0-89c5-44e0-9b1b-0fb5d31eda59)
+![Image](https://github.com/user-attachments/assets/864e09c9-38ab-402f-91d2-bbb75256e8d4)
+![Image](https://github.com/user-attachments/assets/d90f583e-ebad-4f3a-a97c-51c938306b01)
+![Image](https://github.com/user-attachments/assets/391fcc56-a1f4-4a90-867d-3624fe1ffd81)
